@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "genesisforms",
+  "version": "${version}",
+  "name": "GenesisForms",
+  "description": "Server-side Cobblemon Form Handling",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.unariginal.genesisforms.GenesisForms"
+    ]
+  },
+  "mixins": [
+    "genesisforms.mixins.json",
+    {
+      "config": "genesisforms.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "cobblemon": ">=${cobblemon_version}"
+  }
+}

@@ -1,0 +1,171 @@
+package me.unariginal.genesisforms.utils;
+
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
+import com.cobblemon.mod.common.pokemon.EVs;
+import com.cobblemon.mod.common.pokemon.Gender;
+import com.cobblemon.mod.common.pokemon.IVs;
+import com.cobblemon.mod.common.pokemon.OriginalTrainerType;
+import com.cobblemon.mod.common.util.DataKeys;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
+
+import java.util.Arrays;
+
+public class PokemonUtils {
+    public static NbtCompound saveToNBT(PokemonProperties properties) {
+        NbtCompound nbt = new NbtCompound();
+        nbt.putString(DataKeys.POKEMON_PROPERTIES_ORIGINAL_TEXT, properties.getOriginalString());
+        if (properties.getLevel() != null) {
+            nbt.putInt(DataKeys.POKEMON_LEVEL, properties.getLevel());
+        }
+        if (properties.getShiny() != null) {
+            nbt.putBoolean(DataKeys.POKEMON_SHINY, properties.getShiny());
+        }
+        if (properties.getGender() != null) {
+            nbt.putString(DataKeys.POKEMON_GENDER, properties.getGender().name());
+        }
+        if (properties.getSpecies() != null) {
+            nbt.putString(DataKeys.POKEMON_SPECIES_TEXT, properties.getSpecies());
+        }
+        if (properties.getForm() != null) {
+            nbt.putString(DataKeys.POKEMON_FORM_ID, properties.getForm());
+        }
+        if (properties.getFriendship() != null) {
+            nbt.putInt(DataKeys.POKEMON_FRIENDSHIP, properties.getFriendship());
+        }
+        if (properties.getPokeball() != null) {
+            nbt.putString(DataKeys.POKEMON_CAUGHT_BALL, properties.getPokeball());
+        }
+        if (properties.getNature() != null) {
+            nbt.putString(DataKeys.POKEMON_NATURE, properties.getNature());
+        }
+        if (properties.getAbility() != null) {
+            nbt.putString(DataKeys.POKEMON_ABILITY, properties.getAbility());
+        }
+        if (properties.getStatus() != null) {
+            nbt.putString(DataKeys.POKEMON_STATUS_NAME, properties.getStatus());
+        }
+        if (properties.getIvs() != null) {
+            nbt.put(DataKeys.POKEMON_IVS, properties.getIvs().saveToNBT(new NbtCompound()));
+        }
+        if (properties.getEvs() != null) {
+            nbt.put(DataKeys.POKEMON_EVS, properties.getEvs().saveToNBT(new NbtCompound()));
+        }
+        if (properties.getType() != null) {
+            nbt.putString(DataKeys.ELEMENTAL_TYPE, properties.getType());
+        }
+        if (properties.getTeraType() != null) {
+            nbt.putString(DataKeys.POKEMON_TERA_TYPE, properties.getTeraType());
+        }
+        if (properties.getDmaxLevel() != null) {
+            nbt.putInt(DataKeys.POKEMON_DMAX_LEVEL, properties.getDmaxLevel());
+        }
+        if (properties.getGmaxFactor() != null) {
+            nbt.putBoolean(DataKeys.POKEMON_GMAX_FACTOR, properties.getGmaxFactor());
+        }
+        if (properties.getTradeable() != null) {
+            nbt.putBoolean(DataKeys.POKEMON_TRADEABLE, properties.getTradeable());
+        }
+        if (properties.getOriginalTrainerType() != null) {
+            nbt.putInt(DataKeys.POKEMON_ORIGINAL_TRAINER_TYPE, properties.getOriginalTrainerType().ordinal());
+        }
+        if (properties.getOriginalTrainer() != null) {
+            nbt.putString(DataKeys.POKEMON_ORIGINAL_TRAINER, properties.getOriginalTrainer());
+        }
+        if (properties.getMoves() != null) {
+            String moves = "";
+            for (String move : properties.getMoves()) {
+                moves = moves.concat(move + ",");
+            }
+            nbt.putString(DataKeys.POKEMON_PROPERTIES_MOVES, moves);
+        }
+        if (properties.getHeldItem() != null) {
+            nbt.putString(DataKeys.POKEMON_PROPERTIES_HELDITEM, properties.getHeldItem());
+        }
+        NbtList custom = new NbtList();
+        for (CustomPokemonProperty pokemonProperty : properties.getCustomProperties()) {
+            custom.add(NbtString.of(pokemonProperty.asString()));
+        }
+        nbt.put(DataKeys.POKEMON_PROPERTIES_CUSTOM, custom);
+        return nbt;
+    }
+
+    public static PokemonProperties loadFromNBT(NbtCompound nbt) {
+        PokemonProperties properties = new PokemonProperties();
+        properties.setOriginalString(nbt.getString(DataKeys.POKEMON_PROPERTIES_ORIGINAL_TEXT));
+        if (nbt.contains(DataKeys.POKEMON_LEVEL)) {
+            properties.setLevel(nbt.getInt(DataKeys.POKEMON_LEVEL));
+        }
+        if (nbt.contains(DataKeys.POKEMON_SHINY)) {
+            properties.setShiny(nbt.getBoolean(DataKeys.POKEMON_SHINY));
+        }
+        if (nbt.contains(DataKeys.POKEMON_GENDER)) {
+            properties.setGender(Gender.valueOf(nbt.getString(DataKeys.POKEMON_GENDER)));
+        }
+        if (nbt.contains(DataKeys.POKEMON_SPECIES_TEXT)) {
+            properties.setSpecies(nbt.getString(DataKeys.POKEMON_SPECIES_TEXT));
+        }
+        if (nbt.contains(DataKeys.POKEMON_FORM_ID)) {
+            properties.setForm(nbt.getString(DataKeys.POKEMON_FORM_ID));
+        }
+        if (nbt.contains(DataKeys.POKEMON_FRIENDSHIP)) {
+            properties.setFriendship(nbt.getInt(DataKeys.POKEMON_FRIENDSHIP));
+        }
+        if (nbt.contains(DataKeys.POKEMON_CAUGHT_BALL)) {
+            properties.setPokeball(nbt.getString(DataKeys.POKEMON_CAUGHT_BALL));
+        }
+        if (nbt.contains(DataKeys.POKEMON_NATURE)) {
+            properties.setNature(nbt.getString(DataKeys.POKEMON_NATURE));
+        }
+        if (nbt.contains(DataKeys.POKEMON_ABILITY)) {
+            properties.setAbility(nbt.getString(DataKeys.POKEMON_ABILITY));
+        }
+        if (nbt.contains(DataKeys.POKEMON_STATUS_NAME)) {
+            properties.setStatus(nbt.getString(DataKeys.POKEMON_STATUS_NAME));
+        }
+        if (nbt.contains(DataKeys.POKEMON_IVS)) {
+            properties.setIvs((IVs) new IVs().loadFromNBT(nbt.getCompound(DataKeys.POKEMON_IVS)));
+        }
+        if (nbt.contains(DataKeys.POKEMON_EVS)) {
+            properties.setEvs((EVs) new EVs().loadFromNBT(nbt.getCompound(DataKeys.POKEMON_EVS)));
+        }
+        if (nbt.contains(DataKeys.ELEMENTAL_TYPE)) {
+            properties.setType(nbt.getString(DataKeys.ELEMENTAL_TYPE));
+        }
+        if (nbt.contains(DataKeys.POKEMON_TERA_TYPE)) {
+            properties.setTeraType(nbt.getString(DataKeys.POKEMON_TERA_TYPE));
+        }
+        if (nbt.contains(DataKeys.POKEMON_DMAX_LEVEL)) {
+            properties.setDmaxLevel(nbt.getInt(DataKeys.POKEMON_DMAX_LEVEL));
+        }
+        if (nbt.contains(DataKeys.POKEMON_GMAX_FACTOR)) {
+            properties.setGmaxFactor(nbt.getBoolean(DataKeys.POKEMON_GMAX_FACTOR));
+        }
+        if (nbt.contains(DataKeys.POKEMON_TRADEABLE)) {
+            properties.setTradeable(nbt.getBoolean(DataKeys.POKEMON_TRADEABLE));
+        }
+        if (nbt.contains(DataKeys.POKEMON_ORIGINAL_TRAINER_TYPE)) {
+            properties.setOriginalTrainerType(OriginalTrainerType.valueOf(nbt.getString(DataKeys.POKEMON_ORIGINAL_TRAINER_TYPE)));
+        }
+        if (nbt.contains(DataKeys.POKEMON_ORIGINAL_TRAINER)) {
+            properties.setOriginalTrainer(nbt.getString(DataKeys.POKEMON_ORIGINAL_TRAINER));
+        }
+        if (nbt.contains(DataKeys.POKEMON_PROPERTIES_MOVES)) {
+            properties.setMoves(Arrays.stream(nbt.getString(DataKeys.POKEMON_PROPERTIES_MOVES).split(",")).toList());
+        }
+        if (nbt.contains(DataKeys.POKEMON_PROPERTIES_HELDITEM)) {
+            properties.setHeldItem(nbt.getString(DataKeys.POKEMON_PROPERTIES_HELDITEM));
+        }
+        if (nbt.contains(DataKeys.POKEMON_PROPERTIES_CUSTOM)) {
+            NbtList custom = nbt.getList(DataKeys.POKEMON_PROPERTIES_CUSTOM, NbtCompound.STRING_TYPE);
+            for (NbtElement element : custom) {
+                properties.getCustomProperties().addAll(PokemonProperties.Companion.parse(element.asString()).getCustomProperties());
+            }
+        }
+        properties.updateAspects();
+        return properties;
+    }
+}
