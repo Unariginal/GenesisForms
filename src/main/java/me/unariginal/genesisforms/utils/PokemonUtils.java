@@ -7,10 +7,7 @@ import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.OriginalTrainerType;
 import com.cobblemon.mod.common.util.DataKeys;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.*;
 
 import java.util.Arrays;
 
@@ -49,10 +46,10 @@ public class PokemonUtils {
             nbt.putString(DataKeys.POKEMON_STATUS_NAME, properties.getStatus());
         }
         if (properties.getIvs() != null) {
-            nbt.put(DataKeys.POKEMON_IVS, properties.getIvs().saveToNBT(new NbtCompound()));
+            nbt.put(DataKeys.POKEMON_IVS, IVs.getCODEC().encodeStart(NbtOps.INSTANCE, properties.getIvs()).result().get());
         }
         if (properties.getEvs() != null) {
-            nbt.put(DataKeys.POKEMON_EVS, properties.getEvs().saveToNBT(new NbtCompound()));
+            nbt.put(DataKeys.POKEMON_EVS, EVs.getCODEC().encodeStart(NbtOps.INSTANCE, properties.getEvs()).result().get());
         }
         if (properties.getType() != null) {
             nbt.putString(DataKeys.ELEMENTAL_TYPE, properties.getType());
@@ -127,10 +124,10 @@ public class PokemonUtils {
             properties.setStatus(nbt.getString(DataKeys.POKEMON_STATUS_NAME));
         }
         if (nbt.contains(DataKeys.POKEMON_IVS)) {
-            properties.setIvs((IVs) new IVs().loadFromNBT(nbt.getCompound(DataKeys.POKEMON_IVS)));
+            properties.setIvs(IVs.getCODEC().decode(NbtOps.INSTANCE, nbt.getCompound(DataKeys.POKEMON_IVS)).result().get().getFirst());
         }
         if (nbt.contains(DataKeys.POKEMON_EVS)) {
-            properties.setEvs((EVs) new EVs().loadFromNBT(nbt.getCompound(DataKeys.POKEMON_EVS)));
+            properties.setEvs(EVs.getCODEC().decode(NbtOps.INSTANCE, nbt.getCompound(DataKeys.POKEMON_EVS)).result().get().getFirst());
         }
         if (nbt.contains(DataKeys.ELEMENTAL_TYPE)) {
             properties.setType(nbt.getString(DataKeys.ELEMENTAL_TYPE));

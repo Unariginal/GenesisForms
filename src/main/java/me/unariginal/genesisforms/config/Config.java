@@ -12,6 +12,8 @@ public class Config {
     public boolean debug = false;
 
     public List<String> disabledItems = new ArrayList<>();
+    public record ItemConversion(String input, String output) {}
+    public List<ItemConversion> itemConversions = new ArrayList<>();
 
     public boolean enableMegaEvolution = true;
     public boolean allowMegaOutsideBattles = true;
@@ -101,6 +103,7 @@ public class Config {
         if (root.get("general_settings") != null) {
             generalSettings = root.get("general_settings").getAsJsonObject();
         }
+
         JsonArray disabledItems = new JsonArray();
         if (generalSettings.get("disabled_items") != null) {
             this.disabledItems.clear();
@@ -110,6 +113,24 @@ public class Config {
             disabledItems.add(item);
         }
         generalSettings.add("disabled_items", disabledItems);
+
+        JsonArray itemConversions = new JsonArray();
+        if (generalSettings.get("item_conversions") != null) {
+            this.itemConversions.clear();
+            for (JsonElement element : generalSettings.get("item_conversions").getAsJsonArray()) {
+                JsonObject itemConversion = element.getAsJsonObject();
+                if (itemConversion.get("input") != null && itemConversion.get("output") != null) {
+                    this.itemConversions.add(new ItemConversion(itemConversion.get("input").getAsString(), itemConversion.get("output").getAsString()));
+                }
+            }
+        }
+        for (ItemConversion itemConversion : this.itemConversions) {
+            JsonObject itemConversionJson = new JsonObject();
+            itemConversionJson.addProperty("input", itemConversion.input);
+            itemConversionJson.addProperty("output", itemConversion.output);
+            itemConversions.add(itemConversionJson);
+        }
+        generalSettings.add("item_conversions", itemConversions);
         newRoot.add("general_settings", generalSettings);
 
         JsonObject megaSettings = new JsonObject();

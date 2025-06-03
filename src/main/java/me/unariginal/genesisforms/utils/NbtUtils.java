@@ -1,6 +1,7 @@
 package me.unariginal.genesisforms.utils;
 
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
@@ -47,12 +48,30 @@ public class NbtUtils {
         });
     }
 
+    public static String getItemName(@NotNull ItemStack itemStack) {
+        return itemStack.getName().getString();
+    }
+
     public static void setItemLore(@NotNull ItemStack itemStack, @NotNull List<String> value) {
         List<Text> lore = new ArrayList<>();
         for (String line : value) {
             lore.add(TextUtils.deserialize(line));
         }
         itemStack.applyComponentsFrom(ComponentMap.builder().add(LORE, new LoreComponent(lore)).build());
+    }
+
+    public static List<String> getItemLore(@NotNull ItemStack itemStack) {
+        List<String> lore = new ArrayList<>();
+        if (itemStack.getComponents().contains(LORE)) {
+            LoreComponent loreComponent = itemStack.getComponents().get(LORE);
+            if (loreComponent != null) {
+                List<Text> lore_text = loreComponent.lines();
+                for (Text text : lore_text) {
+                    lore.add(text.getString());
+                }
+            }
+        }
+        return lore;
     }
 
     @NotNull

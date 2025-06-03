@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.net.messages.client.effect.SpawnSnowstormParticl
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.handlers.FormHandler;
 import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
@@ -12,12 +13,18 @@ import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
+import me.unariginal.genesisforms.utils.NbtUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Set;
 
 public class GenesisCommands {
@@ -207,7 +214,78 @@ public class GenesisCommands {
                                                             )
                                             )
                             )
+                            .then(
+                                    CommandManager.literal("convert-item")
+                                            .requires(Permissions.require("genesisforms.convertItem", 4))
+                                            .then(
+                                                    CommandManager.literal("hand")
+                                                            .executes(ctx -> {
+                                                                if (ctx.getSource().getPlayer() == null) return 0;
+                                                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+
+                                                                ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
+                                                                ItemStack converted = convertItem(stack);
+                                                                if (converted == null) return 0;
+                                                                stack.decrement(stack.getCount());
+                                                                player.giveItemStack(converted);
+
+                                                                return 1;
+                                                            })
+                                            )
+                                            .then(
+                                                    CommandManager.literal("inventory")
+                                                            .executes(ctx -> {
+                                                                if (ctx.getSource().getPlayer() == null) return 0;
+                                                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                                                return 1;
+                                                            })
+                                            )
+                            )
             );
         });
+    }
+
+    public ItemStack convertItem(ItemStack itemStack) {
+        for (Config.ItemConversion itemConversion : GenesisForms.INSTANCE.getConfig().itemConversions) {
+            if (itemConversion.input().contains(":")) {
+                if (Registries.ITEM.containsId(Identifier.of(itemConversion.input()))) {
+                    if (itemStack.getRegistryEntry().matchesId(Identifier.of(itemConversion.input()))) {
+                        if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
+                            ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
+                            returnStack.setCount(itemStack.getCount());
+                            return returnStack;
+                        } else {
+                            GenesisForms.INSTANCE.logError("Invalid output item: " + itemConversion.output());
+                            return null;
+                        }
+                    }
+                }
+            }
+            String itemName = NbtUtils.getItemName(itemStack);
+            if (itemName.contains(itemConversion.input())) {
+                if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
+                    ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
+                    returnStack.setCount(itemStack.getCount());
+                    return returnStack;
+                } else {
+                    GenesisForms.INSTANCE.logError("Invalid output item: " + itemConversion.output());
+                    return null;
+                }
+            }
+            List<String> itemLore = NbtUtils.getItemLore(itemStack);
+            for (String lore : itemLore) {
+                if (lore.contains(itemConversion.input())) {
+                    if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
+                        ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
+                        returnStack.setCount(itemStack.getCount());
+                        return returnStack;
+                    } else {
+                        GenesisForms.INSTANCE.logError("Invalid output item: " + itemConversion.output());
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
