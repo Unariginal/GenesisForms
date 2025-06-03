@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import org.jetbrains.annotations.Nullable;
 
 public class AdamantCrystal extends SimplePolymerItem {

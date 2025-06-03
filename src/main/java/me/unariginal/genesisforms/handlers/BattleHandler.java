@@ -16,7 +16,6 @@ import me.unariginal.genesisforms.utils.NbtUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Field;

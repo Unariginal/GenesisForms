@@ -5,7 +5,6 @@ import com.cobblemon.mod.common.advancement.CobblemonCriteria;
 import com.cobblemon.mod.common.advancement.criterion.PokemonInteractContext;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
-import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.BattleRegistry;

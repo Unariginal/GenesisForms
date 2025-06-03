@@ -11,7 +11,6 @@ import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 
 public class HeldItemHandler {
     public static Unit held_item_change(HeldItemEvent.Post post) {
