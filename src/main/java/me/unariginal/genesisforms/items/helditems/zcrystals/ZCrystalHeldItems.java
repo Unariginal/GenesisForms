@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.api.types.ElementalTypes;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
@@ -216,7 +217,7 @@ public class ZCrystalHeldItems implements HeldItemManager {
                     }
                 }).build();
 
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(GenesisForms.MOD_ID, "z_crystals"), Z_CRYSTALS);
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "z_crystals"), Z_CRYSTALS);
     }
 
     public static class ZCrystalPolymerItem extends SimplePolymerItem {

@@ -23,6 +23,7 @@ import me.unariginal.genesisforms.handlers.PacketHandler;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -57,6 +58,7 @@ public class ZRing extends SimplePolymerItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("z_ring")) return ActionResult.PASS;
         if (entity instanceof PokemonEntity pokemonEntity) {
             ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
             if (player != null) {
@@ -86,6 +88,7 @@ public class ZRing extends SimplePolymerItem {
                                     if (isDawn || isDusk) {
                                         if (GenesisForms.INSTANCE.getConfig().enableUltraBurst && ZCrystalHeldItems.getInstance().showdownId(pokemonEntity.getPokemon()).equalsIgnoreCase("ultranecrozium-z")) {
                                             if (!GenesisForms.INSTANCE.getUltra_burst_this_battle().contains(player.getUuid())) {
+                                                player.sendMessage(TextUtils.deserialize("<red>[GenesisForms] Warning! Ultra-burst does <b>not <!b>have full functionality yet!"));
                                                 GenesisForms.INSTANCE.getUltra_burst_this_battle().add(player.getUuid());
                                                 NbtCompound data = pokemonEntity.getPokemon().getPersistentData();
                                                 data.putString("pre_ultra", isDawn ? "dawn" : "dusk");

@@ -36,6 +36,7 @@ public class DynamaxCandy extends SimplePolymerItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_candy")) return ActionResult.PASS;
         if (GenesisForms.INSTANCE.getConfig().enableDynamax) {
             if (entity instanceof PokemonEntity pokemonEntity) {
                 ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();

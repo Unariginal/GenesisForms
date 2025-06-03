@@ -16,6 +16,7 @@ import me.unariginal.genesisforms.utils.NbtUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Field;
@@ -66,34 +67,36 @@ public class BattleHandler {
 
             Set<Identifier> keyItems = Cobblemon.playerDataManager.getGenericData(player).getKeyItems();
 
-            if (gf.getConfig().enableMegaEvolution && has_keyStone) {
+            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("key_stone") && gf.getConfig().enableMegaEvolution && has_keyStone) {
                 keyItems.add(Identifier.of("cobblemon", "key_stone"));
             } else {
                 keyItems.remove(Identifier.of("cobblemon", "key_stone"));
             }
 
-            if (gf.getConfig().enableDynamax && has_dynamaxBand) {
+            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand) {
                 keyItems.add(Identifier.of("cobblemon", "dynamax_band"));
-                try {
-                    BattleFormat format = event.getBattle().getFormat();
-                    Field field = format.getClass().getDeclaredField("gen");
-                    field.setAccessible(true);
-                    field.set(format, 8);
-                } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-                    gf.logError("[Genesis] Failed to set battle gen to 8! Dynamax will not work!");
-                    gf.logError("[Genesis] Error: " + e.getMessage());
+                if (!gf.getConfig().useGen9Battles) {
+                    try {
+                        BattleFormat format = event.getBattle().getFormat();
+                        Field field = format.getClass().getDeclaredField("gen");
+                        field.setAccessible(true);
+                        field.set(format, 8);
+                    } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+                        gf.logError("[Genesis] Failed to set battle gen to 8! Dynamax will not work!");
+                        gf.logError("[Genesis] Error: " + e.getMessage());
+                    }
                 }
             } else {
                 keyItems.remove(Identifier.of("cobblemon", "dynamax_band"));
             }
 
-            if (gf.getConfig().enableZCrystals && has_zRing) {
+            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && has_zRing) {
                 keyItems.add(Identifier.of("cobblemon", "z_ring"));
             } else {
                 keyItems.remove(Identifier.of("cobblemon", "z_ring"));
             }
 
-            if (gf.getConfig().enableTera && has_teraOrb) {
+            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("tera_orb") && gf.getConfig().enableTera && has_teraOrb) {
                 keyItems.add(Identifier.of("cobblemon", "tera_orb"));
             } else {
                 keyItems.remove(Identifier.of("cobblemon", "tera_orb"));

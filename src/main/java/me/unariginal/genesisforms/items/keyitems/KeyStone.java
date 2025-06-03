@@ -39,7 +39,8 @@ public class KeyStone extends SimplePolymerItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        if (GenesisForms.INSTANCE.getConfig().allowMegaOutsideBattles) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("key_stone")) return ActionResult.PASS;
+        if (GenesisForms.INSTANCE.getConfig().enableMegaEvolution && GenesisForms.INSTANCE.getConfig().allowMegaOutsideBattles) {
             if (entity instanceof PokemonEntity pokemonEntity) {
                 ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
                 if (player != null) {

@@ -7,10 +7,12 @@ import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemManager;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.utils.NbtUtils;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -162,6 +164,10 @@ public class MegaStoneHeldItems implements HeldItemManager {
         MEGA_STONE_IDS.put("galladite", "gallade");
         MEGA_STONE_IDS.put("audinite", "audino");
         MEGA_STONE_IDS.put("diancite", "diancie");
+
+        for (Config.CustomMega customMega : GenesisForms.INSTANCE.getConfig().customMegaList) {
+            MEGA_STONE_IDS.put(customMega.megastoneID(), customMega.baseSpecies());
+        }
     }
 
     public Map<String, MegaStonePolymerItem> megaStonePolymerItems = new HashMap<>();
@@ -191,7 +197,7 @@ public class MegaStoneHeldItems implements HeldItemManager {
                     }
                 }).build();
 
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(GenesisForms.MOD_ID, "mega_stones"), MEGA_STONES);
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "mega_stones"), MEGA_STONES);
     }
 
     public static class MegaStonePolymerItem extends SimplePolymerItem {

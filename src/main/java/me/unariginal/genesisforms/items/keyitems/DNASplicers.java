@@ -10,6 +10,7 @@ import com.cobblemon.mod.common.pokemon.*;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
 import me.unariginal.genesisforms.utils.PokemonUtils;
@@ -43,36 +44,43 @@ public class DNASplicers extends SimplePolymerItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("dna_splicers")) return ActionResult.PASS;
         if (GenesisForms.INSTANCE.getConfig().enableFusions) {
-            if (entity instanceof PokemonEntity pokemonEntity && pokemonEntity.getExposedSpecies().getName().equalsIgnoreCase("kyurem")) {
-                ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
-                if (player != null) {
-                    if (player.getUuid().equals(user.getUuid()) && !pokemonEntity.isBattling()) {
-                        PlayerPartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
-                        if (pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("white"))) {
-                            PokemonProperties properties = PokemonUtils.loadFromNBT(pokemonEntity.getPokemon().getPersistentData());
-                            properties.setSpecies("reshiram");
-                            new StringSpeciesFeature("absofusion", "none").apply(pokemonEntity.getPokemon());
-                            partyStore.add(properties.create());
-                        } else if (pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("black"))) {
-                            PokemonProperties properties = PokemonUtils.loadFromNBT(pokemonEntity.getPokemon().getPersistentData());
-                            properties.setSpecies("zekrom");
-                            new StringSpeciesFeature("absofusion", "none").apply(pokemonEntity.getPokemon());
-                            partyStore.add(properties.create());
-                        } else {
-                            for (Pokemon pokemon : partyStore) {
-                                if (pokemon != null) {
-                                    if (pokemon.getSpecies().getName().equalsIgnoreCase("reshiram")) {
-                                        new StringSpeciesFeature("absofusion", "white").apply(pokemonEntity.getPokemon());
-                                        pokemonEntity.getPokemon().setPersistentData$common(PokemonUtils.saveToNBT(pokemon.createPokemonProperties(PokemonPropertyExtractor.ALL)));
-                                        partyStore.remove(pokemon);
-                                        break;
+            if (entity instanceof PokemonEntity pokemonEntity) {
+                for (Config.Fusion fusion : GenesisForms.INSTANCE.getConfig().fusionList) {
+                    if (fusion.fusionItem().equalsIgnoreCase("dna_splicers")) {
+                        if (pokemonEntity.getExposedSpecies().getName().equalsIgnoreCase(fusion.corePokemon())) {
+                            ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
+                            if (player != null) {
+                                if (player.getUuid().equals(user.getUuid()) && !pokemonEntity.isBattling()) {
+                                    PlayerPartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
+                                    boolean isFused = false;
+                                    for (Config.FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
+                                        if (pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith(fuelPokemon.featureValue()))) {
+                                            isFused = true;
+
+                                            PokemonProperties properties = PokemonUtils.loadFromNBT(pokemonEntity.getPokemon().getPersistentData());
+                                            properties.setSpecies(fuelPokemon.species());
+                                            new StringSpeciesFeature(fuelPokemon.featureName(), "none").apply(pokemonEntity.getPokemon());
+                                            partyStore.add(properties.create());
+
+                                            break;
+                                        }
                                     }
-                                    if (pokemon.getSpecies().getName().equalsIgnoreCase("zekrom")) {
-                                        new StringSpeciesFeature("absofusion", "black").apply(pokemonEntity.getPokemon());
-                                        pokemonEntity.getPokemon().setPersistentData$common(PokemonUtils.saveToNBT(pokemon.createPokemonProperties(PokemonPropertyExtractor.ALL)));
-                                        partyStore.remove(pokemon);
-                                        break;
+                                    if (!isFused) {
+                                        partyLoop:
+                                        for (Pokemon pokemon : partyStore) {
+                                            if (pokemon != null) {
+                                                for (Config.FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
+                                                    if (pokemon.getSpecies().getName().equalsIgnoreCase(fuelPokemon.species())) {
+                                                        new StringSpeciesFeature(fuelPokemon.featureName(), fuelPokemon.featureValue()).apply(pokemonEntity.getPokemon());
+                                                        pokemonEntity.getPokemon().setPersistentData$common(PokemonUtils.saveToNBT(pokemon.createPokemonProperties(PokemonPropertyExtractor.ALL)));
+                                                        partyStore.remove(pokemon);
+                                                        break partyLoop;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

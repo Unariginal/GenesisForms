@@ -15,7 +15,9 @@ public class FixTheUhOhs {
         if (ex instanceof EncoderException) {
             String errorMessage = ex.getMessage();
 
-            if (errorMessage != null && errorMessage.contains("Failed to encode packet") && (errorMessage.contains("cobblemon:tera_type_update") || errorMessage.contains("minecraft:set_entity_data"))) {
+            if (errorMessage != null &&
+                    errorMessage.contains("Failed to encode packet") &&
+                    (errorMessage.contains("cobblemon:tera_type_update") || errorMessage.contains("minecraft:set_entity_data"))) {
                 ci.cancel();
             }
         }
