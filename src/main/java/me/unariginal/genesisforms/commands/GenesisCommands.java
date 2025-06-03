@@ -16,7 +16,6 @@ import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
@@ -237,6 +236,24 @@ public class GenesisCommands {
                                                             .executes(ctx -> {
                                                                 if (ctx.getSource().getPlayer() == null) return 0;
                                                                 ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                                                for (ItemStack stack : player.getInventory().main) {
+                                                                    ItemStack converted = convertItem(stack);
+                                                                    if (converted == null) continue;
+                                                                    stack.decrement(stack.getCount());
+                                                                    player.giveItemStack(converted);
+                                                                }
+                                                                for (ItemStack stack : player.getInventory().offHand) {
+                                                                    ItemStack converted = convertItem(stack);
+                                                                    if (converted == null) continue;
+                                                                    stack.decrement(stack.getCount());
+                                                                    player.giveItemStack(converted);
+                                                                }
+                                                                for (ItemStack stack : player.getInventory().armor) {
+                                                                    ItemStack converted = convertItem(stack);
+                                                                    if (converted == null) continue;
+                                                                    stack.decrement(stack.getCount());
+                                                                    player.giveItemStack(converted);
+                                                                }
                                                                 return 1;
                                                             })
                                             )
@@ -262,7 +279,7 @@ public class GenesisCommands {
                 }
             }
             String itemName = NbtUtils.getItemName(itemStack);
-            if (itemName.contains(itemConversion.input())) {
+            if (itemName.toLowerCase().contains(itemConversion.input().toLowerCase())) {
                 if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
                     ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
                     returnStack.setCount(itemStack.getCount());
@@ -274,7 +291,7 @@ public class GenesisCommands {
             }
             List<String> itemLore = NbtUtils.getItemLore(itemStack);
             for (String lore : itemLore) {
-                if (lore.contains(itemConversion.input())) {
+                if (lore.toLowerCase().contains(itemConversion.input().toLowerCase())) {
                     if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
                         ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
                         returnStack.setCount(itemStack.getCount());
