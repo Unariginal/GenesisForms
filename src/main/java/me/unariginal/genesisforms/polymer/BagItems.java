@@ -1,12 +1,12 @@
 package me.unariginal.genesisforms.polymer;
 
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.items.bagitems.DynamaxCandy;
 import me.unariginal.genesisforms.items.bagitems.MaxHoney;
 import me.unariginal.genesisforms.items.bagitems.MaxMushrooms;
-import me.unariginal.genesisforms.items.keyitems.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -52,7 +52,7 @@ public class BagItems {
             .build();
 
     public static void registerItemGroup() {
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(GenesisForms.MOD_ID, "bag_items"), BAG_ITEMS);
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "bag_items"), BAG_ITEMS);
         bagItemStacks.put("dynamax_candy", DYNAMAX_CANDY.getDefaultStack());
         bagItemStacks.put("max_mushrooms", MAX_MUSHROOMS.getDefaultStack());
         bagItemStacks.put("max_honey", MAX_HONEY.getDefaultStack());

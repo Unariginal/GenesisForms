@@ -28,10 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,6 +84,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("max_honey")) return TypedActionResult.success(user.getStackInHand(hand));
         ServerPlayerEntity player = GenesisForms.INSTANCE.getServer().getPlayerManager().getPlayer(user.getUuid());
         ItemStack stack = user.getStackInHand(hand);
         if (player != null) {
@@ -103,7 +101,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                              int turn = battle.getTurn();
                              PartySelectCallbacks.INSTANCE.createBattleSelect(player, battlePokemonList, (battlePokemon) -> bagItem.canUse(battle, battlePokemon), (battlePokemon) ->
                              {
-                                 if (actor.canFitForcedAction() && battlePokemon.getHealth() <= 0 && battle.getTurn() == turn && stack.getHolder() != null && stack.getHolder() instanceof ServerPlayerEntity && stack.getHolder().equals(player)) {
+                                 if (actor.canFitForcedAction() && battlePokemon.getHealth() <= 0 && battle.getTurn() == turn) {
                                      player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);
                                      actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
                                      Identifier stackName = Registries.ITEM.getId(stack.getItem());
@@ -115,7 +113,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                                  return Unit.INSTANCE;
                              });
                          } catch (NoSuchMethodError e) {
-                             GenesisForms.INSTANCE.logError("[Genesis] Suppressing NoSuchMethodError! " + e.getMessage());
+                             GenesisForms.INSTANCE.logError("[Genesis] Suppressing NoSuchMethodError (You're running the 1.6.1 version on the 1.7 snapshot! " + e.getMessage());
                          }
                      }
                  }
@@ -127,18 +125,21 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                      }
                  }
                  PartySelectCallbacks.INSTANCE.createFromPokemon(player, pokemon_party, Pokemon::isFainted, pokemon -> {
-                     AtomicInteger amount = new AtomicInteger(pokemon.getMaxHealth());
-                     CobblemonEvents.POKEMON_HEALED.postThen(new PokemonHealedEvent(pokemon, amount.get(), this), event -> Unit.INSTANCE,event ->
-                     {
-                         amount.set(event.getAmount());
-                         return Unit.INSTANCE;
-                     });
-                     pokemon.setCurrentHealth(amount.get());
-                     Identifier stackName = Registries.ITEM.getId(stack.getItem());
-                     if (!player.isCreative()) {
-                         stack.decrement(1);
+                     PokemonBattle playerBattle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
+                     if (pokemon.isFainted() && playerBattle == null) {
+                         AtomicInteger amount = new AtomicInteger(pokemon.getMaxHealth());
+                         CobblemonEvents.POKEMON_HEALED.postThen(new PokemonHealedEvent(pokemon, amount.get(), this), event -> Unit.INSTANCE, event ->
+                         {
+                             amount.set(event.getAmount());
+                             return Unit.INSTANCE;
+                         });
+                         pokemon.setCurrentHealth(amount.get());
+                         Identifier stackName = Registries.ITEM.getId(stack.getItem());
+                         if (!player.isCreative()) {
+                             stack.decrement(1);
+                         }
+                         CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
                      }
-                     CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
                      return Unit.INSTANCE;
                  });
              }

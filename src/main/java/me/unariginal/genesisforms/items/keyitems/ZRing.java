@@ -2,17 +2,10 @@ package me.unariginal.genesisforms.items.keyitems;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.api.moves.Move;
-import com.cobblemon.mod.common.api.moves.MoveSet;
-import com.cobblemon.mod.common.api.moves.MoveTemplate;
-import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
-import com.cobblemon.mod.common.battles.ShowdownMoveset;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import com.cobblemon.mod.common.client.gui.battle.subscreen.BattleGimmickButton;
-import com.cobblemon.mod.common.client.gui.battle.subscreen.BattleMoveSelection;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleTransformPokemonPacket;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
@@ -23,6 +16,7 @@ import me.unariginal.genesisforms.handlers.PacketHandler;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -57,6 +51,7 @@ public class ZRing extends SimplePolymerItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("z_ring")) return ActionResult.PASS;
         if (entity instanceof PokemonEntity pokemonEntity) {
             ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
             if (player != null) {
@@ -86,6 +81,7 @@ public class ZRing extends SimplePolymerItem {
                                     if (isDawn || isDusk) {
                                         if (GenesisForms.INSTANCE.getConfig().enableUltraBurst && ZCrystalHeldItems.getInstance().showdownId(pokemonEntity.getPokemon()).equalsIgnoreCase("ultranecrozium-z")) {
                                             if (!GenesisForms.INSTANCE.getUltra_burst_this_battle().contains(player.getUuid())) {
+                                                player.sendMessage(TextUtils.deserialize("<red>[GenesisForms] Warning! Ultra-burst does <b>not <!b>have full functionality yet!"));
                                                 GenesisForms.INSTANCE.getUltra_burst_this_battle().add(player.getUuid());
                                                 NbtCompound data = pokemonEntity.getPokemon().getPersistentData();
                                                 data.putString("pre_ultra", isDawn ? "dawn" : "dusk");

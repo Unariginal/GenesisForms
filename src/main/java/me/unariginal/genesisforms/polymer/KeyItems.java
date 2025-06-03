@@ -1,5 +1,6 @@
 package me.unariginal.genesisforms.polymer;
 
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
@@ -121,7 +122,7 @@ public class KeyItems {
             .build();
 
     public static void registerItemGroup() {
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(GenesisForms.MOD_ID, "key_items"), KEY_ITEMS);
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "key_items"), KEY_ITEMS);
         keyItemStacks.put("key_stone", KEY_STONE.getDefaultStack());
         keyItemStacks.put("z_ring", Z_RING.getDefaultStack());
         keyItemStacks.put("tera_orb", TERA_ORB.getDefaultStack());

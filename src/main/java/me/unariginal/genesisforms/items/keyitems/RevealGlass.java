@@ -37,6 +37,7 @@ public class RevealGlass extends SimplePolymerItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("reveal_glass")) return ActionResult.PASS;
         if (entity instanceof PokemonEntity pokemonEntity &&
                 (pokemonEntity.getExposedSpecies().getName().equalsIgnoreCase("tornadus") ||
                         pokemonEntity.getExposedSpecies().getName().equalsIgnoreCase("thundurus") ||

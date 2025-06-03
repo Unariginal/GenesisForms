@@ -35,6 +35,7 @@ public class HeldItemHandler {
     public static void change_forms(Pokemon pokemon, ItemStack received) {
         if (NbtUtils.getNbt(received, GenesisForms.MOD_ID).contains(DataKeys.NBT_HELD_ITEM)) {
             String heldItemId = NbtUtils.getNbt(received, GenesisForms.MOD_ID).getString(DataKeys.NBT_HELD_ITEM);
+            if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(heldItemId)) return;
             Species species = HeldItems.getInstance().getHeldItemSpecies(heldItemId);
             if (species == null) return;
 

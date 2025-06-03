@@ -49,6 +49,7 @@ public class ZygardeCube extends SimplePolymerItem {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("zygarde_cube")) return TypedActionResult.pass(user.getStackInHand(hand));
         if (user.isSneaking()) {
             if (NbtUtils.getNbt(user.getStackInHand(hand), GenesisForms.MOD_ID).contains(DataKeys.NBT_CUBE_MODE)) {
                 if (NbtUtils.getNbt(user.getStackInHand(hand), GenesisForms.MOD_ID).getString(DataKeys.NBT_CUBE_MODE).equalsIgnoreCase("form")) {

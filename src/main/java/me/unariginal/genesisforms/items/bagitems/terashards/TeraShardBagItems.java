@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.types.tera.TeraType;
 import com.cobblemon.mod.common.api.types.tera.TeraTypes;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
@@ -101,7 +102,7 @@ public class TeraShardBagItems {
                     }
                 }).build();
 
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(GenesisForms.MOD_ID, "tera_shards"), TERA_SHARDS);
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "tera_shards"), TERA_SHARDS);
     }
 
     public static class TeraShardPolymerItem extends SimplePolymerItem {

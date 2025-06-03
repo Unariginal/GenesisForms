@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemManager;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
@@ -196,7 +197,7 @@ public class HeldItems implements HeldItemManager {
                     }
                 }).build();
 
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(GenesisForms.MOD_ID, "held_items"), HELD_ITEMS);
+        PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "held_items"), HELD_ITEMS);
     }
 
     public static class HeldItemPolymerItem extends SimplePolymerItem {

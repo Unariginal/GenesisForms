@@ -75,7 +75,7 @@ public class DynamaxHandler {
         EntityAttributeInstance scaleAttribute = pokemonEntity.getAttributeInstance(EntityAttributes.GENERIC_SCALE);
         if (scaleAttribute != null) {
             float startScale = (float) scaleAttribute.getBaseValue();
-            int duration = 60;
+            int duration = gf.getConfig().dynamaxAnimationTicks;
             ScalingData scalingData = new ScalingData(
                     pokemonEntity.getWorld().getRegistryKey().toString(),
                     entityId,
