@@ -43,10 +43,10 @@ public class TeraHandler {
                 case "ghost" -> {}
                 case "steel" -> {}
                 case "fire" -> {
-                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(0.5, pokemonEntity.getBoundingBox().getLengthY(), 0.5), pokemonEntity.getWorld().getRegistryKey());
-                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(-0.5, pokemonEntity.getBoundingBox().getLengthY(), 0.5), pokemonEntity.getWorld().getRegistryKey());
-                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(0.5, pokemonEntity.getBoundingBox().getLengthY(), -0.5), pokemonEntity.getWorld().getRegistryKey());
-                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(-0.5, pokemonEntity.getBoundingBox().getLengthY(), -0.5), pokemonEntity.getWorld().getRegistryKey());
+//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(0.5, pokemonEntity.getBoundingBox().getLengthY(), 0.5), pokemonEntity.getWorld().getRegistryKey());
+//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(-0.5, pokemonEntity.getBoundingBox().getLengthY(), 0.5), pokemonEntity.getWorld().getRegistryKey());
+//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(0.5, pokemonEntity.getBoundingBox().getLengthY(), -0.5), pokemonEntity.getWorld().getRegistryKey());
+//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(-0.5, pokemonEntity.getBoundingBox().getLengthY(), -0.5), pokemonEntity.getWorld().getRegistryKey());
                 }
                 case "water" -> {}
                 case "grass" -> {}
