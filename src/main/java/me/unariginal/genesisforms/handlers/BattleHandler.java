@@ -49,13 +49,18 @@ public class BattleHandler {
                 String nbtString = nbt.getString(DataKeys.NBT_KEY_ITEM);
                 gf.logInfo("[Genesis] NBT String: " + nbtString);
                 if (nbtString.isEmpty()) continue;
-                if (nbtString.equalsIgnoreCase("key_stone")) {
+                if (nbtString.equalsIgnoreCase("key_stone") ||
+                        nbtString.equalsIgnoreCase("mega_bracelet") ||
+                        nbtString.equalsIgnoreCase("mega_charm") ||
+                        nbtString.equalsIgnoreCase("mega_cuff") ||
+                        nbtString.equalsIgnoreCase("mega_ring")) {
                     gf.logInfo("[Genesis] Found key stone in inventory!");
                     has_keyStone = true;
                 } else if (nbtString.equalsIgnoreCase("dynamax_band")) {
                     gf.logInfo("[Genesis] Found dynamax band in inventory!");
                     has_dynamaxBand = true;
-                } else if (nbtString.equalsIgnoreCase("z_ring")) {
+                } else if (nbtString.equalsIgnoreCase("z_ring") ||
+                        nbtString.equalsIgnoreCase("z_power_ring")) {
                     gf.logInfo("[Genesis] Found z ring in inventory!");
                     has_zRing = true;
                 } else if (nbtString.equalsIgnoreCase("tera_orb")) {

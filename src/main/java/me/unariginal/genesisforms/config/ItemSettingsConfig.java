@@ -15,8 +15,16 @@ public class ItemSettingsConfig {
 
     public ItemSettingsConfig() {
         item_lore.put("key_stone", List.of("A stone filled with an unexplained power.", "It makes Pokémon that battle with a Mega Stone Mega Evolve."));
+        item_lore.put("mega_bracelet", List.of("This bracelet contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."));
+        item_lore.put("mega_charm", List.of("This charm contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."));
+        item_lore.put("mega_cuff", List.of("This cuff contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."));
+        item_lore.put("mega_ring", List.of("This ring contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."));
+
         item_lore.put("z_ring", List.of("A mysterious ring that enables Pokémon to use Z-Power.", "It requires both the willpower and the physical power of the Trainer wearing it."));
+        item_lore.put("z_power_ring", List.of("A mysterious ring that enables Pokémon to use Z-Power.", "It requires both the willpower and the physical power of the Trainer wearing it."));
+
         item_lore.put("tera_orb", List.of("An orb that holds within it the power to crystallize.", "When it is charged with energy, it can be used to cause Pokémon to Terastallize."));
+
         item_lore.put("dynamax_band", List.of("A Wishing Star has been affixed to it.", "It lets out a light that allows Pokémon to Dynamax when at a Power Spot."));
 
         item_lore.put("adamant_crystal", List.of("An item to be held by Dialga.", "This large, glowing gem wells with power and allows the Pokémon to change form."));
@@ -61,6 +69,8 @@ public class ItemSettingsConfig {
         item_lore.put("stone_plate", List.of("An item to be held by a Pokémon.", "This stone tablet is imbued with the essence of rock and boosts the power of the holder’s Rock-type moves."));
         item_lore.put("iron_plate", List.of("An item to be held by a Pokémon.", "This stone tablet is imbued with the essence of steel and boosts the power of the holder’s Steel-type moves."));
         item_lore.put("splash_plate", List.of("An item to be held by a Pokémon.", "This stone tablet is imbued with the essence of water and boosts the power of the holder’s Water-type moves."));
+        item_lore.put("legend_plate", List.of("A stone tablet imbued with the essence of all creation.", "When used on a certain Pokémon, it allows that Pokémon to gain the power of every type there is."));
+        item_lore.put("blank_plate", List.of("A stone tablet imbued with the essence of normalcy.", "When used on a certain Pokémon, it allows that Pokémon to gain the power of the Normal type."));
 
         item_lore.put("bug_memory", List.of("A memory disc that contains Bug-type data.", "It changes the type of the holder if held by a certain species of Pokémon."));
         item_lore.put("dark_memory", List.of("A memory disc that contains Dark-type data.", "It changes the type of the holder if held by a certain species of Pokémon."));
@@ -93,6 +103,7 @@ public class ItemSettingsConfig {
         item_lore.put("chill_drive", List.of("A cassette to be held by Genesect.", "It changes Genesect's Techno Blast move so it becomes Ice type."));
         item_lore.put("douse_drive", List.of("A cassette to be held by Genesect.", "It changes Genesect's Techno Blast move so it becomes Water type."));
 
+        item_lore.put("sparkling_stone", List.of("A stone entrusted to you by a Pokémon that has been venerated as a guardian deity in the Alola region.", "There is said to be some secret in how it sparkles."));
         item_lore.put("wishing_star", List.of("A stone found in the Galar region with a mysterious power.", "It's said that your dreams come true if you find one."));
         item_lore.put("dynamax_candy", List.of("A candy that is packed with energy.", "If consumed, it raises the Dynamax Level of a Pokémon by one.", "A higher level means higher HP when Dynamaxed."));
         item_lore.put("max_honey", List.of("Honey that Dynamax Vespiquen produces. Adding this honey to Max Soup makes the taste very smooth.", "It also has the same effect as a Max Revive."));

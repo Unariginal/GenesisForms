@@ -137,6 +137,8 @@ public class HeldItems implements HeldItemManager {
         HELD_ITEM_IDS.put("stone_plate", "arceus");
         HELD_ITEM_IDS.put("iron_plate", "arceus");
         HELD_ITEM_IDS.put("splash_plate", "arceus");
+        HELD_ITEM_IDS.put("blank_plate", "arceus");
+        HELD_ITEM_IDS.put("legend_plate", "arceus");
 
         HELD_ITEM_IDS.put("bug_memory", "silvally");
         HELD_ITEM_IDS.put("dark_memory", "silvally");
