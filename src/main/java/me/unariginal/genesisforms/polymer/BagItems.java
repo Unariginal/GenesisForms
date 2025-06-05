@@ -36,8 +36,8 @@ public class BagItems {
     public static final DynamaxCandy DYNAMAX_CANDY = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "dynamax_candy"), new DynamaxCandy(itemSettings, baseVanillaItem));
     public static final MaxHoney MAX_HONEY = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_honey"), new MaxHoney(itemSettings, baseVanillaItem));
 
-    public static final MaxMushroomsBlock MAX_MUSHROOMS_BLOCK = Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsBlock(AbstractBlock.Settings.copy(Blocks.BROWN_MUSHROOM_BLOCK), BlockModelType.PLANT_BLOCK, "block/max_mushrooms"));
-    public static final MaxMushroomsItem MAX_MUSHROOMS_ITEM = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsItem(itemSettings, MAX_MUSHROOMS_BLOCK, "block/max_mushrooms"));
+    public static final MaxMushroomsBlock MAX_MUSHROOMS_BLOCK = Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsBlock(AbstractBlock.Settings.copy(Blocks.BROWN_MUSHROOM), BlockModelType.BIOME_PLANT_BLOCK, "block/max_mushrooms"));
+    public static final MaxMushroomsItem MAX_MUSHROOMS_ITEM = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsItem(itemSettings, MAX_MUSHROOMS_BLOCK, "item/max_mushrooms"));
 
     public static Map<String, ItemStack> bagItemStacks = new HashMap<>();
 
