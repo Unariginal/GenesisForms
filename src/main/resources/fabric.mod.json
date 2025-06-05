@@ -24,6 +24,6 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}",
-    "cobblemon": ">=${cobblemon_version}"
+    "cobblemon": "${cobblemon_version}"
   }
 }
