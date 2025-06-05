@@ -38,7 +38,9 @@ public class DynamaxHandler {
             }
 
             if (pokemon.getEntity() != null) {
-                startScaling(pokemon.getEntity(), gf.getConfig().dynamaxScale);
+                if (gf.getAnimationConfig().dynamaxEnabled) {
+                    startScaling(pokemon.getEntity(), gf.getAnimationConfig().dynamaxScale);
+                }
             }
         }));
 
@@ -75,7 +77,7 @@ public class DynamaxHandler {
         EntityAttributeInstance scaleAttribute = pokemonEntity.getAttributeInstance(EntityAttributes.GENERIC_SCALE);
         if (scaleAttribute != null) {
             float startScale = (float) scaleAttribute.getBaseValue();
-            int duration = gf.getConfig().dynamaxAnimationTicks;
+            int duration = gf.getAnimationConfig().scalingTicks;
             ScalingData scalingData = new ScalingData(
                     pokemonEntity.getWorld().getRegistryKey().toString(),
                     entityId,

@@ -1,12 +1,15 @@
 package me.unariginal.genesisforms;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemProvider;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.helditem.CobblemonHeldItemManager;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.commands.GenesisCommands;
+import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.config.ItemSettingsConfig;
 import me.unariginal.genesisforms.handlers.*;
@@ -17,9 +20,12 @@ import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +42,7 @@ public class GenesisForms implements ModInitializer {
 
     private Config config = new Config();
     private ItemSettingsConfig itemSettings = new ItemSettingsConfig();
+    private AnimationConfig animationConfig = new AnimationConfig();
 
     private final Map<UUID, Pokemon> players_with_mega = new HashMap<>();
     private final List<UUID> mega_evolved_this_battle = new ArrayList<>();
@@ -95,6 +102,8 @@ public class GenesisForms implements ModInitializer {
             CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, TeraHandler::revertTera);
             CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, TeraHandler::setProperTeraTypes);
 
+            CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
+
             CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::form_changes);
 
             CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battle_started);
@@ -104,6 +113,26 @@ public class GenesisForms implements ModInitializer {
             CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
 
             DynamaxHandler.register();
+        });
+
+        ServerPlayConnectionEvents.JOIN.register((serverPlayNetworkHandler, packetSender, server) -> {
+            ServerPlayerEntity player = serverPlayNetworkHandler.player;
+            PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
+            for (Pokemon pokemon : playerPartyStore) {
+                if (pokemon != null) {
+                    FormHandler.revert_forms(pokemon, false);
+                }
+            }
+        });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((serverPlayNetworkHandler, server) -> {
+            ServerPlayerEntity player = serverPlayNetworkHandler.player;
+            PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
+            for (Pokemon pokemon : playerPartyStore) {
+                if (pokemon != null) {
+                    FormHandler.revert_forms(pokemon, false);
+                }
+            }
         });
     }
 
@@ -128,6 +157,7 @@ public class GenesisForms implements ModInitializer {
     public void reload() {
         this.config = new Config();
         this.itemSettings = new ItemSettingsConfig();
+        this.animationConfig = new AnimationConfig();
     }
 
     public Config getConfig() {
@@ -136,6 +166,10 @@ public class GenesisForms implements ModInitializer {
 
     public ItemSettingsConfig getItemSettings() {
         return itemSettings;
+    }
+
+    public AnimationConfig getAnimationConfig() {
+        return animationConfig;
     }
 
     public Map<UUID, Pokemon> getPlayersWithMega() {

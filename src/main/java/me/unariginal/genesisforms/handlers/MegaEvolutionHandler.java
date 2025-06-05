@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.api.events.pokemon.PokemonSentPostEvent;
 import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -96,6 +97,17 @@ public class MegaEvolutionHandler {
             return;
         }
 
+        PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
+        for (Pokemon pokemon : playerPartyStore) {
+            if (pokemon != null) {
+                boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
+                if (isMega) {
+                    gf.getPlayersWithMega().put(player.getUuid(), pokemon);
+                    return;
+                }
+            }
+        }
+
         Pokemon pokemon = pokemonEntity.getPokemon();
         Species species = MegaStoneHeldItems.getInstance().getMegaStoneSpecies(MegaStoneHeldItems.getInstance().showdownId(pokemon));
 
@@ -167,18 +179,32 @@ public class MegaEvolutionHandler {
         if (fromBattle) {
             gf.getMegaEvolvedThisBattle().add(player.getUuid());
         }
-        ParticleUtils.spawnParticle("cobblemon:mega_evolution", pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
-        pokemonEntity.after(4.9F, () -> {
-            if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
-                new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
-            } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
-                new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
-            } else {
-                new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
-            }
-            pokemon.setTradeable(false);
-            return Unit.INSTANCE;
-        });
+        if (gf.getAnimationConfig().megaEnabled) {
+            ParticleUtils.spawnParticle(gf.getAnimationConfig().megaIdentifier, pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
+            pokemonEntity.after(gf.getAnimationConfig().megaSeconds, () -> {
+                if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
+                    new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
+                } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
+                    new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
+                } else {
+                    new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
+                }
+                pokemon.setTradeable(false);
+                return Unit.INSTANCE;
+            });
+        } else {
+            pokemonEntity.after(0.2F, () -> {
+                if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
+                    new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
+                } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
+                    new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
+                } else {
+                    new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
+                }
+                pokemon.setTradeable(false);
+                return Unit.INSTANCE;
+            });
+        }
     }
 
     public static void devolveMega(Pokemon pokemon, boolean fromBattle) {

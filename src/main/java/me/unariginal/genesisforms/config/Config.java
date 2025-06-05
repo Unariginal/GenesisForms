@@ -36,8 +36,6 @@ public class Config {
     public boolean enableDynamax = false;
     public boolean enableGigantamax = false;
     public boolean useGen9Battles = false;
-    public float dynamaxScale = 4.0F;
-    public int dynamaxAnimationTicks = 60;
 
     public boolean enableFusions = true;
     public record FuelPokemon(String species, String featureName, String featureValue) {}
@@ -77,7 +75,7 @@ public class Config {
         try {
             loadConfig();
         } catch (IOException e) {
-            GenesisForms.INSTANCE.logError("[Genesis] Failed to load config files. Error: " + e.getMessage());
+            GenesisForms.INSTANCE.logError("[Genesis] Failed to load config file. Error: " + e.getMessage());
         }
     }
 
@@ -293,14 +291,6 @@ public class Config {
             useGen9Battles = dynamaxSettings.get("use_gen_9_battles").getAsBoolean();
         }
         dynamaxSettings.addProperty("use_gen_9_battles", useGen9Battles);
-        if (dynamaxSettings.get("dynamax_scale") != null) {
-            dynamaxScale = dynamaxSettings.get("dynamax_scale").getAsFloat();
-        }
-        dynamaxSettings.addProperty("dynamax_scale", dynamaxScale);
-        if (dynamaxSettings.get("dynamax_animation_ticks") != null) {
-            dynamaxAnimationTicks = dynamaxSettings.get("dynamax_animation_ticks").getAsInt();
-        }
-        dynamaxSettings.addProperty("dynamax_animation_ticks", dynamaxAnimationTicks);
         newRoot.add("dynamax_settings", dynamaxSettings);
 
         configFile.delete();

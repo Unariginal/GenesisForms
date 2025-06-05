@@ -12,12 +12,14 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.item.battle.SimpleBagItemLike;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
-import eu.pb4.polymer.core.api.item.SimplePolymerItem;
+import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
+import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -32,8 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class MaxMushrooms extends SimplePolymerItem implements SimpleBagItemLike {
-    PolymerModelData modelData;
+public class MaxMushroomsItem extends BlockItem implements SimpleBagItemLike, PolymerItem {
+    private final PolymerModelData polymerModel;
 
     public BagItem bagItem = new BagItem() {
         @Override
@@ -57,20 +59,20 @@ public class MaxMushrooms extends SimplePolymerItem implements SimpleBagItemLike
         }
     };
 
-    public MaxMushrooms(Settings settings, Item polymerItem) {
-        super(settings, polymerItem);
+    public MaxMushroomsItem(Settings settings, Block block, String modelId) {
+        super(block, settings);
+        this.polymerModel = PolymerResourcePackUtils.requestModel(Items.BROWN_MUSHROOM, Identifier.of(GenesisForms.MOD_ID, modelId));
     }
 
     @Override
     public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
         NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get("max_mushrooms"));
-        return super.getPolymerItem(itemStack, player);
+        return this.polymerModel.item();
     }
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-        this.modelData = BagItems.maxMushroomsModelData;
-        return this.modelData.value();
+        return this.polymerModel.value();
     }
 
     @Override

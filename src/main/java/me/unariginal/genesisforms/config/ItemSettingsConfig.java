@@ -112,7 +112,7 @@ public class ItemSettingsConfig {
         try {
             loadConfig();
         } catch (IOException e) {
-            GenesisForms.INSTANCE.logError("[Genesis] Failed to load config files. Error: " + e.getMessage());
+            GenesisForms.INSTANCE.logError("[Genesis] Failed to load item settings config file. Error: " + e.getMessage());
         }
     }
 

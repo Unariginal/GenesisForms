@@ -12,6 +12,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.utils.ParticleUtils;
 
 public class TeraHandler {
@@ -32,31 +33,13 @@ public class TeraHandler {
         if (pokemonEntity != null) {
             TeraType teraType = event.getTeraType();
             gf.getTeraPokemonEntities().put(pokemonEntity.getUuid(), teraType.getId().getPath());
-            switch (teraType.getId().getPath()) {
-                case "normal" -> {}
-                case "fighting" -> {}
-                case "flying" -> {}
-                case "poison" -> {}
-                case "ground" -> {}
-                case "rock" -> {}
-                case "bug" -> {}
-                case "ghost" -> {}
-                case "steel" -> {}
-                case "fire" -> {
-//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(0.5, pokemonEntity.getBoundingBox().getLengthY(), 0.5), pokemonEntity.getWorld().getRegistryKey());
-//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(-0.5, pokemonEntity.getBoundingBox().getLengthY(), 0.5), pokemonEntity.getWorld().getRegistryKey());
-//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(0.5, pokemonEntity.getBoundingBox().getLengthY(), -0.5), pokemonEntity.getWorld().getRegistryKey());
-//                    ParticleUtils.spawnParticle("cobblemon:tera_fire_small", pokemonEntity.getPos().add(-0.5, pokemonEntity.getBoundingBox().getLengthY(), -0.5), pokemonEntity.getWorld().getRegistryKey());
+            for (AnimationConfig.TeraAnimation teraAnimation : gf.getAnimationConfig().teraAnimations) {
+                if (teraAnimation.type().equalsIgnoreCase(teraType.getId().getPath())) {
+                    if (teraAnimation.enabled()) {
+                        ParticleUtils.spawnParticle(teraAnimation.identifier(), pokemonEntity.getPos(), pokemonEntity.getWorld().getRegistryKey());
+                    }
+                    break;
                 }
-                case "water" -> {}
-                case "grass" -> {}
-                case "electric" -> {}
-                case "psychic" -> {}
-                case "ice" -> {}
-                case "dragon" -> {}
-                case "dark" -> {}
-                case "fairy" -> {}
-                case "stellar" -> {}
             }
         }
         return Unit.INSTANCE;
