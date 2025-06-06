@@ -106,8 +106,8 @@ public class ItemSettingsConfig {
                 String feature_name = item.get("feature_name").getAsString();
                 String base_feature_value = item.get("base_feature_value").getAsString();
                 String alternate_feature_value = null;
-                if (item.has("alternate_feature_value")) {
-                    alternate_feature_value = item.get("alternate_feature_value").getAsString();
+                if (item.has("alternative_feature_value")) {
+                    alternate_feature_value = item.get("alternative_feature_value").getAsString();
                     if (alternate_feature_value.isEmpty()) {
                         alternate_feature_value = null;
                     }
