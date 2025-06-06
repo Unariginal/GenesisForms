@@ -2,6 +2,7 @@ package me.unariginal.genesisforms.config;
 
 import com.google.gson.*;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.items.keyitems.KeyFormItems;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
@@ -12,8 +13,236 @@ import java.util.Map;
 
 public class ItemSettingsConfig {
     public Map<String, List<String>> item_lore = new HashMap<>();
+    public Map<String, KeyFormItems.FormInformation> custom_key_form_items = new HashMap<>();
+    public record CustomHeldItem(String species, String feature_name, String default_feature_value, String feature_value) {}
+    public Map<String, CustomHeldItem> custom_held_items = new HashMap<>();
+    public record FuelPokemon(String species, String featureName, String featureValue) {}
+    public record Fusion(String corePokemon, List<FuelPokemon> fuelPokemon) {}
+    public Map<String, List<Fusion>> fusionList = new HashMap<>(
+            Map.of(
+                    "dna_splicers",
+                    List.of(
+                            new Fusion(
+                                    "kyurem",
+                                    List.of(
+                                            new FuelPokemon("reshiram", "absofusion", "white"),
+                                            new FuelPokemon("zekrom", "absofusion", "black")
+                                    )
+                            )
+                    ),
+                    "n_solarizer",
+                    List.of(
+                            new Fusion(
+                                    "necrozma",
+                                    List.of(
+                                            new FuelPokemon("solgaleo", "prism_fusion", "dusk")
+                                    )
+                            )
+                    ),
+                    "n_lunarizer",
+                    List.of(
+                            new Fusion(
+                                    "necrozma",
+                                    List.of(
+                                            new FuelPokemon("lunala", "prism_fusion", "dawn")
+                                    )
+                            )
+                    ),
+                    "reins_of_unity",
+                    List.of(
+                            new Fusion(
+                                    "calyrex",
+                                    List.of(
+                                            new FuelPokemon("glastrier", "king_steed", "ice"),
+                                            new FuelPokemon("spectrier", "king_steed", "shadow")
+                                    )
+                            )
+                    )
+            )
+    );
 
     public ItemSettingsConfig() {
+        fillItemLore();
+        try {
+            loadConfig();
+        } catch (IOException e) {
+            GenesisForms.INSTANCE.logError("[Genesis] Failed to load item settings config file. Error: " + e.getMessage());
+        }
+    }
+
+    public void loadConfig() throws IOException {
+        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms").toFile();
+        if (!rootFolder.exists()) {
+            rootFolder.mkdirs();
+        }
+
+        File itemSettingsFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/item_settings.json").toFile();
+        JsonObject newRoot = new JsonObject();
+        JsonObject root = new JsonObject();
+        if (itemSettingsFile.exists()) {
+            root = JsonParser.parseReader(new FileReader(itemSettingsFile)).getAsJsonObject();
+        }
+
+        JsonObject custom_items = new JsonObject();
+        if (root.has("custom_items")) {
+            custom_items = root.getAsJsonObject("custom_items");
+        }
+
+        JsonObject key_form_items = new JsonObject();
+        if (custom_items.has("key_form_change_items")) {
+            key_form_items = custom_items.getAsJsonObject("key_form_change_items");
+            for (String key : key_form_items.keySet()) {
+                JsonObject item = key_form_items.getAsJsonObject(key);
+                if (!item.has("species")
+                        || !item.has("feature_name")
+                        || !item.has("base_feature_value")) {
+                    continue;
+                }
+                JsonArray species_array = item.getAsJsonArray("species");
+                List<String> species = new ArrayList<>();
+                for (JsonElement spec : species_array) {
+                    species.add(spec.getAsString());
+                }
+                String feature_name = item.get("feature_name").getAsString();
+                String base_feature_value = item.get("base_feature_value").getAsString();
+                String alternate_feature_value = null;
+                if (item.has("alternate_feature_value")) {
+                    alternate_feature_value = item.get("alternate_feature_value").getAsString();
+                    if (alternate_feature_value.isEmpty()) {
+                        alternate_feature_value = null;
+                    }
+                }
+
+                custom_key_form_items.put(key, new KeyFormItems.FormInformation(species, feature_name, base_feature_value, alternate_feature_value));
+            }
+        } else {
+            custom_items.add("key_form_change_items", key_form_items);
+        }
+
+        JsonObject held_items = new JsonObject();
+        if (custom_items.has("held_items")) {
+            held_items = custom_items.getAsJsonObject("held_items");
+            for (String key : held_items.keySet()) {
+                JsonObject item = held_items.getAsJsonObject(key);
+                if (!item.has("species")
+                        || !item.has("feature_name")
+                        || !item.has("default_feature_value")
+                        || !item.has("feature_value")) {
+                    continue;
+                }
+                String species = item.get("species").getAsString();
+                String default_feature_value = item.get("default_feature_value").getAsString();
+                String feature_value = item.get("feature_value").getAsString();
+                String feature_name = item.get("feature_name").getAsString();
+                custom_held_items.put(key, new CustomHeldItem(species, feature_name, default_feature_value, feature_value));
+            }
+        } else {
+            custom_items.add("held_items", held_items);
+        }
+
+        JsonObject fusion_items = new JsonObject();
+        if (custom_items.has("fusion_items")) {
+            fusion_items = custom_items.getAsJsonObject("fusion_items");
+            fusionList.clear();
+            for (String key : fusion_items.keySet()) {
+                JsonObject item = fusion_items.getAsJsonObject(key);
+                if (!item.has("fusions")) {
+                    continue;
+                }
+                List<Fusion> fusionsList = new ArrayList<>();
+                JsonArray fusions = item.getAsJsonArray("fusions");
+                for (JsonElement fusion : fusions) {
+                    JsonObject fusion_object = fusion.getAsJsonObject();
+                    if (!fusion_object.has("core_pokemon")
+                            || !fusion_object.has("fuel_pokemon")) {
+                        continue;
+                    }
+                    String core_pokemon = fusion_object.get("core_pokemon").getAsString();
+                    JsonArray fuel_pokemon = fusion_object.getAsJsonArray("fuel_pokemon");
+                    List<FuelPokemon> fuelPokemonList = new ArrayList<>();
+                    for (JsonElement fuel_pokemon_object : fuel_pokemon) {
+                        JsonObject fuel_object = fuel_pokemon_object.getAsJsonObject();
+                        if (!fuel_object.has("species")
+                                || !fuel_object.has("result_feature_name")
+                                || !fuel_object.has("result_feature_value")) {
+                            continue;
+                        }
+                        String species = fuel_object.get("species").getAsString();
+                        String result_feature_name = fuel_object.get("result_feature_name").getAsString();
+                        String result_feature_value = fuel_object.get("result_feature_value").getAsString();
+                        fuelPokemonList.add(new FuelPokemon(species, result_feature_name, result_feature_value));
+                    }
+                    if (fuelPokemonList.isEmpty()) {
+                        continue;
+                    }
+                    fusionsList.add(new Fusion(core_pokemon, fuelPokemonList));
+                }
+                if (fusionsList.isEmpty()) {
+                    continue;
+                }
+                fusionList.put(key, fusionsList);
+            }
+        } else {
+            for (String key : fusionList.keySet()) {
+                JsonObject fusionItem = new JsonObject();
+                JsonArray fusions = new JsonArray();
+                for (Fusion fusion : fusionList.get(key)) {
+                    JsonObject fusion_object = new JsonObject();
+                    fusion_object.addProperty("core_pokemon", fusion.corePokemon());
+                    JsonArray fuel_pokemon = new JsonArray();
+                    for (FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
+                        JsonObject fuel_object = new JsonObject();
+                        fuel_object.addProperty("species", fuelPokemon.species());
+                        fuel_object.addProperty("result_feature_name", fuelPokemon.featureName());
+                        fuel_object.addProperty("result_feature_value", fuelPokemon.featureValue());
+                        fuel_pokemon.add(fuel_object);
+                    }
+                    fusion_object.add("fuel_pokemon", fuel_pokemon);
+                    fusions.add(fusion_object);
+                }
+                fusionItem.add("fusions", fusions);
+                fusion_items.add(key, fusionItem);
+            }
+            custom_items.add("fusion_items", fusion_items);
+        }
+
+        newRoot.add("custom_items", custom_items);
+
+        JsonObject item_lore = new JsonObject();
+        if (root.has("item_lore")) {
+            item_lore = root.getAsJsonObject("item_lore");
+            for (String key : item_lore.keySet()) {
+                JsonArray jsonLore = item_lore.getAsJsonArray(key);
+                List<String> lore = new ArrayList<>();
+                for (JsonElement line : jsonLore) {
+                    lore.add(line.getAsString());
+                }
+                this.item_lore.put(key, lore);
+            }
+        }
+
+        for (String key : this.item_lore.keySet()) {
+            if (!item_lore.has(key)) {
+                List<String> lore = this.item_lore.get(key);
+                JsonArray jsonLore = new JsonArray();
+                for (String line : lore) {
+                    jsonLore.add(line);
+                }
+                item_lore.add(key, jsonLore);
+            }
+        }
+        newRoot.add("item_lore", item_lore);
+
+        itemSettingsFile.delete();
+        itemSettingsFile.createNewFile();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Writer writer = new FileWriter(itemSettingsFile);
+        gson.toJson(newRoot, writer);
+        writer.close();
+    }
+
+    public void fillItemLore() {
         item_lore.put("key_stone", List.of("A stone filled with an unexplained power.", "It makes Pokémon that battle with a Mega Stone Mega Evolve."));
         item_lore.put("mega_bracelet", List.of("This bracelet contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."));
         item_lore.put("mega_charm", List.of("This charm contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."));
@@ -108,49 +337,5 @@ public class ItemSettingsConfig {
         item_lore.put("dynamax_candy", List.of("A candy that is packed with energy.", "If consumed, it raises the Dynamax Level of a Pokémon by one.", "A higher level means higher HP when Dynamaxed."));
         item_lore.put("max_honey", List.of("Honey that Dynamax Vespiquen produces. Adding this honey to Max Soup makes the taste very smooth.", "It also has the same effect as a Max Revive."));
         item_lore.put("max_mushrooms", List.of("Mushrooms that have the power of changing Dynamax forms.", "They boost all stats of a Pokémon during battle."));
-
-        try {
-            loadConfig();
-        } catch (IOException e) {
-            GenesisForms.INSTANCE.logError("[Genesis] Failed to load item settings config file. Error: " + e.getMessage());
-        }
-    }
-
-    public void loadConfig() throws IOException {
-        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms").toFile();
-        if (!rootFolder.exists()) {
-            rootFolder.mkdirs();
-        }
-
-        File itemSettingsFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/item_settings.json").toFile();
-        if (itemSettingsFile.createNewFile()) {
-            JsonObject root = new JsonObject();
-            JsonObject item_lore = new JsonObject();
-            for (String key : this.item_lore.keySet()) {
-                List<String> lore = this.item_lore.get(key);
-                JsonArray jsonLore = new JsonArray();
-                for (String line : lore) {
-                    jsonLore.add(line);
-                }
-                item_lore.add(key, jsonLore);
-            }
-            root.add("item_lore", item_lore);
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            Writer writer = new FileWriter(itemSettingsFile);
-            gson.toJson(root, writer);
-            writer.close();
-        } else {
-            JsonObject root = JsonParser.parseReader(new FileReader(itemSettingsFile)).getAsJsonObject();
-            JsonObject item_lore = root.getAsJsonObject("item_lore");
-            for (String key : item_lore.keySet()) {
-                JsonArray jsonLore = item_lore.getAsJsonArray(key);
-                List<String> lore = new ArrayList<>();
-                for (JsonElement line : jsonLore) {
-                    lore.add(line.getAsString());
-                }
-                this.item_lore.put(key, lore);
-            }
-        }
     }
 }

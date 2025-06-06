@@ -12,6 +12,7 @@ import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.ItemSettingsConfig;
 import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.utils.NbtUtils;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -170,6 +171,11 @@ public class HeldItems implements HeldItemManager {
         HELD_ITEM_IDS.put("burn_drive", "genesect");
         HELD_ITEM_IDS.put("chill_drive", "genesect");
         HELD_ITEM_IDS.put("douse_drive", "genesect");
+
+        for (String key : GenesisForms.INSTANCE.getItemSettings().custom_held_items.keySet()) {
+            ItemSettingsConfig.CustomHeldItem item = GenesisForms.INSTANCE.getItemSettings().custom_held_items.get(key);
+            HELD_ITEM_IDS.put(key, item.species());
+        }
     }
 
     public Map<String, HeldItemPolymerItem> heldItemPolymerItems = new HashMap<>();

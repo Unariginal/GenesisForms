@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.ItemSettingsConfig;
 import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
@@ -106,6 +107,12 @@ public class HeldItemHandler {
                     case "burn_drive" -> new StringSpeciesFeature("techno_drive", "fire").apply(pokemon);
                     case "chill_drive" -> new StringSpeciesFeature("techno_drive", "ice").apply(pokemon);
                     case "douse_drive" -> new StringSpeciesFeature("techno_drive", "water").apply(pokemon);
+                    default -> {
+                        if (GenesisForms.INSTANCE.getItemSettings().custom_held_items.containsKey(heldItemId)) {
+                            ItemSettingsConfig.CustomHeldItem item = GenesisForms.INSTANCE.getItemSettings().custom_held_items.get(heldItemId);
+                            new StringSpeciesFeature(item.feature_name(), item.feature_value()).apply(pokemon);
+                        }
+                    }
                 }
             }
         } else if (NbtUtils.getNbt(received, GenesisForms.MOD_ID).contains(DataKeys.NBT_Z_CRYSTAL)) {
@@ -144,7 +151,16 @@ public class HeldItemHandler {
                 }
                 case "Kyogre", "Groudon" -> new StringSpeciesFeature("reversion_state", "standard").apply(pokemon);
                 case "Genesect" -> new StringSpeciesFeature("techno_drive", "normal").apply(pokemon);
+                default -> {
+                    for (ItemSettingsConfig.CustomHeldItem item : GenesisForms.INSTANCE.getItemSettings().custom_held_items.values()) {
+                        if (item.species().equalsIgnoreCase(pokemon.getSpecies().getName())) {
+                            new StringSpeciesFeature(item.feature_name(), item.default_feature_value()).apply(pokemon);
+                            break;
+                        }
+                    }
+                }
             }
+
         }
     }
 }

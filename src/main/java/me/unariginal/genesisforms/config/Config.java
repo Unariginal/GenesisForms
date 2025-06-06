@@ -38,38 +38,6 @@ public class Config {
     public boolean useGen9Battles = false;
 
     public boolean enableFusions = true;
-    public record FuelPokemon(String species, String featureName, String featureValue) {}
-    public record Fusion(String fusionItem, String corePokemon, List<FuelPokemon> fuelPokemon) {}
-    public List<Fusion> fusionList = new ArrayList<>(
-            List.of(
-                    new Fusion("dna_splicers",
-                            "kyurem",
-                            List.of(
-                                    new FuelPokemon("reshiram", "absofusion", "white"),
-                                    new FuelPokemon("zekrom", "absofusion", "black")
-                            )
-                    ),
-                    new Fusion("n_solarizer",
-                            "necrozma",
-                            List.of(
-                                    new FuelPokemon("solgaleo", "prism_fusion", "dusk")
-                            )
-                    ),
-                    new Fusion("n_lunarizer",
-                            "necrozma",
-                            List.of(
-                                    new FuelPokemon("lunala", "prism_fusion", "dawn")
-                            )
-                    ),
-                    new Fusion("reins_of_unity",
-                            "calyrex",
-                            List.of(
-                                    new FuelPokemon("glastrier", "king_steed", "ice"),
-                                    new FuelPokemon("spectrier", "king_steed", "shadow")
-                            )
-                    )
-            )
-    );
 
     public Config() {
         try {
@@ -236,43 +204,6 @@ public class Config {
             enableFusions = fusionSettings.get("enable_fusions").getAsBoolean();
         }
         fusionSettings.addProperty("enable_fusions", enableFusions);
-        JsonArray fusionList = new JsonArray();
-        if (fusionSettings.get("fusions") != null) {
-            this.fusionList.clear();
-            for (JsonElement element : fusionSettings.get("fusions").getAsJsonArray()) {
-                JsonObject fusion = element.getAsJsonObject();
-                if (fusion.get("fusion_item") != null && fusion.get("core_pokemon") != null && fusion.get("fuel_pokemon") != null) {
-                    JsonArray fuelPokemonList = fusion.get("fuel_pokemon").getAsJsonArray();
-                    if (fuelPokemonList.isEmpty()) continue;
-                    List<FuelPokemon> fuelPokemon = new ArrayList<>();
-                    for (JsonElement fuelElement : fuelPokemonList) {
-                        JsonObject fuel = fuelElement.getAsJsonObject();
-                        if (fuel.get("species") != null && fuel.get("result_feature_name") != null && fuel.get("result_feature_value") != null) {
-                            fuelPokemon.add(new FuelPokemon(fuel.get("species").getAsString(), fuel.get("result_feature_name").getAsString(), fuel.get("result_feature_value").getAsString()));
-                        } else {
-                            GenesisForms.LOGGER.error("[Genesis] Invalid fuel_pokemon element in fusions, skipping");
-                        }
-                    }
-                    this.fusionList.add(new Fusion(fusion.get("fusion_item").getAsString(), fusion.get("core_pokemon").getAsString(), fuelPokemon));
-                }
-            }
-        }
-        for (Fusion fusion : this.fusionList) {
-            JsonObject customFusionObject = new JsonObject();
-            customFusionObject.addProperty("fusion_item", fusion.fusionItem);
-            customFusionObject.addProperty("core_pokemon", fusion.corePokemon);
-            JsonArray fuelPokemonList = new JsonArray();
-            for (FuelPokemon fuelPokemon : fusion.fuelPokemon) {
-                JsonObject fuelPokemonObject = new JsonObject();
-                fuelPokemonObject.addProperty("species", fuelPokemon.species);
-                fuelPokemonObject.addProperty("result_feature_name", fuelPokemon.featureName);
-                fuelPokemonObject.addProperty("result_feature_value", fuelPokemon.featureValue);
-                fuelPokemonList.add(fuelPokemonObject);
-            }
-            customFusionObject.add("fuel_pokemon", fuelPokemonList);
-            fusionList.add(customFusionObject);
-        }
-        fusionSettings.add("fusions", fusionList);
         newRoot.add("fusion_settings", fusionSettings);
 
         JsonObject dynamaxSettings = new JsonObject();
