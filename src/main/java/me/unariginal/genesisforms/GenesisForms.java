@@ -6,7 +6,6 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemProvider;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.pokemon.helditem.CobblemonHeldItemManager;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.AnimationConfig;
@@ -17,10 +16,11 @@ import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
 import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
+import me.unariginal.genesisforms.items.keyitems.FusionItems;
+import me.unariginal.genesisforms.items.keyitems.KeyFormItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
@@ -58,6 +58,14 @@ public class GenesisForms implements ModInitializer {
         PolymerResourcePackUtils.markAsRequired();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
 
+        KeyFormItems.getInstance().loadKeyItemIds();
+        KeyFormItems.getInstance().fillPolymerModelData();
+        KeyFormItems.getInstance().fillPolymerItems();
+
+        FusionItems.getInstance().loadFusionItemIds();
+        FusionItems.getInstance().fillPolymerModelData();
+        FusionItems.getInstance().fillPolymerItems();
+
         KeyItems.requestModel();
         KeyItems.registerItemGroup();
 
@@ -65,23 +73,23 @@ public class GenesisForms implements ModInitializer {
         BagItems.registerItemGroup();
 
         HeldItems.getInstance().loadHeldItemIds();
-        HeldItems.getInstance().fillPolymerItems();
         HeldItems.getInstance().fillPolymerModelData();
+        HeldItems.getInstance().fillPolymerItems();
         HeldItems.getInstance().registerItemGroup();
 
         MegaStoneHeldItems.getInstance().loadMegaStoneIds();
-        MegaStoneHeldItems.getInstance().fillPolymerItems();
         MegaStoneHeldItems.getInstance().fillPolymerModelData();
+        MegaStoneHeldItems.getInstance().fillPolymerItems();
         MegaStoneHeldItems.getInstance().registerItemGroup();
 
         TeraShardBagItems.getInstance().loadTeraShardIds();
-        TeraShardBagItems.getInstance().fillPolymerItems();
         TeraShardBagItems.getInstance().fillPolymerModelData();
+        TeraShardBagItems.getInstance().fillPolymerItems();
         TeraShardBagItems.getInstance().registerItemGroup();
 
         ZCrystalHeldItems.getInstance().loadZCrystalIds();
-        ZCrystalHeldItems.getInstance().fillPolymerItems();
         ZCrystalHeldItems.getInstance().fillPolymerModelData();
+        ZCrystalHeldItems.getInstance().fillPolymerItems();
         ZCrystalHeldItems.getInstance().registerItemGroup();
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
