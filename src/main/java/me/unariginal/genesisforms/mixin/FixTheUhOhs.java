@@ -16,8 +16,10 @@ public class FixTheUhOhs {
             String errorMessage = ex.getMessage();
 
             if (errorMessage != null &&
-                    errorMessage.contains("Failed to encode packet") &&
-                    (errorMessage.contains("cobblemon:tera_type_update") || errorMessage.contains("minecraft:set_entity_data") || errorMessage.contains("minecraft:set_equipment"))) {
+                    (errorMessage.contains("Failed to encode packet") &&
+                        (errorMessage.contains("cobblemon:tera_type_update") || errorMessage.contains("minecraft:set_entity_data") || errorMessage.contains("minecraft:set_equipment")) ||
+                    errorMessage.contains("Failed to decode packet") &&
+                            (errorMessage.contains("minecraft:system_chat")))) {
                 ci.cancel();
             }
         }
