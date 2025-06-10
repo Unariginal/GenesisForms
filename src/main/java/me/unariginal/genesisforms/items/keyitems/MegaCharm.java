@@ -4,37 +4,41 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.handlers.MegaEvolutionHandler;
 import me.unariginal.genesisforms.polymer.KeyItems;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class MegaCharm extends SimplePolymerItem {
     PolymerModelData modelData;
 
     public MegaCharm(Settings settings, Item polymerItem) {
         super(settings, polymerItem);
-    }
-
-    @Override
-    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get("mega_charm"));
-        NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_KEY_ITEM, "mega_charm");
-        return super.getPolymerItem(itemStack, player);
+        this.modelData = KeyItems.megaCharmModelData;
     }
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-        this.modelData = KeyItems.megaCharmModelData;
         return this.modelData.value();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
+        for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get("mega_charm")) {
+            tooltip.add(TextUtils.deserialize(line));
+        }
     }
 
     @Override

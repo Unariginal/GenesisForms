@@ -6,16 +6,18 @@ import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.data.DataKeys;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.data.DataComponents;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -76,7 +78,7 @@ public class KeyFormItems {
 
     public void fillPolymerItems() {
         for (String key : KEY_ITEM_IDS.keySet()) {
-            keyItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new KeyItemPolymerItem(itemSettings, baseVanillaItem, key)));
+            keyItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new KeyItemPolymerItem(itemSettings.component(DataComponents.KEY_ITEM, key), baseVanillaItem, key)));
         }
     }
 
@@ -93,21 +95,20 @@ public class KeyFormItems {
         public KeyItemPolymerItem(Settings settings, Item polymerItem, String id) {
             super(settings, polymerItem);
             this.id = id;
-        }
-
-        @Override
-        public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-            if (GenesisForms.INSTANCE.getItemSettings().item_lore.containsKey(id)) {
-                NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get(id));
-            }
-            NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_KEY_ITEM, id);
-            return super.getPolymerItem(itemStack, player);
+            this.modelData = KeyFormItems.getInstance().keyItemPolymerModelData.get(id);
         }
 
         @Override
         public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-            this.modelData = KeyFormItems.getInstance().keyItemPolymerModelData.get(id);
             return this.modelData.value();
+        }
+
+        @Override
+        public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+            super.appendTooltip(stack, context, tooltip, type);
+            for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get(id)) {
+                tooltip.add(TextUtils.deserialize(line));
+            }
         }
 
         @Override

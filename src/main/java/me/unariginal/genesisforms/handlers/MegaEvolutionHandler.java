@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.api.storage.pc.PCStore;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -17,11 +18,10 @@ import com.cobblemon.mod.common.pokemon.Species;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.Config;
-import me.unariginal.genesisforms.data.DataKeys;
+import me.unariginal.genesisforms.data.DataComponents;
 import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
-import me.unariginal.genesisforms.utils.NbtUtils;
 import me.unariginal.genesisforms.utils.ParticleUtils;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class MegaEvolutionHandler {
@@ -102,6 +102,19 @@ public class MegaEvolutionHandler {
             if (pokemon != null) {
                 boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
                 if (isMega) {
+                    gf.logInfo("Player has a mega already");
+                    gf.getPlayersWithMega().put(player.getUuid(), pokemon);
+                    return;
+                }
+            }
+        }
+        
+        PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
+        for  (Pokemon pokemon : pcStore) {
+            if (pokemon != null) {
+                boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
+                if (isMega) {
+                    gf.logInfo("Player has a mega already");
                     gf.getPlayersWithMega().put(player.getUuid(), pokemon);
                     return;
                 }
@@ -109,7 +122,30 @@ public class MegaEvolutionHandler {
         }
 
         Pokemon pokemon = pokemonEntity.getPokemon();
-        Species species = MegaStoneHeldItems.getInstance().getMegaStoneSpecies(MegaStoneHeldItems.getInstance().showdownId(pokemon));
+        ItemStack heldItem = pokemon.heldItem();
+        if (!heldItem.getComponents().contains(DataComponents.MEGA_STONE)) {
+            gf.logInfo("No mega stone component");
+            return;
+        }
+        String stoneId = heldItem.getComponents().get(DataComponents.MEGA_STONE);
+        if (stoneId == null) {
+            gf.logInfo("Stone id null");
+            return;
+        }
+
+        Species species = MegaStoneHeldItems.getInstance().getMegaStoneSpecies(stoneId);
+
+        if (species == null) {
+            gf.logInfo("No mega stone found! Not invoking mega evolution.");
+            return;
+        }
+
+        gf.logInfo("Species Name: " + species.getName());
+
+        if (!species.getName().equalsIgnoreCase(pokemon.getSpecies().getName())) {
+            gf.logInfo("Mismatched species");
+            return;
+        }
 
         if (pokemonEntity.isBattling() && !fromBattle) {
             gf.logInfo("Battling but not from battle! Not invoking mega evolution.");
@@ -126,33 +162,18 @@ public class MegaEvolutionHandler {
             return;
         }
 
-        if (species == null) {
-            gf.logInfo("No mega stone found! Not invoking mega evolution.");
-            return;
-        }
-
-        gf.logInfo("Species Name: " + species.getName());
-
         if (species.getName().equalsIgnoreCase(pokemon.getSpecies().getName())) {
-            NbtCompound nbt = NbtUtils.getNbt(pokemon.heldItem(), GenesisForms.MOD_ID);
-            if (nbt.isEmpty() || !nbt.contains(DataKeys.NBT_MEGASTONE)) return;
             if (species.getName().equalsIgnoreCase("Charizard")) {
-                String nbtString = nbt.getString(DataKeys.NBT_MEGASTONE);
-                gf.logInfo("Charizard mega stone nbt: " + nbtString);
-                if (nbtString.isEmpty()) return;
-                if (nbtString.equalsIgnoreCase("charizardite-x")){
+                if (stoneId.equalsIgnoreCase("charizardite-x")){
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaXFeatureValue, fromBattle);
-                } else if (nbtString.equalsIgnoreCase("charizardite-y")){
+                } else if (stoneId.equalsIgnoreCase("charizardite-y")){
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaYFeatureValue, fromBattle);
                 }
             }
             else if (species.getName().equalsIgnoreCase("Mewtwo")) {
-                String nbtString = nbt.getString(DataKeys.NBT_MEGASTONE);
-                gf.logInfo("Mewtwo mega stone nbt: " + nbtString);
-                if (nbtString.isEmpty()) return;
-                if (nbtString.equalsIgnoreCase("mewtwonite-x")){
+                if (stoneId.equalsIgnoreCase("mewtwonite-x")){
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaXFeatureValue, fromBattle);
-                } else if (nbtString.equalsIgnoreCase("mewtwonite-y")){
+                } else if (stoneId.equalsIgnoreCase("mewtwonite-y")){
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaYFeatureValue, fromBattle);
                 }
             } else {
@@ -160,9 +181,7 @@ public class MegaEvolutionHandler {
                 for (Config.CustomMega customMega : gf.getConfig().customMegaList) {
                     if (species.getName().equalsIgnoreCase(customMega.baseSpecies())) {
                         isCustom = true;
-                        String nbtString = nbt.getString(DataKeys.NBT_MEGASTONE);
-                        if (nbtString.isEmpty()) return;
-                        if (nbtString.equalsIgnoreCase(customMega.megastoneID())) {
+                        if (stoneId.equalsIgnoreCase(customMega.megastoneID())) {
                             changeMegaFormWithAnimation(pokemonEntity, pokemon, player, customMega.megaForm(), fromBattle);
                         }
                     }

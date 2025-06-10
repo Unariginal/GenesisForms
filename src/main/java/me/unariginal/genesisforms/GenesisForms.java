@@ -3,7 +3,6 @@ package me.unariginal.genesisforms;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
-import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemProvider;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
@@ -67,9 +66,11 @@ public class GenesisForms implements ModInitializer {
         FusionItems.getInstance().fillPolymerItems();
 
         KeyItems.requestModel();
+        KeyItems.registerItems();
         KeyItems.registerItemGroup();
 
         BagItems.requestModel();
+        BagItems.registerItems();
         BagItems.registerItemGroup();
 
         HeldItems.getInstance().loadHeldItemIds();
@@ -96,9 +97,9 @@ public class GenesisForms implements ModInitializer {
             this.server = server;
             this.audiences = FabricServerAudiences.of(server);
 
-            HeldItemProvider.INSTANCE.register(MegaStoneHeldItems.getInstance(), Priority.HIGH);
-            HeldItemProvider.INSTANCE.register(ZCrystalHeldItems.getInstance(), Priority.HIGH);
-            HeldItemProvider.INSTANCE.register(HeldItems.getInstance(), Priority.HIGH);
+//            HeldItemProvider.INSTANCE.register(MegaStoneHeldItems.getInstance(), Priority.HIGH);
+//            HeldItemProvider.INSTANCE.register(ZCrystalHeldItems.getInstance(), Priority.HIGH);
+//            HeldItemProvider.INSTANCE.register(HeldItems.getInstance(), Priority.HIGH);
 
             CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
 

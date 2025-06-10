@@ -4,6 +4,7 @@ import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.data.DataComponents;
 import me.unariginal.genesisforms.items.keyitems.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
@@ -37,19 +38,19 @@ public class KeyItems {
             teraOrbModelData,
             zygardeCubeModelData;
 
-    public static final KeyStone KEY_STONE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "key_stone"), new KeyStone(itemSettings, baseVanillaItem));
-    public static final MegaBracelet MEGA_BRACELET = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_bracelet"), new MegaBracelet(itemSettings, baseVanillaItem));
-    public static final MegaCharm MEGA_CHARM = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_charm"), new MegaCharm(itemSettings, baseVanillaItem));
-    public static final MegaCuff MEGA_CUFF = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_cuff"), new MegaCuff(itemSettings, baseVanillaItem));
-    public static final MegaRing MEGA_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_ring"), new MegaRing(itemSettings, baseVanillaItem));
-    public static final ZRing Z_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "z_ring"), new ZRing(itemSettings, baseVanillaItem));
-    public static final ZPowerRing Z_POWER_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "z_power_ring"), new ZPowerRing(itemSettings, baseVanillaItem));
-    public static final TeraOrb TERA_ORB = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "tera_orb"), new TeraOrb(itemSettings, baseVanillaItem));
-    public static final DynamaxBand DYNAMAX_BAND = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "dynamax_band"), new DynamaxBand(itemSettings, baseVanillaItem));
-    public static final Meteorite METEORITE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "meteorite"), new Meteorite(itemSettings, baseVanillaItem));
-    public static final SparklingStone SPARKLING_STONE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "sparkling_stone"), new SparklingStone(itemSettings, baseVanillaItem));
-    public static final WishingStar WISHING_STAR = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "wishing_star"), new WishingStar(itemSettings, baseVanillaItem));
-    public static final ZygardeCube ZYGARDE_CUBE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "zygarde_cube"), new ZygardeCube(itemSettings, baseVanillaItem));
+    public static KeyStone KEY_STONE;
+    public static MegaBracelet MEGA_BRACELET;
+    public static MegaCharm MEGA_CHARM;
+    public static MegaCuff MEGA_CUFF;
+    public static MegaRing MEGA_RING;
+    public static ZRing Z_RING;
+    public static ZPowerRing Z_POWER_RING;
+    public static TeraOrb TERA_ORB;
+    public static DynamaxBand DYNAMAX_BAND;
+    public static Meteorite METEORITE;
+    public static SparklingStone SPARKLING_STONE;
+    public static WishingStar WISHING_STAR;
+    public static ZygardeCube ZYGARDE_CUBE;
 
     public static Map<String, ItemStack> keyItemStacks = new HashMap<>();
 
@@ -69,35 +70,51 @@ public class KeyItems {
         zygardeCubeModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/zygarde_cube"));
     }
 
-    public static final ItemGroup KEY_ITEMS = FabricItemGroup.builder()
-            .icon(KEY_STONE::getDefaultStack)
-            .displayName(Text.literal("Key Items"))
-            .entries((displayContext, entries) -> {
-                entries.add(KEY_STONE);
-                entries.add(MEGA_BRACELET);
-                entries.add(MEGA_CHARM);
-                entries.add(MEGA_CUFF);
-                entries.add(MEGA_RING);
-                entries.add(Z_RING);
-                entries.add(Z_POWER_RING);
-                entries.add(TERA_ORB);
-                entries.add(DYNAMAX_BAND);
-                entries.add(SPARKLING_STONE);
-                entries.add(WISHING_STAR);
-                entries.add(METEORITE);
-                entries.add(ZYGARDE_CUBE);
-
-                for (String key : KeyFormItems.getInstance().keyItemPolymerItems.keySet()) {
-                    entries.add(KeyFormItems.getInstance().keyItemPolymerItems.get(key));
-                }
-
-                for (String key : FusionItems.getInstance().getAllFusionItemIds()) {
-                    entries.add(FusionItems.getInstance().fusionItemPolymerItems.get(key));
-                }
-            })
-            .build();
+    public static void registerItems() {
+        KEY_STONE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "key_stone"), new KeyStone(itemSettings.component(DataComponents.KEY_ITEM, "key_stone"), baseVanillaItem));
+        MEGA_BRACELET = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_bracelet"), new MegaBracelet(itemSettings.component(DataComponents.KEY_ITEM, "mega_bracelet"), baseVanillaItem));
+        MEGA_CHARM = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_charm"), new MegaCharm(itemSettings.component(DataComponents.KEY_ITEM, "mega_charm"), baseVanillaItem));
+        MEGA_CUFF = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_cuff"), new MegaCuff(itemSettings.component(DataComponents.KEY_ITEM, "mega_cuff"), baseVanillaItem));
+        MEGA_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "mega_ring"), new MegaRing(itemSettings.component(DataComponents.KEY_ITEM, "mega_ring"), baseVanillaItem));
+        Z_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "z_ring"), new ZRing(itemSettings.component(DataComponents.KEY_ITEM, "z_ring"), baseVanillaItem));
+        Z_POWER_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "z_power_ring"), new ZPowerRing(itemSettings.component(DataComponents.KEY_ITEM, "z_power_ring"), baseVanillaItem));
+        TERA_ORB = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "tera_orb"), new TeraOrb(itemSettings.component(DataComponents.KEY_ITEM, "tera_orb"), baseVanillaItem));
+        DYNAMAX_BAND = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "dynamax_band"), new DynamaxBand(itemSettings.component(DataComponents.KEY_ITEM, "dynamax_band"), baseVanillaItem));
+        METEORITE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "meteorite"), new Meteorite(itemSettings, baseVanillaItem));
+        SPARKLING_STONE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "sparkling_stone"), new SparklingStone(itemSettings, baseVanillaItem));
+        WISHING_STAR = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "wishing_star"), new WishingStar(itemSettings, baseVanillaItem));
+        ZYGARDE_CUBE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "zygarde_cube"), new ZygardeCube(itemSettings.component(DataComponents.KEY_ITEM, "zygarde_cube"), baseVanillaItem));
+    }
 
     public static void registerItemGroup() {
+        final ItemGroup KEY_ITEMS = FabricItemGroup.builder()
+                .icon(KEY_STONE::getDefaultStack)
+                .displayName(Text.literal("Key Items"))
+                .entries((displayContext, entries) -> {
+                    entries.add(KEY_STONE);
+                    entries.add(MEGA_BRACELET);
+                    entries.add(MEGA_CHARM);
+                    entries.add(MEGA_CUFF);
+                    entries.add(MEGA_RING);
+                    entries.add(Z_RING);
+                    entries.add(Z_POWER_RING);
+                    entries.add(TERA_ORB);
+                    entries.add(DYNAMAX_BAND);
+                    entries.add(SPARKLING_STONE);
+                    entries.add(WISHING_STAR);
+                    entries.add(METEORITE);
+                    entries.add(ZYGARDE_CUBE);
+
+                    for (String key : KeyFormItems.getInstance().keyItemPolymerItems.keySet()) {
+                        entries.add(KeyFormItems.getInstance().keyItemPolymerItems.get(key));
+                    }
+
+                    for (String key : FusionItems.getInstance().getAllFusionItemIds()) {
+                        entries.add(FusionItems.getInstance().fusionItemPolymerItems.get(key));
+                    }
+                })
+                .build();
+
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "key_items"), KEY_ITEMS);
         keyItemStacks.put("key_stone", KEY_STONE.getDefaultStack());
         keyItemStacks.put("mega_bracelet", MEGA_BRACELET.getDefaultStack());

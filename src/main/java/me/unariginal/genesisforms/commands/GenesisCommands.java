@@ -47,7 +47,7 @@ public class GenesisCommands {
                                                                                 if (player == null) return 0;
                                                                                 player.giveItemStack(MegaStoneHeldItems.getInstance().getMegaStoneItem(
                                                                                         StringArgumentType.getString(ctx, "mega-stone")
-                                                                                ));
+                                                                                ).copy());
                                                                                 return 1;
                                                                             })
                                                             )
@@ -71,7 +71,7 @@ public class GenesisCommands {
                                                                                 if (player == null) return 0;
                                                                                 player.giveItemStack(ZCrystalHeldItems.getInstance().getZCrystalItem(
                                                                                         StringArgumentType.getString(ctx, "z-crystal")
-                                                                                ));
+                                                                                ).copy());
                                                                                 return 1;
                                                                             })
                                                             )
@@ -93,7 +93,7 @@ public class GenesisCommands {
                                                                                 if (player == null) return 0;
                                                                                 player.giveItemStack(HeldItems.getInstance().getHeldItem(
                                                                                         StringArgumentType.getString(ctx, "held-item")
-                                                                                ));
+                                                                                ).copy());
                                                                                 return 1;
                                                                             })
                                                             )
@@ -115,7 +115,7 @@ public class GenesisCommands {
                                                                                 if (player == null) return 0;
                                                                                 player.giveItemStack(KeyItems.keyItemStacks.get(
                                                                                         StringArgumentType.getString(ctx, "key-item")
-                                                                                ));
+                                                                                ).copy());
                                                                                 return 1;
                                                                             })
                                                             )
@@ -137,7 +137,7 @@ public class GenesisCommands {
                                                                                 if (player == null) return 0;
                                                                                 player.giveItemStack(BagItems.bagItemStacks.get(
                                                                                         StringArgumentType.getString(ctx, "bag-item")
-                                                                                ));
+                                                                                ).copy());
                                                                                 return 1;
                                                                             })
                                                             )
@@ -157,7 +157,7 @@ public class GenesisCommands {
                                                                             .executes(ctx -> {
                                                                                 ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                                 if (player == null) return 0;
-                                                                                player.giveItemStack(TeraShardBagItems.getInstance().getTeraShard(StringArgumentType.getString(ctx, "tera-shard")));
+                                                                                player.giveItemStack(TeraShardBagItems.getInstance().getTeraShard(StringArgumentType.getString(ctx, "tera-shard")).copy());
                                                                                 return 1;
                                                                             })
                                                             )
@@ -180,6 +180,7 @@ public class GenesisCommands {
                                                                 keyItems.remove(Identifier.of("cobblemon", "key_stone"));
                                                                 keyItems.remove(Identifier.of("cobblemon", "dynamax_band"));
                                                                 keyItems.remove(Identifier.of("cobblemon", "z_ring"));
+                                                                keyItems.remove(Identifier.of("cobblemon", "tera_orb"));
 
                                                                 return 1;
                                                             })
@@ -218,6 +219,7 @@ public class GenesisCommands {
                                             .requires(Permissions.require("genesisforms.convertItem", 4))
                                             .then(
                                                     CommandManager.literal("hand")
+                                                            .requires(Permissions.require("genesisforms.convertItem.hand", 4))
                                                             .executes(ctx -> {
                                                                 if (ctx.getSource().getPlayer() == null) return 0;
                                                                 ServerPlayerEntity player = ctx.getSource().getPlayer();
@@ -233,6 +235,7 @@ public class GenesisCommands {
                                             )
                                             .then(
                                                     CommandManager.literal("inventory")
+                                                            .requires(Permissions.require("genesisforms.convertItem.inventory", 4))
                                                             .executes(ctx -> {
                                                                 if (ctx.getSource().getPlayer() == null) return 0;
                                                                 ServerPlayerEntity player = ctx.getSource().getPlayer();

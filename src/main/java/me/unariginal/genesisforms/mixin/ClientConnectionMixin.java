@@ -9,15 +9,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientConnection.class)
-public class FixTheUhOhs {
+public class ClientConnectionMixin {
     @Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)
-    private void handleTeraPacketEncoderException(ChannelHandlerContext context, Throwable ex, CallbackInfo ci) {
+    private void handlePacketEncoderException(ChannelHandlerContext context, Throwable ex, CallbackInfo ci) {
         if (ex instanceof EncoderException) {
             String errorMessage = ex.getMessage();
 
             if (errorMessage != null &&
-                    errorMessage.contains("Failed to encode packet") &&
-                    (errorMessage.contains("cobblemon:tera_type_update") || errorMessage.contains("minecraft:set_entity_data") || errorMessage.contains("minecraft:set_equipment"))) {
+                    (
+                        errorMessage.contains("cobblemon:tera_type_update") ||
+                        errorMessage.contains("minecraft:set_entity_data") ||
+                        errorMessage.contains("minecraft:set_equipment") ||
+                        errorMessage.contains("minecraft:custom_payload") ||
+                        errorMessage.contains("minecraft:system_chat")
+                    )
+            ) {
                 ci.cancel();
             }
         }

@@ -8,9 +8,8 @@ import com.cobblemon.mod.common.pokemon.Species;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.ItemSettingsConfig;
-import me.unariginal.genesisforms.data.DataKeys;
+import me.unariginal.genesisforms.data.DataComponents;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
-import me.unariginal.genesisforms.utils.NbtUtils;
 import net.minecraft.item.ItemStack;
 
 public class HeldItemHandler {
@@ -34,8 +33,9 @@ public class HeldItemHandler {
     }
 
     public static void change_forms(Pokemon pokemon, ItemStack received) {
-        if (NbtUtils.getNbt(received, GenesisForms.MOD_ID).contains(DataKeys.NBT_HELD_ITEM)) {
-            String heldItemId = NbtUtils.getNbt(received, GenesisForms.MOD_ID).getString(DataKeys.NBT_HELD_ITEM);
+        if (received.getComponents().contains(DataComponents.HELD_ITEM)) {
+            String heldItemId = received.getComponents().get(DataComponents.HELD_ITEM);
+            if (heldItemId == null || heldItemId.isEmpty()) return;
             if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(heldItemId)) return;
             Species species = HeldItems.getInstance().getHeldItemSpecies(heldItemId);
             if (species == null) return;
@@ -115,9 +115,10 @@ public class HeldItemHandler {
                     }
                 }
             }
-        } else if (NbtUtils.getNbt(received, GenesisForms.MOD_ID).contains(DataKeys.NBT_Z_CRYSTAL)) {
+        } else if (received.getComponents().contains(DataComponents.Z_CRYSTAL)) {
             if (pokemon.getSpecies().getName().equalsIgnoreCase("arceus")) {
-                String zCrystalId = NbtUtils.getNbt(received, GenesisForms.MOD_ID).getString(DataKeys.NBT_Z_CRYSTAL);
+                String zCrystalId = received.getComponents().get(DataComponents.Z_CRYSTAL);
+                if (zCrystalId == null || zCrystalId.isEmpty()) return;
                 switch (zCrystalId) {
                     case "buginium-z" -> new StringSpeciesFeature("multitype", "bug").apply(pokemon);
                     case "darkinium-z" -> new StringSpeciesFeature("multitype", "dark").apply(pokemon);
