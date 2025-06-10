@@ -16,15 +16,17 @@ import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -32,6 +34,8 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 
 public class MaxMushroomsItem extends BlockItem implements SimpleBagItemLike, PolymerItem {
@@ -71,13 +75,20 @@ public class MaxMushroomsItem extends BlockItem implements SimpleBagItemLike, Po
 
     @Override
     public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get("max_mushrooms"));
         return this.polymerModel.item();
     }
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
         return this.polymerModel.value();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
+        for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get("max_mushrooms")) {
+            tooltip.add(TextUtils.deserialize(line));
+        }
     }
 
     @Override

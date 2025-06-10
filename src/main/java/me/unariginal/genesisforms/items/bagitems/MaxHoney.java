@@ -21,13 +21,15 @@ import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.polymer.BagItems;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -68,18 +70,20 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
 
     public MaxHoney(Settings settings, Item polymerItem) {
         super(settings, polymerItem);
-    }
-
-    @Override
-    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get("max_honey"));
-        return super.getPolymerItem(itemStack, player);
+        this.modelData = BagItems.maxHoneyModelData;
     }
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-        this.modelData = BagItems.maxHoneyModelData;
         return this.modelData.value();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
+        for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get("max_honey")) {
+            tooltip.add(TextUtils.deserialize(line));
+        }
     }
 
     @Override

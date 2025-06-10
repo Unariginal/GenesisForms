@@ -1,40 +1,36 @@
 package me.unariginal.genesisforms.items.helditems.megastones;
 
-import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
-import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
-import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemManager;
-import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.cobblemon.mod.common.pokemon.helditem.CobblemonHeldItemManager;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.Config;
-import me.unariginal.genesisforms.data.DataKeys;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.data.DataComponents;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MegaStoneHeldItems implements HeldItemManager {
+public class MegaStoneHeldItems {
     private static final MegaStoneHeldItems INSTANCE = new MegaStoneHeldItems();
     public static MegaStoneHeldItems getInstance() {
         return INSTANCE;
@@ -44,61 +40,6 @@ public class MegaStoneHeldItems implements HeldItemManager {
     public ItemStack getMegaStoneItem(String id) {
         if (!MEGA_STONE_IDS.containsKey(id)) return ItemStack.EMPTY;
         return megaStonePolymerItems.get(id).getDefaultStack();
-    }
-
-    @Override
-    public void give(@NotNull BattlePokemon battlePokemon, @NotNull String s) {
-        battlePokemon.getEffectedPokemon().swapHeldItem(getMegaStoneItem(s), false);
-    }
-
-    @Override
-    public void handleEndInstruction(
-            @NotNull BattlePokemon battlePokemon,
-            @NotNull PokemonBattle pokemonBattle,
-            @NotNull BattleMessage battleMessage
-    ) { }
-
-    @Override
-    public void handleStartInstruction(
-            @NotNull BattlePokemon battlePokemon,
-            @NotNull PokemonBattle pokemonBattle,
-            @NotNull BattleMessage battleMessage
-    ) { }
-
-    @NotNull
-    @Override
-    public Text nameOf(@NotNull String s) {
-        return Text.of(s);
-    }
-
-    @Override
-    public boolean shouldConsumeItem(
-            @NotNull BattlePokemon battlePokemon,
-            @NotNull PokemonBattle pokemonBattle,
-            @NotNull String s
-    ) {
-        return false;
-    }
-
-    public String showdownId(Pokemon pokemon) {
-        NbtCompound nbt = NbtUtils.getNbt(pokemon.heldItem(), GenesisForms.MOD_ID);
-        if (nbt.isEmpty() || !nbt.contains(DataKeys.NBT_MEGASTONE)) return null;
-
-        String nbtString = nbt.getString(DataKeys.NBT_MEGASTONE);
-        if (nbtString.isEmpty()) return null;
-        if (!MEGA_STONE_IDS.containsKey(nbtString)) return null;
-        return nbtString;
-    }
-
-    @Nullable
-    @Override
-    public String showdownId(@NotNull BattlePokemon battlePokemon) {
-        return showdownId(battlePokemon.getEffectedPokemon());
-    }
-
-    @Override
-    public void take(@NotNull BattlePokemon battlePokemon, @NotNull String s) {
-        battlePokemon.getEffectedPokemon().removeHeldItem();
     }
 
     private Species getSpecies(String name) {
@@ -177,7 +118,7 @@ public class MegaStoneHeldItems implements HeldItemManager {
 
     public void fillPolymerItems() {
         for (String key : MEGA_STONE_IDS.keySet()) {
-            megaStonePolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new MegaStonePolymerItem(itemSettings, baseVanillaItem, key)));
+            megaStonePolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new MegaStonePolymerItem(itemSettings.component(DataComponents.MEGA_STONE, key), baseVanillaItem, key)));
         }
     }
 
@@ -192,12 +133,15 @@ public class MegaStoneHeldItems implements HeldItemManager {
                 .icon(megaStonePolymerItems.get("venusaurite")::getDefaultStack)
                 .displayName(Text.literal("Mega Stones"))
                 .entries((displayContext, entries) -> {
-                    for (String key : megaStonePolymerModelData.keySet()) {
+                    for (String key : MEGA_STONE_IDS.keySet()) {
                         entries.add(megaStonePolymerItems.get(key));
                     }
                 }).build();
 
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "mega_stones"), MEGA_STONES);
+        for (String key : MEGA_STONE_IDS.keySet()) {
+            CobblemonHeldItemManager.INSTANCE.registerRemap(megaStonePolymerItems.get(key), key);
+        }
     }
 
     public static class MegaStonePolymerItem extends SimplePolymerItem {
@@ -207,21 +151,20 @@ public class MegaStoneHeldItems implements HeldItemManager {
         public MegaStonePolymerItem(Settings settings, Item polymerItem, String id) {
             super(settings, polymerItem);
             this.id = id;
-        }
-
-        @Override
-        public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-            NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_MEGASTONE, id);
-            if (GenesisForms.INSTANCE.getItemSettings().item_lore.containsKey(id)) {
-                NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get(id));
-            }
-            return super.getPolymerItem(itemStack, player);
+            this.modelData = MegaStoneHeldItems.getInstance().megaStonePolymerModelData.get(id);
         }
 
         @Override
         public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-            this.modelData = MegaStoneHeldItems.getInstance().megaStonePolymerModelData.get(id);
             return this.modelData.value();
+        }
+
+        @Override
+        public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+            super.appendTooltip(stack, context, tooltip, type);
+            for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get(id)) {
+                tooltip.add(TextUtils.deserialize(line));
+            }
         }
     }
 }

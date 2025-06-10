@@ -7,21 +7,19 @@ import com.cobblemon.mod.common.api.events.battles.BattleStartedPreEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonFaintedEvent;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.api.storage.player.GeneralPlayerData;
 import com.cobblemon.mod.common.battles.BattleFormat;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.data.DataKeys;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.data.DataComponents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class BattleHandler {
     private final static GenesisForms gf = GenesisForms.INSTANCE;
@@ -33,6 +31,8 @@ public class BattleHandler {
             for (Pokemon pokemon : playerPartyStore) {
                 FormHandler.revert_forms(pokemon, true);
             }
+            gf.getPlayersWithMega().remove(player.getUuid());
+            gf.getMegaEvolvedThisBattle().remove(player.getUuid());
 
             boolean has_keyStone = false;
             boolean has_dynamaxBand = false;
@@ -44,41 +44,41 @@ public class BattleHandler {
             inventory.addAll(player.getInventory().offHand);
             inventory.addAll(player.getInventory().armor);
             for (ItemStack itemStack : inventory) {
-                NbtCompound nbt = NbtUtils.getNbt(itemStack, GenesisForms.MOD_ID);
-                if (nbt.isEmpty() || !nbt.contains(DataKeys.NBT_KEY_ITEM)) continue;
-                String nbtString = nbt.getString(DataKeys.NBT_KEY_ITEM);
-                gf.logInfo("[Genesis] NBT String: " + nbtString);
-                if (nbtString.isEmpty()) continue;
-                if (nbtString.equalsIgnoreCase("key_stone") ||
-                        nbtString.equalsIgnoreCase("mega_bracelet") ||
-                        nbtString.equalsIgnoreCase("mega_charm") ||
-                        nbtString.equalsIgnoreCase("mega_cuff") ||
-                        nbtString.equalsIgnoreCase("mega_ring")) {
+                if (!itemStack.getComponents().contains(DataComponents.KEY_ITEM)) continue;
+                String key_item = itemStack.getComponents().get(DataComponents.KEY_ITEM);
+                if (key_item == null || key_item.isEmpty()) continue;
+                if (key_item.equalsIgnoreCase("key_stone") ||
+                        key_item.equalsIgnoreCase("mega_bracelet") ||
+                        key_item.equalsIgnoreCase("mega_charm") ||
+                        key_item.equalsIgnoreCase("mega_cuff") ||
+                        key_item.equalsIgnoreCase("mega_ring")) {
                     gf.logInfo("[Genesis] Found key stone in inventory!");
                     has_keyStone = true;
-                } else if (nbtString.equalsIgnoreCase("dynamax_band")) {
+                } else if (key_item.equalsIgnoreCase("dynamax_band")) {
                     gf.logInfo("[Genesis] Found dynamax band in inventory!");
                     has_dynamaxBand = true;
-                } else if (nbtString.equalsIgnoreCase("z_ring") ||
-                        nbtString.equalsIgnoreCase("z_power_ring")) {
+                } else if (key_item.equalsIgnoreCase("z_ring") ||
+                        key_item.equalsIgnoreCase("z_power_ring")) {
                     gf.logInfo("[Genesis] Found z ring in inventory!");
                     has_zRing = true;
-                } else if (nbtString.equalsIgnoreCase("tera_orb")) {
+                } else if (key_item.equalsIgnoreCase("tera_orb")) {
                     gf.logInfo("[Genesis] Found tera orb in inventory!");
                     has_teraOrb = true;
                 }
             }
 
-            Set<Identifier> keyItems = Cobblemon.playerDataManager.getGenericData(player).getKeyItems();
+            GeneralPlayerData playerData = Cobblemon.playerDataManager.getGenericData(player);
+            playerData.getKeyItems().remove(Identifier.of("cobblemon", "key_stone"));
+            playerData.getKeyItems().remove(Identifier.of("cobblemon", "dynamax_band"));
+            playerData.getKeyItems().remove(Identifier.of("cobblemon", "z_ring"));
+            playerData.getKeyItems().remove(Identifier.of("cobblemon", "tera_orb"));
 
             if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("key_stone") && gf.getConfig().enableMegaEvolution && has_keyStone) {
-                keyItems.add(Identifier.of("cobblemon", "key_stone"));
-            } else {
-                keyItems.remove(Identifier.of("cobblemon", "key_stone"));
+                playerData.getKeyItems().add(Identifier.of("cobblemon", "key_stone"));
             }
 
             if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand) {
-                keyItems.add(Identifier.of("cobblemon", "dynamax_band"));
+                playerData.getKeyItems().add(Identifier.of("cobblemon", "dynamax_band"));
                 if (!gf.getConfig().useGen9Battles) {
                     try {
                         BattleFormat format = event.getBattle().getFormat();
@@ -90,20 +90,14 @@ public class BattleHandler {
                         gf.logError("[Genesis] Error: " + e.getMessage());
                     }
                 }
-            } else {
-                keyItems.remove(Identifier.of("cobblemon", "dynamax_band"));
             }
 
             if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && has_zRing) {
-                keyItems.add(Identifier.of("cobblemon", "z_ring"));
-            } else {
-                keyItems.remove(Identifier.of("cobblemon", "z_ring"));
+                playerData.getKeyItems().add(Identifier.of("cobblemon", "z_ring"));
             }
 
             if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("tera_orb") && gf.getConfig().enableTera && has_teraOrb) {
-                keyItems.add(Identifier.of("cobblemon", "tera_orb"));
-            } else {
-                keyItems.remove(Identifier.of("cobblemon", "tera_orb"));
+                playerData.getKeyItems().add(Identifier.of("cobblemon", "tera_orb"));
             }
         }
 
@@ -111,9 +105,12 @@ public class BattleHandler {
     }
 
     public static Unit battle_ended(BattleVictoryEvent event) {
+        gf.logInfo("[Genesis] Battle ended (victory event)!");
         event.getBattle().getPlayers().forEach(player -> {
+            gf.logInfo("[Genesis] Player loop " + player.getNameForScoreboard());
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             for (Pokemon pokemon : playerPartyStore) {
+                gf.logInfo("[Genesis] Reverting player's pokemon: " + pokemon.getSpecies().getName());
                 FormHandler.revert_forms(pokemon, false);
             }
         });

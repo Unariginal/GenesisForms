@@ -8,25 +8,27 @@ import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleTransformPokemonPacket;
+import com.cobblemon.mod.common.pokemon.Species;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.handlers.PacketHandler;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
-import me.unariginal.genesisforms.utils.NbtUtils;
 import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ZRing extends SimplePolymerItem {
@@ -34,19 +36,20 @@ public class ZRing extends SimplePolymerItem {
 
     public ZRing(Settings settings, Item polymerItem) {
         super(settings, polymerItem);
-    }
-
-    @Override
-    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get("z_ring"));
-        NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_KEY_ITEM, "z_ring");
-        return super.getPolymerItem(itemStack, player);
+        this.modelData = KeyItems.zRingModelData;
     }
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-        this.modelData = KeyItems.zRingModelData;
         return this.modelData.value();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
+        for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get("z_ring")) {
+            tooltip.add(TextUtils.deserialize(line));
+        }
     }
 
     @Override
@@ -79,7 +82,15 @@ public class ZRing extends SimplePolymerItem {
                                     boolean isDawn = pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("dawn"));
                                     boolean isDusk = pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("dusk"));
                                     if (isDawn || isDusk) {
-                                        if (GenesisForms.INSTANCE.getConfig().enableUltraBurst && ZCrystalHeldItems.getInstance().showdownId(pokemonEntity.getPokemon()).equalsIgnoreCase("ultranecrozium-z")) {
+                                        if (GenesisForms.INSTANCE.getConfig().enableUltraBurst) {
+                                            boolean isNecrozma = false;
+                                            for (Species species : ZCrystalHeldItems.getInstance().getZCrystalSpecies("ultranecrozium-z")) {
+                                                if (species.getName().equalsIgnoreCase(pokemonEntity.getPokemon().getSpecies().getName())) {
+                                                    isNecrozma = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!isNecrozma) return ActionResult.PASS;
                                             if (!GenesisForms.INSTANCE.getUltra_burst_this_battle().contains(player.getUuid())) {
                                                 player.sendMessage(TextUtils.deserialize("<red>[GenesisForms] Warning! Ultra-burst does <b>not <!b>have full functionality yet!"));
                                                 GenesisForms.INSTANCE.getUltra_burst_this_battle().add(player.getUuid());

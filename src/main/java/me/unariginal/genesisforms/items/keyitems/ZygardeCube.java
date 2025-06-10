@@ -13,6 +13,7 @@ import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
@@ -20,31 +21,36 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class ZygardeCube extends SimplePolymerItem {
     PolymerModelData modelData;
 
     public ZygardeCube(Settings settings, Item polymerItem) {
         super(settings, polymerItem);
-    }
-
-    @Override
-    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_KEY_ITEM, "zygarde_cube");
-        NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get("zygarde_cube"));
-        return super.getPolymerItem(itemStack, player);
+        this.modelData = KeyItems.zygardeCubeModelData;
     }
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-        this.modelData = KeyItems.zygardeCubeModelData;
         return this.modelData.value();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
+        for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get("zygarde_cube")) {
+            tooltip.add(TextUtils.deserialize(line));
+        }
     }
 
     @Override

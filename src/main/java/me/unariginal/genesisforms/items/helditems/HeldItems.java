@@ -1,40 +1,36 @@
 package me.unariginal.genesisforms.items.helditems;
 
-import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
-import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
-import com.cobblemon.mod.common.api.pokemon.helditem.HeldItemManager;
-import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.cobblemon.mod.common.pokemon.helditem.CobblemonHeldItemManager;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.ItemSettingsConfig;
-import me.unariginal.genesisforms.data.DataKeys;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.data.DataComponents;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HeldItems implements HeldItemManager {
+public class HeldItems {
     private static final HeldItems INSTANCE = new HeldItems();
     public static HeldItems getInstance() {
         return INSTANCE;
@@ -45,61 +41,6 @@ public class HeldItems implements HeldItemManager {
     public ItemStack getHeldItem(String id) {
         if (!HELD_ITEM_IDS.containsKey(id)) return ItemStack.EMPTY;
         return heldItemPolymerItems.get(id).getDefaultStack();
-    }
-
-    @Override
-    public void give(@NotNull BattlePokemon battlePokemon, @NotNull String s) {
-        battlePokemon.getEffectedPokemon().swapHeldItem(getHeldItem(s), false);
-    }
-
-    @Override
-    public void handleEndInstruction(
-            @NotNull BattlePokemon battlePokemon,
-            @NotNull PokemonBattle pokemonBattle,
-            @NotNull BattleMessage battleMessage
-    ) { }
-
-    @Override
-    public void handleStartInstruction(
-            @NotNull BattlePokemon battlePokemon,
-            @NotNull PokemonBattle pokemonBattle,
-            @NotNull BattleMessage battleMessage
-    ) { }
-
-    @NotNull
-    @Override
-    public Text nameOf(@NotNull String s) {
-        return Text.of(s);
-    }
-
-    @Override
-    public boolean shouldConsumeItem(
-            @NotNull BattlePokemon battlePokemon,
-            @NotNull PokemonBattle pokemonBattle,
-            @NotNull String s
-    ) {
-        return false;
-    }
-
-    public String showdownId(Pokemon pokemon) {
-        NbtCompound nbt = NbtUtils.getNbt(pokemon.heldItem(), GenesisForms.MOD_ID);
-        if (nbt.isEmpty() || !nbt.contains(DataKeys.NBT_HELD_ITEM)) return null;
-
-        String nbtString = nbt.getString(DataKeys.NBT_HELD_ITEM);
-        if (nbtString.isEmpty()) return null;
-        if (!HELD_ITEM_IDS.containsKey(nbtString)) return null;
-        return nbtString;
-    }
-
-    @Nullable
-    @Override
-    public String showdownId(@NotNull BattlePokemon battlePokemon) {
-        return showdownId(battlePokemon.getEffectedPokemon());
-    }
-
-    @Override
-    public void take(@NotNull BattlePokemon battlePokemon, @NotNull String s) {
-        battlePokemon.getEffectedPokemon().removeHeldItem();
     }
 
     private Species getSpecies(String name) {
@@ -185,7 +126,7 @@ public class HeldItems implements HeldItemManager {
 
     public void fillPolymerItems() {
         for (String key : HELD_ITEM_IDS.keySet()) {
-            heldItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new HeldItemPolymerItem(itemSettings, baseVanillaItem, key)));
+            heldItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new HeldItemPolymerItem(itemSettings.component(DataComponents.HELD_ITEM, key), baseVanillaItem, key)));
         }
     }
 
@@ -206,6 +147,10 @@ public class HeldItems implements HeldItemManager {
                 }).build();
 
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "held_items"), HELD_ITEMS);
+
+        for (String key : HELD_ITEM_IDS.keySet()) {
+            CobblemonHeldItemManager.INSTANCE.registerRemap(heldItemPolymerItems.get(key), key);
+        }
     }
 
     public static class HeldItemPolymerItem extends SimplePolymerItem {
@@ -215,21 +160,20 @@ public class HeldItems implements HeldItemManager {
         public HeldItemPolymerItem(Settings settings, Item polymerItem, String id) {
             super(settings, polymerItem);
             this.id = id;
-        }
-
-        @Override
-        public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-            if (GenesisForms.INSTANCE.getItemSettings().item_lore.containsKey(id)) {
-                NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get(id));
-            }
-            NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_HELD_ITEM, id);
-            return super.getPolymerItem(itemStack, player);
+            this.modelData = HeldItems.getInstance().heldItemPolymerModelData.get(id);
         }
 
         @Override
         public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-            this.modelData = HeldItems.getInstance().heldItemPolymerModelData.get(id);
             return this.modelData.value();
+        }
+
+        @Override
+        public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+            super.appendTooltip(stack, context, tooltip, type);
+            for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get(id)) {
+                tooltip.add(TextUtils.deserialize(line));
+            }
         }
     }
 }

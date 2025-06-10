@@ -9,8 +9,8 @@ import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.data.DataKeys;
-import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.data.DataComponents;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,6 +30,7 @@ import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,7 +84,7 @@ public class TeraShardBagItems {
 
     public void fillPolymerItems() {
         for (String key : TERA_SHARD_IDS.keySet()) {
-            teraShardPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key + "_tera_shard"), new TeraShardPolymerItem(itemSettings, baseVanillaItem, key)));
+            teraShardPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key + "_tera_shard"), new TeraShardPolymerItem(itemSettings.component(DataComponents.TERA_SHARD, key + "_tera_shard"), baseVanillaItem, key)));
         }
     }
 
@@ -112,21 +114,20 @@ public class TeraShardBagItems {
         public TeraShardPolymerItem(Settings settings, Item polymerItem, String id) {
             super(settings, polymerItem);
             this.id = id;
-        }
-
-        @Override
-        public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-            if (GenesisForms.INSTANCE.getItemSettings().item_lore.containsKey(id)) {
-                NbtUtils.setItemLore(itemStack, GenesisForms.INSTANCE.getItemSettings().item_lore.get(id));
-            }
-            NbtUtils.setNbtString(itemStack, GenesisForms.MOD_ID, DataKeys.NBT_TERA_SHARD, id);
-            return super.getPolymerItem(itemStack, player);
+            this.modelData = TeraShardBagItems.getInstance().teraShardPolymerModelData.get(id);
         }
 
         @Override
         public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-            this.modelData = TeraShardBagItems.getInstance().teraShardPolymerModelData.get(id);
             return this.modelData.value();
+        }
+
+        @Override
+        public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+            super.appendTooltip(stack, context, tooltip, type);
+            for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get(id)) {
+                tooltip.add(TextUtils.deserialize(line));
+            }
         }
 
         @Override
