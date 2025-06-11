@@ -9,6 +9,7 @@ import me.unariginal.genesisforms.blocks.MaxMushroomsBlock;
 import me.unariginal.genesisforms.items.bagitems.DynamaxCandy;
 import me.unariginal.genesisforms.items.bagitems.MaxHoney;
 import me.unariginal.genesisforms.items.bagitems.MaxMushroomsItem;
+import me.unariginal.genesisforms.items.bagitems.MaxSoup;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Blocks;
@@ -30,10 +31,12 @@ public class BagItems {
     private static final Item baseVanillaItem = Items.FLINT;
     public static PolymerModelData
             dynamaxCandyModelData,
-            maxHoneyModelData;
+            maxHoneyModelData,
+            maxSoupModelData;
 
     public static DynamaxCandy DYNAMAX_CANDY;
     public static MaxHoney MAX_HONEY;
+    public static MaxSoup MAX_SOUP;
 
     public static MaxMushroomsBlock MAX_MUSHROOMS_BLOCK;
     public static MaxMushroomsItem MAX_MUSHROOMS_ITEM;
@@ -43,6 +46,7 @@ public class BagItems {
     public static void requestModel() {
         dynamaxCandyModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/dynamax_candy"));
         maxHoneyModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/max_honey"));
+        maxSoupModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/max_soup"));
     }
 
     public static void registerItems() {
@@ -50,6 +54,7 @@ public class BagItems {
         MAX_HONEY = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_honey"), new MaxHoney(itemSettings, baseVanillaItem));
         MAX_MUSHROOMS_BLOCK = Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsBlock(AbstractBlock.Settings.copy(Blocks.BROWN_MUSHROOM), BlockModelType.BIOME_PLANT_BLOCK, "block/max_mushrooms"));
         MAX_MUSHROOMS_ITEM = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsItem(itemSettings, MAX_MUSHROOMS_BLOCK, "item/max_mushrooms"));
+        MAX_SOUP = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_soup"), new MaxSoup(itemSettings, baseVanillaItem));
     }
 
     public static void registerItemGroup() {
@@ -60,6 +65,7 @@ public class BagItems {
                     entries.add(DYNAMAX_CANDY);
                     entries.add(MAX_MUSHROOMS_ITEM);
                     entries.add(MAX_HONEY);
+                    entries.add(MAX_SOUP);
                 })
                 .build();
 
@@ -67,5 +73,6 @@ public class BagItems {
         bagItemStacks.put("dynamax_candy", DYNAMAX_CANDY.getDefaultStack());
         bagItemStacks.put("max_mushrooms", MAX_MUSHROOMS_ITEM.getDefaultStack());
         bagItemStacks.put("max_honey", MAX_HONEY.getDefaultStack());
+        bagItemStacks.put("max_soup", MAX_SOUP.getDefaultStack());
     }
 }

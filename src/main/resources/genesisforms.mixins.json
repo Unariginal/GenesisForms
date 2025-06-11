@@ -5,15 +5,16 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ClientConnectionMixin",
+    "CobblemonNetworkMixin",
     "EndInstructionAccessor",
     "EndInstructionMixin",
+    "MoveActionResponseMixin",
+    "ShowdownActionRequestMixin",
+    "ShowdownInterpreterMixin",
     "ShowdownSpeciesMixin",
     "ShowdownUnbundlerMixin",
     "StartInstructionAccessor",
-    "StartInstructionMixin",
-    "MoveActionResponseMixin",
-    "ShowdownActionRequestMixin",
-    "ShowdownInterpreterMixin"
+    "StartInstructionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
