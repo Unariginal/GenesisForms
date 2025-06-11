@@ -1,9 +1,7 @@
 package me.unariginal.genesisforms;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
-import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.commands.GenesisCommands;
@@ -21,10 +19,8 @@ import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,26 +118,7 @@ public class GenesisForms implements ModInitializer {
             CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
 
             DynamaxHandler.register();
-        });
-
-        ServerPlayConnectionEvents.JOIN.register((serverPlayNetworkHandler, packetSender, server) -> {
-            ServerPlayerEntity player = serverPlayNetworkHandler.player;
-            PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
-            for (Pokemon pokemon : playerPartyStore) {
-                if (pokemon != null) {
-                    FormHandler.revert_forms(pokemon, false);
-                }
-            }
-        });
-
-        ServerPlayConnectionEvents.DISCONNECT.register((serverPlayNetworkHandler, server) -> {
-            ServerPlayerEntity player = serverPlayNetworkHandler.player;
-            PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
-            for (Pokemon pokemon : playerPartyStore) {
-                if (pokemon != null) {
-                    FormHandler.revert_forms(pokemon, false);
-                }
-            }
+            UltraBurstHandler.register();
         });
     }
 

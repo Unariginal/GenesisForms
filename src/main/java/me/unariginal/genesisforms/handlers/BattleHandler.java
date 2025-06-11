@@ -77,9 +77,18 @@ public class BattleHandler {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "key_stone"));
             }
 
-            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand) {
+            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand && !has_teraOrb) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "dynamax_band"));
                 if (!gf.getConfig().useGen9Battles) {
+                    for (Pokemon pokemon : playerPartyStore) {
+                        if (pokemon != null) {
+                            if (pokemon.getSpecies().getName().equalsIgnoreCase("terapagos")) {
+                                event.cancel();
+                                return Unit.INSTANCE;
+                            }
+                        }
+                    }
+
                     try {
                         BattleFormat format = event.getBattle().getFormat();
                         Field field = format.getClass().getDeclaredField("gen");

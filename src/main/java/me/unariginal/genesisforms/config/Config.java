@@ -33,9 +33,9 @@ public class Config {
     public boolean fixOgerponTeraType = true;
     public boolean fixTerapagosTeraType = true;
 
-    public boolean enableDynamax = false;
-    public boolean enableGigantamax = false;
-    public boolean useGen9Battles = false;
+    public boolean enableDynamax = true;
+    public boolean enableGigantamax = true;
+    public boolean useGen9Battles = true;
 
     public boolean enableFusions = true;
 
