@@ -65,15 +65,15 @@ public class MaxSoup extends SimplePolymerItem implements PokemonSelectingItem {
 
     @Override
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
-        if (!this.canUseOnPokemon(pokemon)) return TypedActionResult.fail(itemStack);
+        if (!this.canUseOnPokemon(itemStack, pokemon)) return TypedActionResult.fail(itemStack);
         if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("max_soup") ||
             !GenesisForms.INSTANCE.getConfig().enableDynamax ||
             !GenesisForms.INSTANCE.getConfig().enableGigantamax) return TypedActionResult.fail(itemStack);
         pokemon.setGmaxFactor(!pokemon.getGmaxFactor());
         if (pokemon.getGmaxFactor()) {
-            serverPlayerEntity.sendMessage(TextUtils.deserialize("<green>" + pokemon.getDisplayName().getString() + " can now Gigantamax"), true);
+            serverPlayerEntity.sendMessage(TextUtils.deserialize("<green>" + pokemon.getDisplayName(false).getString() + " can now Gigantamax"), true);
         } else {
-            serverPlayerEntity.sendMessage(TextUtils.deserialize("<red>" + pokemon.getDisplayName().getString() + " can no longer Gigantamax"), true);
+            serverPlayerEntity.sendMessage(TextUtils.deserialize("<red>" + pokemon.getDisplayName(false).getString() + " can no longer Gigantamax"), true);
         }
 
         itemStack.decrementUnlessCreative(1, serverPlayerEntity);
@@ -87,12 +87,12 @@ public class MaxSoup extends SimplePolymerItem implements PokemonSelectingItem {
     }
 
     @Override
-    public boolean canUseOnPokemon(@NotNull Pokemon pokemon) {
+    public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
         return pokemon.getSpecies().getForms().stream().anyMatch(formData -> formData.getLabels().contains("gmax"));
     }
 
     @Override
-    public boolean canUseOnBattlePokemon(@NotNull BattlePokemon battlePokemon) {
+    public boolean canUseOnBattlePokemon(@NotNull ItemStack stack, @NotNull BattlePokemon battlePokemon) {
         return false;
     }
 
