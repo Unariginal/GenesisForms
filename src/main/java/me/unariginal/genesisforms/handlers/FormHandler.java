@@ -7,7 +7,6 @@ import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class FormHandler {
@@ -16,7 +15,6 @@ public class FormHandler {
     public static void revert_forms(Pokemon pokemon, boolean fromBattle) {
         boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
         boolean isGmax = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("gmax"));
-        boolean isUltra = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("ultra"));
 
         ServerPlayerEntity player = pokemon.getOwnerPlayer();
         if (isMega) {
@@ -31,18 +29,13 @@ public class FormHandler {
             new StringSpeciesFeature("dynamax_form", "none").apply(pokemon);
         }
 
-        if (isUltra) {
-            NbtCompound data = pokemon.getPersistentData();
-            if (data.contains("pre_ultra")) {
-                String preUltra = data.getString("pre_ultra");
-                new StringSpeciesFeature("prism_fusion", preUltra).apply(pokemon);
-                new FlagSpeciesFeature("ultra", false).apply(pokemon);
-            }
+        if (pokemon.getAspects().contains("ultra-fusion")) {
+            new StringSpeciesFeature("prism_fusion", pokemon.getPersistentData().getString("prism_fusion")).apply(pokemon);
+            pokemon.getPersistentData().remove("prism_fusion");
         }
 
         switch (pokemon.getSpecies().getName()) {
             case "Aegislash" -> new StringSpeciesFeature("stance_forme", "shield").apply(pokemon);
-            case "Arceus" -> new StringSpeciesFeature("multitype", "normal").apply(pokemon);
             case "Castform" -> new StringSpeciesFeature("forecast_form", "normal").apply(pokemon);
             case "Cherrim" -> new StringSpeciesFeature("blossom_form", "overcast").apply(pokemon);
             case "Cramorant" -> new StringSpeciesFeature("missile_form", "none").apply(pokemon);
@@ -68,6 +61,7 @@ public class FormHandler {
                 }
             }
         }
+        pokemon.updateAspects();
     }
 
     public static Unit form_changes(FormeChangeEvent event) {

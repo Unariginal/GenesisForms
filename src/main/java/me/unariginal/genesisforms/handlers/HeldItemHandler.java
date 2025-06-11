@@ -61,6 +61,8 @@ public class HeldItemHandler {
                     case "stone_plate" -> new StringSpeciesFeature("multitype", "rock").apply(pokemon);
                     case "iron_plate" -> new StringSpeciesFeature("multitype", "steel").apply(pokemon);
                     case "splash_plate" -> new StringSpeciesFeature("multitype", "water").apply(pokemon);
+                    case "legend_plate" -> new StringSpeciesFeature("multitype", "normal").apply(pokemon);
+                    case "blank_plate" -> new StringSpeciesFeature("multitype", "normal").apply(pokemon);
 
                     case "bug_memory" -> new StringSpeciesFeature("rks_memory", "bug").apply(pokemon);
                     case "dark_memory" -> new StringSpeciesFeature("rks_memory", "dark").apply(pokemon);
@@ -114,6 +116,27 @@ public class HeldItemHandler {
                         }
                     }
                 }
+            } else {
+                switch (pokemon.getSpecies().getName()) {
+                    case "Zacian", "Zamazenta" -> new StringSpeciesFeature("behemoth_warrior", "hero").apply(pokemon);
+                    case "Arceus" -> new StringSpeciesFeature("multitype", "normal").apply(pokemon);
+                    case "Silvally" -> new StringSpeciesFeature("rks_memory", "normal").apply(pokemon);
+                    case "Ogerpon" -> {
+                        if (GenesisForms.INSTANCE.getConfig().fixOgerponTeraType)
+                            pokemon.setTeraType(TeraTypes.getGRASS());
+                        new StringSpeciesFeature("ogre_mask", "teal").apply(pokemon);
+                    }
+                    case "Kyogre", "Groudon" -> new StringSpeciesFeature("reversion_state", "standard").apply(pokemon);
+                    case "Genesect" -> new StringSpeciesFeature("techno_drive", "normal").apply(pokemon);
+                    default -> {
+                        for (ItemSettingsConfig.CustomHeldItem item : GenesisForms.INSTANCE.getItemSettings().custom_held_items.values()) {
+                            if (item.species().equalsIgnoreCase(pokemon.getSpecies().getName())) {
+                                new StringSpeciesFeature(item.feature_name(), item.default_feature_value()).apply(pokemon);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         } else if (received.getComponents().contains(DataComponents.Z_CRYSTAL)) {
             if (pokemon.getSpecies().getName().equalsIgnoreCase("arceus")) {
@@ -161,7 +184,6 @@ public class HeldItemHandler {
                     }
                 }
             }
-
         }
     }
 }
