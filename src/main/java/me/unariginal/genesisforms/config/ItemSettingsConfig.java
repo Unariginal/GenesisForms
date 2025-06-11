@@ -337,5 +337,6 @@ public class ItemSettingsConfig {
         item_lore.put("dynamax_candy", List.of("A candy that is packed with energy.", "If consumed, it raises the Dynamax Level of a Pokémon by one.", "A higher level means higher HP when Dynamaxed."));
         item_lore.put("max_honey", List.of("Honey that Dynamax Vespiquen produces. Adding this honey to Max Soup makes the taste very smooth.", "It also has the same effect as a Max Revive."));
         item_lore.put("max_mushrooms", List.of("Mushrooms that have the power of changing Dynamax forms.", "They boost all stats of a Pokémon during battle."));
+        item_lore.put("max_soup", List.of("The soup can be fed to any Pokémon that has a Gigantamax form, which either adds or removes the Gigantamax Factor."));
     }
 }

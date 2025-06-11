@@ -43,6 +43,11 @@ public class MaxMushroomsItem extends BlockItem implements SimpleBagItemLike, Po
 
     public BagItem bagItem = new BagItem() {
         @Override
+        public boolean canStillUse(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull PokemonBattle pokemonBattle, @NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack itemStack) {
+            return false;
+        }
+
+        @Override
         public @NotNull String getItemName() {
             return "max_mushrooms";
         }
@@ -53,7 +58,7 @@ public class MaxMushroomsItem extends BlockItem implements SimpleBagItemLike, Po
         }
 
         @Override
-        public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
+        public boolean canUse(@NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
             return target.getHealth() > 0;
         }
 
@@ -125,7 +130,7 @@ public class MaxMushroomsItem extends BlockItem implements SimpleBagItemLike, Po
                     } else {
                         try {
                             int turn = battle.getTurn();
-                            if (bagItem.canUse(stack, battle, battlePokemon)) {
+                            if (bagItem.canUse(battle, battlePokemon)) {
                                 if (actor.canFitForcedAction() && battlePokemon.getHealth() > 0 && battle.getTurn() == turn) {
                                     player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);
                                     actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));

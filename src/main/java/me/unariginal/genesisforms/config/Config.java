@@ -27,7 +27,6 @@ public class Config {
     public List<CustomMega> customMegaList = new ArrayList<>();
 
     public boolean enableZCrystals = true;
-    public boolean enableUltraBurst = false;
 
     public boolean enableTera = true;
     public boolean fixOgerponTeraType = true;
@@ -172,10 +171,6 @@ public class Config {
             enableZCrystals = zPowerSettings.get("enable_z_crystals").getAsBoolean();
         }
         zPowerSettings.addProperty("enable_z_crystals", enableZCrystals);
-        if (zPowerSettings.get("enable_ultra_burst") != null) {
-            enableUltraBurst = zPowerSettings.get("enable_ultra_burst").getAsBoolean();
-        }
-        zPowerSettings.addProperty("enable_ultra_burst", enableUltraBurst);
         newRoot.add("z_power_settings", zPowerSettings);
 
         JsonObject teraSettings = new JsonObject();
