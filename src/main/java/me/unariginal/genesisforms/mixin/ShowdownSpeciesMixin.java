@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Credit to CobblemonMegas for this Mixin logic!
+ * Adapted from Cobblemon Megas @ davo899 / jornadascobblemon
  */
 @Mixin(PokemonSpecies.ShowdownSpecies.class)
 public class ShowdownSpeciesMixin {

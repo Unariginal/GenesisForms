@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Credit to Mega Showdown for this Mixin logic!
+ * Adapted from Mega Showdown @ yajatkaul
  */
 @Mixin(value = StartInstruction.class, remap = false)
 public class StartInstructionMixin {

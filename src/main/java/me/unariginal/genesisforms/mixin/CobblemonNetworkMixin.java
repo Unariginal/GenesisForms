@@ -13,6 +13,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
+/**
+ * These packets are handled properly in 1.7 Snapshots
+ * Adapted from GMG/Mega Showdown @ yajatkaul
+ */
 @Mixin(CobblemonNetwork.class)
 public class CobblemonNetworkMixin {
     @Inject(method = "generateS2CPacketInfoList", at = @At("RETURN"), remap = false)

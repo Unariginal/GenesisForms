@@ -15,6 +15,9 @@ import net.minecraft.server.world.ServerWorld;
 
 import java.util.*;
 
+/**
+ * Adapted from Mega Showdown @ yajatkaul
+ */
 public class DynamaxHandler {
     private static final GenesisForms gf = GenesisForms.INSTANCE;
     private static final Map<UUID, ScalingData> activeScalingAnimations = new HashMap<>();
