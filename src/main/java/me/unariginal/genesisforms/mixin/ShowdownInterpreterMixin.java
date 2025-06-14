@@ -22,6 +22,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Adapted from GMG/Mega Showdown @ yajatkaul
+ */
 @Mixin(value = ShowdownInterpreter.class, remap = false)
 public abstract class ShowdownInterpreterMixin {
     @Shadow

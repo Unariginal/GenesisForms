@@ -71,12 +71,13 @@ public class MaxSoup extends SimplePolymerItem implements PokemonSelectingItem {
             !GenesisForms.INSTANCE.getConfig().enableGigantamax) return TypedActionResult.fail(itemStack);
         pokemon.setGmaxFactor(!pokemon.getGmaxFactor());
         if (pokemon.getGmaxFactor()) {
-            serverPlayerEntity.sendMessage(TextUtils.deserialize("<green>" + pokemon.getDisplayName(false).getString() + " can now Gigantamax"), true);
+            serverPlayerEntity.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("gmax_factor_applied"), pokemon)), true);
         } else {
-            serverPlayerEntity.sendMessage(TextUtils.deserialize("<red>" + pokemon.getDisplayName(false).getString() + " can no longer Gigantamax"), true);
+            serverPlayerEntity.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("gmax_factor_removed"), pokemon)), true);
         }
-
-        itemStack.decrementUnlessCreative(1, serverPlayerEntity);
+        if (GenesisForms.INSTANCE.getItemSettings().consumableBagItems.contains("max_soup")) {
+            itemStack.decrementUnlessCreative(1, serverPlayerEntity);
+        }
         pokemon.updateAspects();
         return TypedActionResult.success(itemStack);
     }

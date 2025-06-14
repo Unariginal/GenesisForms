@@ -13,6 +13,9 @@ import java.util.Map;
 
 public class ItemSettingsConfig {
     public Map<String, List<String>> item_lore = new HashMap<>();
+    public boolean consumeTeraShards = true;
+    public List<String> consumableBagItems = new ArrayList<>(List.of("dynamax_candy", "max_honey", "max_mushrooms", "max_soup"));
+    public List<String> consumableKeyItems = new ArrayList<>(List.of("pink_nectar", "purple_nectar", "red_nectar", "yellow_nectar"));
     public Map<String, KeyFormItems.FormInformation> custom_key_form_items = new HashMap<>();
     public record CustomHeldItem(String species, String feature_name, String default_feature_value, String feature_value) {}
     public Map<String, CustomHeldItem> custom_held_items = new HashMap<>();
@@ -82,6 +85,44 @@ public class ItemSettingsConfig {
         if (itemSettingsFile.exists()) {
             root = JsonParser.parseReader(new FileReader(itemSettingsFile)).getAsJsonObject();
         }
+
+        JsonObject consumable_items = new JsonObject();
+        if (root.has("consumable_items")) {
+            consumable_items = root.getAsJsonObject("consumable_items");
+        }
+        if (consumable_items.has("consume_tera_shards")) {
+            consumeTeraShards = consumable_items.get("consume_tera_shards").getAsBoolean();
+        }
+        consumable_items.addProperty("consume_tera_shards", consumeTeraShards);
+
+        if (consumable_items.has("bag_items")) {
+            consumableBagItems.clear();
+            JsonArray bag_items = consumable_items.get("bag_items").getAsJsonArray();
+            for (JsonElement bag_item : bag_items) {
+                String item = bag_item.getAsString();
+                consumableBagItems.add(item);
+            }
+        }
+        JsonArray bag_items = new JsonArray();
+        for (String item : consumableBagItems) {
+            bag_items.add(item);
+        }
+        consumable_items.add("bag_items", bag_items);
+
+        if (consumable_items.has("key_items")) {
+            consumableKeyItems.clear();
+            JsonArray key_items = consumable_items.get("key_items").getAsJsonArray();
+            for (JsonElement key_item : key_items) {
+                String item = key_item.getAsString();
+                consumableKeyItems.add(item);
+            }
+        }
+        JsonArray key_items = new JsonArray();
+        for (String item : consumableKeyItems) {
+            key_items.add(item);
+        }
+        consumable_items.add("key_items", key_items);
+        newRoot.add("consumable_items", consumable_items);
 
         JsonObject custom_items = new JsonObject();
         if (root.has("custom_items")) {

@@ -8,6 +8,9 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import me.unariginal.genesisforms.events.UltraBurstEvent;
 import net.fabricmc.fabric.api.event.Event;
 
+/**
+ * Adapted from GMG/Mega Showdown @ yajatkaul
+ */
 public class UltraBurstHandler {
     public static void register () {
         UltraBurstEvent.ULTRA_BURST.register(Event.DEFAULT_PHASE, UltraBurstHandler::onUltra);

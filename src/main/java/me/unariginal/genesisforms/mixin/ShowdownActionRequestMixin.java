@@ -16,6 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
+/**
+ * Adapted from GMG/Mega Showdown @ yajatkaul
+ */
 @Mixin(value = ShowdownActionRequest.class, remap = false)
 public class ShowdownActionRequestMixin {
     @Shadow

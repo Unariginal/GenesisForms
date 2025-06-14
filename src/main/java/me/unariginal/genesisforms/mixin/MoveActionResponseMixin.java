@@ -7,6 +7,9 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.List;
 
+/**
+ * Adapted from GMG/Mega Showdown @ yajatkaul
+ */
 @Mixin(value = MoveActionResponse.class, remap = false)
 public abstract class MoveActionResponseMixin {
 

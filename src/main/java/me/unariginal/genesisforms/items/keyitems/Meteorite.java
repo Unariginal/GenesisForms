@@ -57,6 +57,9 @@ public class Meteorite extends SimplePolymerItem {
                     } else {
                         new StringSpeciesFeature("meteorite_forme", "attack").apply(pokemonEntity.getPokemon());
                     }
+                    if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("meteorite")) {
+                        stack.decrementUnlessCreative(1, player);
+                    }
                 }
             }
         }

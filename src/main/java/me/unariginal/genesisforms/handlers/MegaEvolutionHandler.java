@@ -108,7 +108,7 @@ public class MegaEvolutionHandler {
                 }
             }
         }
-        
+
         PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
         for  (Pokemon pokemon : pcStore) {
             if (pokemon != null) {
@@ -244,7 +244,6 @@ public class MegaEvolutionHandler {
                 } else {
                     new StringSpeciesFeature(gf.getConfig().megaFeatureName, "none").apply(pokemon);
                 }
-                // TODO: Make sure this doesn't break the nuzlocke mod
                 pokemon.setTradeable(true);
             }
         }

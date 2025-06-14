@@ -14,6 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * Adapted from GMG/Mega Showdown @ yajatkaul
+ */
 @Mixin(GraalShowdownUnbundler.class)
 public class ShowdownUnbundlerMixin {
     @Unique

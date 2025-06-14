@@ -5,6 +5,9 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Adapted from Mega Showdown @ yajatkaul
+ */
 public interface DynamaxEvent {
     Event<DynamaxEvent> EVENT = EventFactory.createArrayBacked(DynamaxEvent.class, listeners -> (battle, pokemon, gmax) -> {
         for (DynamaxEvent listener : listeners) {

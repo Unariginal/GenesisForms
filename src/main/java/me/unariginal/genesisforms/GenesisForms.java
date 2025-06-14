@@ -8,6 +8,7 @@ import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.config.ItemSettingsConfig;
+import me.unariginal.genesisforms.config.MessagesConfig;
 import me.unariginal.genesisforms.handlers.*;
 import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
@@ -38,10 +39,10 @@ public class GenesisForms implements ModInitializer {
     private Config config = new Config();
     private ItemSettingsConfig itemSettings = new ItemSettingsConfig();
     private AnimationConfig animationConfig = new AnimationConfig();
+    private MessagesConfig messagesConfig = new MessagesConfig();
 
     private final Map<UUID, Pokemon> players_with_mega = new HashMap<>();
     private final List<UUID> mega_evolved_this_battle = new ArrayList<>();
-    private final List<UUID> ultra_burst_this_battle = new ArrayList<>();
     private final Map<UUID, String> tera_pokemon_entities = new HashMap<>();
 
     @Override
@@ -53,6 +54,17 @@ public class GenesisForms implements ModInitializer {
         PolymerResourcePackUtils.markAsRequired();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
 
+        registerItems();
+
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            this.server = server;
+            this.audiences = FabricServerAudiences.of(server);
+
+            registerEvents();
+        });
+    }
+
+    private void registerItems() {
         KeyFormItems.getInstance().loadKeyItemIds();
         KeyFormItems.getInstance().fillPolymerModelData();
         KeyFormItems.getInstance().fillPolymerItems();
@@ -88,38 +100,31 @@ public class GenesisForms implements ModInitializer {
         ZCrystalHeldItems.getInstance().fillPolymerModelData();
         ZCrystalHeldItems.getInstance().fillPolymerItems();
         ZCrystalHeldItems.getInstance().registerItemGroup();
+    }
 
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            this.server = server;
-            this.audiences = FabricServerAudiences.of(server);
+    private void registerEvents() {
+        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
 
-//            HeldItemProvider.INSTANCE.register(MegaStoneHeldItems.getInstance(), Priority.HIGH);
-//            HeldItemProvider.INSTANCE.register(ZCrystalHeldItems.getInstance(), Priority.HIGH);
-//            HeldItemProvider.INSTANCE.register(HeldItems.getInstance(), Priority.HIGH);
+        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::mega_event);
+        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::pokemon_released);
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::handleMegaRayquaza);
 
-            CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
+        CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, TeraHandler::teraEvent);
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, TeraHandler::revertTera);
+        CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, TeraHandler::setProperTeraTypes);
 
-            CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::mega_event);
-            CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::pokemon_released);
-            CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::handleMegaRayquaza);
+        CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
 
-            CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, TeraHandler::teraEvent);
-            CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, TeraHandler::revertTera);
-            CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, TeraHandler::setProperTeraTypes);
+        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::form_changes);
 
-            CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
+        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battle_started);
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battle_faint);
+        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battle_ended);
+        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battle_fled);
+        CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
 
-            CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::form_changes);
-
-            CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battle_started);
-            CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battle_faint);
-            CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battle_ended);
-            CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battle_fled);
-            CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
-
-            DynamaxHandler.register();
-            UltraBurstHandler.register();
-        });
+        DynamaxHandler.register();
+        UltraBurstHandler.register();
     }
 
     public void logError(String message) {
@@ -144,6 +149,7 @@ public class GenesisForms implements ModInitializer {
         this.config = new Config();
         this.itemSettings = new ItemSettingsConfig();
         this.animationConfig = new AnimationConfig();
+        this.messagesConfig = new MessagesConfig();
     }
 
     public Config getConfig() {
@@ -158,16 +164,16 @@ public class GenesisForms implements ModInitializer {
         return animationConfig;
     }
 
+    public MessagesConfig getMessagesConfig() {
+        return messagesConfig;
+    }
+
     public Map<UUID, Pokemon> getPlayersWithMega() {
         return players_with_mega;
     }
 
     public List<UUID> getMegaEvolvedThisBattle() {
         return mega_evolved_this_battle;
-    }
-
-    public List<UUID> getUltra_burst_this_battle() {
-        return ultra_burst_this_battle;
     }
 
     public Map<UUID, String> getTeraPokemonEntities() {

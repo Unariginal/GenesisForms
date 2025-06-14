@@ -14,7 +14,6 @@ import me.unariginal.genesisforms.data.DataKeys;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
 import me.unariginal.genesisforms.utils.TextUtils;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
@@ -63,14 +62,14 @@ public class ZygardeCube extends SimplePolymerItem {
                     user.getStackInHand(hand).applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false).build());
                     ServerPlayerEntity player = GenesisForms.INSTANCE.getServer().getPlayerManager().getPlayer(user.getUuid());
                     if (player != null) {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize("<gray>Cube Mode: <green>Ability"));
+                        player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("cube_mode_feedback")).replaceAll("%cube_mode%", "Ability")), true);
                     }
                 } else if (NbtUtils.getNbt(user.getStackInHand(hand), GenesisForms.MOD_ID).getString(DataKeys.NBT_CUBE_MODE).equalsIgnoreCase("ability")) {
                     NbtUtils.setNbtString(user.getStackInHand(hand), GenesisForms.MOD_ID, DataKeys.NBT_CUBE_MODE, "form");
                     user.getStackInHand(hand).applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true).build());
                     ServerPlayerEntity player = GenesisForms.INSTANCE.getServer().getPlayerManager().getPlayer(user.getUuid());
                     if (player != null) {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize("<gray>Cube Mode: <green>Form"));
+                        player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("cube_mode_feedback")).replaceAll("%cube_mode%", "Form")), true);
                     }
                 }
             } else {
@@ -99,13 +98,23 @@ public class ZygardeCube extends SimplePolymerItem {
                                     new StringSpeciesFeature("percent_cells", "10").apply(pokemonEntity.getPokemon());
                                     pokemonEntity.getPokemon().setAbility$common(ability);
                                 }
+                                // Note to whoever enabled this: why?
+                                if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("zygarde_cube")) {
+                                    stack.decrementUnlessCreative(1, player);
+                                }
                             } else if (NbtUtils.getNbt(stack, GenesisForms.MOD_ID).getString(DataKeys.NBT_CUBE_MODE).equalsIgnoreCase("ability")) {
                                 swapAbility(pokemonEntity.getPokemon());
+                                if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("zygarde_cube")) {
+                                    stack.decrementUnlessCreative(1, player);
+                                }
                             }
                         } else {
                             NbtUtils.setNbtString(stack, GenesisForms.MOD_ID, DataKeys.NBT_CUBE_MODE, "ability");
                             stack.applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false).build());
                             swapAbility(pokemonEntity.getPokemon());
+                            if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("zygarde_cube")) {
+                                stack.decrementUnlessCreative(1, player);
+                            }
                         }
                     }
                 }

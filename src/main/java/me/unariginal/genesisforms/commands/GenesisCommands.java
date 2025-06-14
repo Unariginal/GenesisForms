@@ -14,6 +14,7 @@ import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
+import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.ItemStack;
@@ -27,246 +28,262 @@ import java.util.List;
 import java.util.Set;
 
 public class GenesisCommands {
+    private final GenesisForms gf = GenesisForms.INSTANCE;
+
     public GenesisCommands() {
-        CommandRegistrationCallback.EVENT.register((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> {
-            commandDispatcher.register(
-                    CommandManager.literal("genesis")
-                            .then(
-                                    CommandManager.literal("giveMegaStone")
-                                            .requires(Permissions.require("genesisforms.giveMegaStone", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .then(
-                                                                    CommandManager.argument("mega-stone", StringArgumentType.string())
-                                                                            .suggests((context, builder) -> {
-                                                                                MegaStoneHeldItems.getInstance().getAllMegaStoneIds().forEach(builder::suggest);
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                                if (player == null) return 0;
-                                                                                player.giveItemStack(MegaStoneHeldItems.getInstance().getMegaStoneItem(
-                                                                                        StringArgumentType.getString(ctx, "mega-stone")
-                                                                                ).copy());
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("giveZCrystal")
-                                            .requires(Permissions.require("genesisforms.giveZCrystal", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .then(
-                                                                    CommandManager.argument("z-crystal", StringArgumentType.string())
-                                                                            .suggests((ctx, builder) -> {
-                                                                                for (String id : ZCrystalHeldItems.getInstance().getAllZCrystalIds()) {
-                                                                                    builder.suggest(id);
-                                                                                }
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                                if (player == null) return 0;
-                                                                                player.giveItemStack(ZCrystalHeldItems.getInstance().getZCrystalItem(
-                                                                                        StringArgumentType.getString(ctx, "z-crystal")
-                                                                                ).copy());
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("giveHeldItem")
-                                            .requires(Permissions.require("genesisforms.giveHeldItem", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .then(
-                                                                    CommandManager.argument("held-item", StringArgumentType.string())
-                                                                            .suggests((context, builder) -> {
-                                                                                HeldItems.getInstance().getAllHeldItemIds().forEach(builder::suggest);
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                                if (player == null) return 0;
-                                                                                player.giveItemStack(HeldItems.getInstance().getHeldItem(
-                                                                                        StringArgumentType.getString(ctx, "held-item")
-                                                                                ).copy());
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("giveKeyItem")
-                                            .requires(Permissions.require("genesisforms.giveKeyItem", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .then(
-                                                                    CommandManager.argument("key-item", StringArgumentType.string())
-                                                                            .suggests((context, builder) -> {
-                                                                                KeyItems.keyItemStacks.keySet().forEach(builder::suggest);
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                                if (player == null) return 0;
-                                                                                player.giveItemStack(KeyItems.keyItemStacks.get(
-                                                                                        StringArgumentType.getString(ctx, "key-item")
-                                                                                ).copy());
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("giveBagItem")
-                                            .requires(Permissions.require("genesisforms.giveBagItem", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .then(
-                                                                    CommandManager.argument("bag-item", StringArgumentType.string())
-                                                                            .suggests((context, builder) -> {
-                                                                                BagItems.bagItemStacks.keySet().forEach(builder::suggest);
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                                if (player == null) return 0;
-                                                                                player.giveItemStack(BagItems.bagItemStacks.get(
-                                                                                        StringArgumentType.getString(ctx, "bag-item")
-                                                                                ).copy());
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("giveTeraShard")
-                                            .requires(Permissions.require("genesisforms.giveTeraShard", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .then(
-                                                                    CommandManager.argument("tera-shard", StringArgumentType.string())
-                                                                            .suggests((ctx, builder) -> {
-                                                                                TeraShardBagItems.getInstance().getAllTeraShardIds().forEach(builder::suggest);
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                                if (player == null) return 0;
-                                                                                player.giveItemStack(TeraShardBagItems.getInstance().getTeraShard(StringArgumentType.getString(ctx, "tera-shard")).copy());
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("resetData")
-                                            .requires(Permissions.require("genesisforms.resetData", 4))
-                                            .then(
-                                                    CommandManager.argument("player", EntityArgumentType.player())
-                                                            .executes(ctx -> {
-                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
-                                                                if (GenesisForms.INSTANCE.getPlayersWithMega().containsKey(player.getUuid())) {
-                                                                    FormHandler.revert_forms(GenesisForms.INSTANCE.getPlayersWithMega().get(player.getUuid()), false);
-                                                                    GenesisForms.INSTANCE.getPlayersWithMega().remove(player.getUuid());
-                                                                }
-                                                                GenesisForms.INSTANCE.getMegaEvolvedThisBattle().remove(player.getUuid());
-                                                                GenesisForms.INSTANCE.getUltra_burst_this_battle().remove(player.getUuid());
-                                                                Set<Identifier> keyItems = Cobblemon.playerDataManager.getGenericData(player).getKeyItems();
-                                                                keyItems.remove(Identifier.of("cobblemon", "key_stone"));
-                                                                keyItems.remove(Identifier.of("cobblemon", "dynamax_band"));
-                                                                keyItems.remove(Identifier.of("cobblemon", "z_ring"));
-                                                                keyItems.remove(Identifier.of("cobblemon", "tera_orb"));
+        CommandRegistrationCallback.EVENT.register((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> commandDispatcher.register(
+                CommandManager.literal("genesis")
+                        .then(
+                                CommandManager.literal("giveMegaStone")
+                                        .requires(Permissions.require("genesisforms.giveMegaStone", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .then(
+                                                                CommandManager.argument("mega-stone", StringArgumentType.string())
+                                                                        .suggests((context, builder) -> {
+                                                                            MegaStoneHeldItems.getInstance().getAllMegaStoneIds().forEach(builder::suggest);
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                                            if (player == null) return 0;
+                                                                            ItemStack toGive = MegaStoneHeldItems.getInstance().getMegaStoneItem(StringArgumentType.getString(ctx, "mega-stone")).copy();
+                                                                            player.giveItemStack(toGive);
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("giveZCrystal")
+                                        .requires(Permissions.require("genesisforms.giveZCrystal", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .then(
+                                                                CommandManager.argument("z-crystal", StringArgumentType.string())
+                                                                        .suggests((ctx, builder) -> {
+                                                                            for (String id : ZCrystalHeldItems.getInstance().getAllZCrystalIds()) {
+                                                                                builder.suggest(id);
+                                                                            }
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                                            if (player == null) return 0;
+                                                                            ItemStack toGive = ZCrystalHeldItems.getInstance().getZCrystalItem(StringArgumentType.getString(ctx, "z-crystal")).copy();
+                                                                            player.giveItemStack(toGive);
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("giveHeldItem")
+                                        .requires(Permissions.require("genesisforms.giveHeldItem", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .then(
+                                                                CommandManager.argument("held-item", StringArgumentType.string())
+                                                                        .suggests((context, builder) -> {
+                                                                            HeldItems.getInstance().getAllHeldItemIds().forEach(builder::suggest);
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                                            if (player == null) return 0;
+                                                                            ItemStack toGive = HeldItems.getInstance().getHeldItem(StringArgumentType.getString(ctx, "held-item")).copy();
+                                                                            player.giveItemStack(toGive);
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("giveKeyItem")
+                                        .requires(Permissions.require("genesisforms.giveKeyItem", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .then(
+                                                                CommandManager.argument("key-item", StringArgumentType.string())
+                                                                        .suggests((context, builder) -> {
+                                                                            KeyItems.keyItemStacks.keySet().forEach(builder::suggest);
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                                            if (player == null) return 0;
+                                                                            ItemStack toGive = KeyItems.keyItemStacks.get(StringArgumentType.getString(ctx, "key-item")).copy();
+                                                                            player.giveItemStack(toGive);
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("giveBagItem")
+                                        .requires(Permissions.require("genesisforms.giveBagItem", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .then(
+                                                                CommandManager.argument("bag-item", StringArgumentType.string())
+                                                                        .suggests((context, builder) -> {
+                                                                            BagItems.bagItemStacks.keySet().forEach(builder::suggest);
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                                            if (player == null) return 0;
+                                                                            ItemStack toGive = BagItems.bagItemStacks.get(StringArgumentType.getString(ctx, "bag-item")).copy();
+                                                                            player.giveItemStack(toGive);
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("giveTeraShard")
+                                        .requires(Permissions.require("genesisforms.giveTeraShard", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .then(
+                                                                CommandManager.argument("tera-shard", StringArgumentType.string())
+                                                                        .suggests((ctx, builder) -> {
+                                                                            TeraShardBagItems.getInstance().getAllTeraShardIds().forEach(builder::suggest);
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                                            if (player == null) return 0;
+                                                                            ItemStack toGive = TeraShardBagItems.getInstance().getTeraShard(StringArgumentType.getString(ctx, "tera-shard")).copy();
+                                                                            player.giveItemStack(toGive);
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("resetData")
+                                        .requires(Permissions.require("genesisforms.resetData", 4))
+                                        .then(
+                                                CommandManager.argument("player", EntityArgumentType.player())
+                                                        .executes(ctx -> {
+                                                            ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
+                                                            if (gf.getPlayersWithMega().containsKey(player.getUuid())) {
+                                                                FormHandler.revert_forms(gf.getPlayersWithMega().get(player.getUuid()), false);
+                                                                gf.getPlayersWithMega().remove(player.getUuid());
+                                                            }
+                                                            gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                                                            Set<Identifier> keyItems = Cobblemon.playerDataManager.getGenericData(player).getKeyItems();
+                                                            keyItems.remove(Identifier.of("cobblemon", "key_stone"));
+                                                            keyItems.remove(Identifier.of("cobblemon", "dynamax_band"));
+                                                            keyItems.remove(Identifier.of("cobblemon", "z_ring"));
+                                                            keyItems.remove(Identifier.of("cobblemon", "tera_orb"));
 
-                                                                return 1;
-                                                            })
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("reload")
-                                            .requires(Permissions.require("genesisforms.reload", 4))
-                                            .executes(ctx -> {
-                                                GenesisForms.INSTANCE.reload();
-                                                return 1;
-                                            })
-                            )
-                            .then(
-                                    CommandManager.literal("testParticles")
-                                            .requires(Permissions.require("genesisforms.testParticles", 4))
-                                            .then(
-                                                    CommandManager.argument("identifier", StringArgumentType.string())
-                                                            .then(
-                                                                    CommandManager.argument("boolean", StringArgumentType.string())
-                                                                            .suggests((ctx, builder) -> {
-                                                                                builder.suggest("true");
-                                                                                builder.suggest("false");
-                                                                                return builder.buildFuture();
-                                                                            })
-                                                                            .executes(ctx -> {
-                                                                                if (ctx.getSource().getPlayer() == null) return 0;
-                                                                                new SpawnSnowstormParticlePacket(Identifier.of("cobblemon:" + StringArgumentType.getString(ctx, "identifier")), ctx.getSource().getPlayer().getPos().add(2, 0.5, 0)).sendToPlayersAround(ctx.getSource().getPlayer().getX(), ctx.getSource().getPlayer().getY(), ctx.getSource().getPlayer().getZ(), 64.0, ctx.getSource().getPlayer().getWorld().getRegistryKey(), (p) -> Boolean.getBoolean(StringArgumentType.getString(ctx, "boolean")));
-                                                                                return 1;
-                                                                            })
-                                                            )
-                                            )
-                            )
-                            .then(
-                                    CommandManager.literal("convert-item")
-                                            .requires(Permissions.require("genesisforms.convertItem", 4))
-                                            .then(
-                                                    CommandManager.literal("hand")
-                                                            .requires(Permissions.require("genesisforms.convertItem.hand", 4))
-                                                            .executes(ctx -> {
-                                                                if (ctx.getSource().getPlayer() == null) return 0;
-                                                                ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reset_data_command"), player)));
 
-                                                                ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
+                                                            return 1;
+                                                        })
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("reload")
+                                        .requires(Permissions.require("genesisforms.reload", 4))
+                                        .executes(ctx -> {
+                                            gf.reload();
+                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reload_command"))));
+                                            return 1;
+                                        })
+                        )
+                        .then(
+                                CommandManager.literal("testParticles")
+                                        .requires(Permissions.require("genesisforms.testParticles", 4))
+                                        .then(
+                                                CommandManager.argument("identifier", StringArgumentType.string())
+                                                        .then(
+                                                                CommandManager.argument("boolean", StringArgumentType.string())
+                                                                        .suggests((ctx, builder) -> {
+                                                                            builder.suggest("true");
+                                                                            builder.suggest("false");
+                                                                            return builder.buildFuture();
+                                                                        })
+                                                                        .executes(ctx -> {
+                                                                            if (ctx.getSource().getPlayer() == null) return 0;
+                                                                            new SpawnSnowstormParticlePacket(Identifier.of("cobblemon:" + StringArgumentType.getString(ctx, "identifier")), ctx.getSource().getPlayer().getPos().add(2, 0.5, 0)).sendToPlayersAround(ctx.getSource().getPlayer().getX(), ctx.getSource().getPlayer().getY(), ctx.getSource().getPlayer().getZ(), 64.0, ctx.getSource().getPlayer().getWorld().getRegistryKey(), (p) -> Boolean.getBoolean(StringArgumentType.getString(ctx, "boolean")));
+                                                                            return 1;
+                                                                        })
+                                                        )
+                                        )
+                        )
+                        .then(
+                                CommandManager.literal("convert-item")
+                                        .requires(Permissions.require("genesisforms.convertItem", 4))
+                                        .then(
+                                                CommandManager.literal("hand")
+                                                        .requires(Permissions.require("genesisforms.convertItem.hand", 4))
+                                                        .executes(ctx -> {
+                                                            if (ctx.getSource().getPlayer() == null) return 0;
+                                                            ServerPlayerEntity player = ctx.getSource().getPlayer();
+
+                                                            ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
+                                                            ItemStack converted = convertItem(stack);
+                                                            if (converted == null) return 0;
+                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("convert_command_hand"), player, stack, converted, stack.getCount())));
+                                                            stack.decrement(stack.getCount());
+                                                            player.giveItemStack(converted);
+
+                                                            return 1;
+                                                        })
+                                        )
+                                        .then(
+                                                CommandManager.literal("inventory")
+                                                        .requires(Permissions.require("genesisforms.convertItem.inventory", 4))
+                                                        .executes(ctx -> {
+                                                            if (ctx.getSource().getPlayer() == null) return 0;
+                                                            ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                                            int convertedCount = 0;
+                                                            for (ItemStack stack : player.getInventory().main) {
                                                                 ItemStack converted = convertItem(stack);
-                                                                if (converted == null) return 0;
+                                                                if (converted == null) continue;
+                                                                convertedCount += stack.getCount();
                                                                 stack.decrement(stack.getCount());
                                                                 player.giveItemStack(converted);
-
-                                                                return 1;
-                                                            })
-                                            )
-                                            .then(
-                                                    CommandManager.literal("inventory")
-                                                            .requires(Permissions.require("genesisforms.convertItem.inventory", 4))
-                                                            .executes(ctx -> {
-                                                                if (ctx.getSource().getPlayer() == null) return 0;
-                                                                ServerPlayerEntity player = ctx.getSource().getPlayer();
-                                                                for (ItemStack stack : player.getInventory().main) {
-                                                                    ItemStack converted = convertItem(stack);
-                                                                    if (converted == null) continue;
-                                                                    stack.decrement(stack.getCount());
-                                                                    player.giveItemStack(converted);
-                                                                }
-                                                                for (ItemStack stack : player.getInventory().offHand) {
-                                                                    ItemStack converted = convertItem(stack);
-                                                                    if (converted == null) continue;
-                                                                    stack.decrement(stack.getCount());
-                                                                    player.giveItemStack(converted);
-                                                                }
-                                                                for (ItemStack stack : player.getInventory().armor) {
-                                                                    ItemStack converted = convertItem(stack);
-                                                                    if (converted == null) continue;
-                                                                    stack.decrement(stack.getCount());
-                                                                    player.giveItemStack(converted);
-                                                                }
-                                                                return 1;
-                                                            })
-                                            )
-                            )
-            );
-        });
+                                                            }
+                                                            for (ItemStack stack : player.getInventory().offHand) {
+                                                                ItemStack converted = convertItem(stack);
+                                                                if (converted == null) continue;
+                                                                convertedCount += stack.getCount();
+                                                                stack.decrement(stack.getCount());
+                                                                player.giveItemStack(converted);
+                                                            }
+                                                            for (ItemStack stack : player.getInventory().armor) {
+                                                                ItemStack converted = convertItem(stack);
+                                                                if (converted == null) continue;
+                                                                convertedCount += stack.getCount();
+                                                                stack.decrement(stack.getCount());
+                                                                player.giveItemStack(converted);
+                                                            }
+                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("convert_command_inventory"), player, null, null, convertedCount)));
+                                                            return 1;
+                                                        })
+                                        )
+                        )
+        ));
     }
 
     public ItemStack convertItem(ItemStack itemStack) {
-        for (Config.ItemConversion itemConversion : GenesisForms.INSTANCE.getConfig().itemConversions) {
+        for (Config.ItemConversion itemConversion : gf.getConfig().itemConversions) {
             if (itemConversion.input().contains(":")) {
                 if (Registries.ITEM.containsId(Identifier.of(itemConversion.input()))) {
                     if (itemStack.getRegistryEntry().matchesId(Identifier.of(itemConversion.input()))) {
@@ -275,7 +292,7 @@ public class GenesisCommands {
                             returnStack.setCount(itemStack.getCount());
                             return returnStack;
                         } else {
-                            GenesisForms.INSTANCE.logError("Invalid output item: " + itemConversion.output());
+                            gf.logError("Invalid output item: " + itemConversion.output());
                             return null;
                         }
                     }
@@ -288,7 +305,7 @@ public class GenesisCommands {
                     returnStack.setCount(itemStack.getCount());
                     return returnStack;
                 } else {
-                    GenesisForms.INSTANCE.logError("Invalid output item: " + itemConversion.output());
+                    gf.logError("Invalid output item: " + itemConversion.output());
                     return null;
                 }
             }
@@ -300,7 +317,7 @@ public class GenesisCommands {
                         returnStack.setCount(itemStack.getCount());
                         return returnStack;
                     } else {
-                        GenesisForms.INSTANCE.logError("Invalid output item: " + itemConversion.output());
+                        gf.logError("Invalid output item: " + itemConversion.output());
                         return null;
                     }
                 }

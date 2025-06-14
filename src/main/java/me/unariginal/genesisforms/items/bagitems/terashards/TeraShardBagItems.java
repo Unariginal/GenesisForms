@@ -142,7 +142,10 @@ public class TeraShardBagItems {
                                 if (!pokemon.getSpecies().getName().equalsIgnoreCase("ogerpon") && !pokemon.getSpecies().getName().equalsIgnoreCase("terapagos")) {
                                     if (!pokemon.getTeraType().getId().equals(TeraShardBagItems.getInstance().getTeraType(id).getId())) {
                                         pokemon.setTeraType(TeraShardBagItems.getInstance().getTeraType(id));
-                                        player.getStackInHand(hand).decrement(1);
+                                        if (GenesisForms.INSTANCE.getItemSettings().consumeTeraShards) {
+                                            player.getStackInHand(hand).decrementUnlessCreative(1, player);
+                                        }
+                                        player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("tera_type_changed"), pokemon)), true);
                                     }
                                 }
                             }

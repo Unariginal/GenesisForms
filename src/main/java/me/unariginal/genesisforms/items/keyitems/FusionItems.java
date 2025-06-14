@@ -116,7 +116,9 @@ public class FusionItems {
                                                 properties.setSpecies(fuelPokemon.species());
                                                 new StringSpeciesFeature(fuelPokemon.featureName(), "none").apply(pokemonEntity.getPokemon());
                                                 partyStore.add(properties.create());
-
+                                                if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains(id)) {
+                                                    stack.decrementUnlessCreative(1, player);
+                                                }
                                                 break;
                                             }
                                         }
@@ -129,6 +131,9 @@ public class FusionItems {
                                                             new StringSpeciesFeature(fuelPokemon.featureName(), fuelPokemon.featureValue()).apply(pokemonEntity.getPokemon());
                                                             pokemonEntity.getPokemon().setPersistentData$common(PokemonUtils.saveToNBT(pokemon.createPokemonProperties(PokemonPropertyExtractor.ALL)));
                                                             partyStore.remove(pokemon);
+                                                            if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains(id)) {
+                                                                stack.decrementUnlessCreative(1, player);
+                                                            }
                                                             break partyLoop;
                                                         }
                                                     }
