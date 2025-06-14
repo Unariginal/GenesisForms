@@ -49,8 +49,8 @@ public class GenesisCommands {
                                                                             if (player == null) return 0;
                                                                             ItemStack toGive = MegaStoneHeldItems.getInstance().getMegaStoneItem(StringArgumentType.getString(ctx, "mega-stone")).copy();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Received " + toGive.getName().getString()));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Gave " + toGive.getName().getString() + " to " + player.getNameForScoreboard()));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -74,8 +74,8 @@ public class GenesisCommands {
                                                                             if (player == null) return 0;
                                                                             ItemStack toGive = ZCrystalHeldItems.getInstance().getZCrystalItem(StringArgumentType.getString(ctx, "z-crystal")).copy();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Received " + toGive.getName().getString()));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Gave " + toGive.getName().getString() + " to " + player.getNameForScoreboard()));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -97,8 +97,8 @@ public class GenesisCommands {
                                                                             if (player == null) return 0;
                                                                             ItemStack toGive = HeldItems.getInstance().getHeldItem(StringArgumentType.getString(ctx, "held-item")).copy();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Received " + toGive.getName().getString()));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Gave " + toGive.getName().getString() + " to " + player.getNameForScoreboard()));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -120,8 +120,8 @@ public class GenesisCommands {
                                                                             if (player == null) return 0;
                                                                             ItemStack toGive = KeyItems.keyItemStacks.get(StringArgumentType.getString(ctx, "key-item")).copy();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Received " + toGive.getName().getString()));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Gave " + toGive.getName().getString() + " to " + player.getNameForScoreboard()));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -143,8 +143,8 @@ public class GenesisCommands {
                                                                             if (player == null) return 0;
                                                                             ItemStack toGive = BagItems.bagItemStacks.get(StringArgumentType.getString(ctx, "bag-item")).copy();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Received " + toGive.getName().getString()));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Gave " + toGive.getName().getString() + " to " + player.getNameForScoreboard()));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -166,8 +166,8 @@ public class GenesisCommands {
                                                                             if (player == null) return 0;
                                                                             ItemStack toGive = TeraShardBagItems.getInstance().getTeraShard(StringArgumentType.getString(ctx, "tera-shard")).copy();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Received " + toGive.getName().getString()));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Gave " + toGive.getName().getString() + " to " + player.getNameForScoreboard()));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -191,7 +191,7 @@ public class GenesisCommands {
                                                             keyItems.remove(Identifier.of("cobblemon", "z_ring"));
                                                             keyItems.remove(Identifier.of("cobblemon", "tera_orb"));
 
-                                                            ctx.getSource().sendMessage(TextUtils.deserialize("[Genesis] Reset " + player.getNameForScoreboard() + "'s internal form data."));
+                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reset_data_command"), player)));
 
                                                             return 1;
                                                         })
@@ -202,7 +202,7 @@ public class GenesisCommands {
                                         .requires(Permissions.require("genesisforms.reload", 4))
                                         .executes(ctx -> {
                                             gf.reload();
-                                            ctx.getSource().sendMessage(TextUtils.deserialize("<green>[Genesis] Reloaded!"));
+                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reload_command"))));
                                             return 1;
                                         })
                         )
@@ -239,7 +239,7 @@ public class GenesisCommands {
                                                             ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
                                                             ItemStack converted = convertItem(stack);
                                                             if (converted == null) return 0;
-                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Converted " + stack.getName().getString() + " to " + converted.getName().getString() + "!"));
+                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("convert_command_hand"), player, stack, converted, stack.getCount())));
                                                             stack.decrement(stack.getCount());
                                                             player.giveItemStack(converted);
 
@@ -256,25 +256,25 @@ public class GenesisCommands {
                                                             for (ItemStack stack : player.getInventory().main) {
                                                                 ItemStack converted = convertItem(stack);
                                                                 if (converted == null) continue;
+                                                                convertedCount += stack.getCount();
                                                                 stack.decrement(stack.getCount());
                                                                 player.giveItemStack(converted);
-                                                                convertedCount++;
                                                             }
                                                             for (ItemStack stack : player.getInventory().offHand) {
                                                                 ItemStack converted = convertItem(stack);
                                                                 if (converted == null) continue;
+                                                                convertedCount += stack.getCount();
                                                                 stack.decrement(stack.getCount());
                                                                 player.giveItemStack(converted);
-                                                                convertedCount++;
                                                             }
                                                             for (ItemStack stack : player.getInventory().armor) {
                                                                 ItemStack converted = convertItem(stack);
                                                                 if (converted == null) continue;
+                                                                convertedCount += stack.getCount();
                                                                 stack.decrement(stack.getCount());
                                                                 player.giveItemStack(converted);
-                                                                convertedCount++;
                                                             }
-                                                            player.sendMessage(TextUtils.deserialize("[Genesis] Converted " + convertedCount + " items!"));
+                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("convert_command_inventory"), player, null, null, convertedCount)));
                                                             return 1;
                                                         })
                                         )

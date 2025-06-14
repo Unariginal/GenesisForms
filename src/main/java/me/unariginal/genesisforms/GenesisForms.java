@@ -8,6 +8,7 @@ import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.config.ItemSettingsConfig;
+import me.unariginal.genesisforms.config.MessagesConfig;
 import me.unariginal.genesisforms.handlers.*;
 import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
@@ -38,6 +39,7 @@ public class GenesisForms implements ModInitializer {
     private Config config = new Config();
     private ItemSettingsConfig itemSettings = new ItemSettingsConfig();
     private AnimationConfig animationConfig = new AnimationConfig();
+    private MessagesConfig messagesConfig = new MessagesConfig();
 
     private final Map<UUID, Pokemon> players_with_mega = new HashMap<>();
     private final List<UUID> mega_evolved_this_battle = new ArrayList<>();
@@ -147,6 +149,7 @@ public class GenesisForms implements ModInitializer {
         this.config = new Config();
         this.itemSettings = new ItemSettingsConfig();
         this.animationConfig = new AnimationConfig();
+        this.messagesConfig = new MessagesConfig();
     }
 
     public Config getConfig() {
@@ -159,6 +162,10 @@ public class GenesisForms implements ModInitializer {
 
     public AnimationConfig getAnimationConfig() {
         return animationConfig;
+    }
+
+    public MessagesConfig getMessagesConfig() {
+        return messagesConfig;
     }
 
     public Map<UUID, Pokemon> getPlayersWithMega() {

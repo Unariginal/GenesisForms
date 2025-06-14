@@ -143,6 +143,7 @@ public class TeraShardBagItems {
                                     if (!pokemon.getTeraType().getId().equals(TeraShardBagItems.getInstance().getTeraType(id).getId())) {
                                         pokemon.setTeraType(TeraShardBagItems.getInstance().getTeraType(id));
                                         player.getStackInHand(hand).decrement(1);
+                                        player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("tera_type_changed"), pokemon)), true);
                                     }
                                 }
                             }
