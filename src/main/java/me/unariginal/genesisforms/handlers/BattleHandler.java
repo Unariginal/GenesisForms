@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.data.DataComponents;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -40,9 +41,44 @@ public class BattleHandler {
             boolean has_teraOrb = false;
 
             List<ItemStack> inventory = new ArrayList<>();
-            inventory.addAll(player.getInventory().main);
-            inventory.addAll(player.getInventory().offHand);
-            inventory.addAll(player.getInventory().armor);
+            if (gf.getConfig().useHotbarInventory) {
+                for (ItemStack itemStack : player.getInventory().main) {
+                    if (PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack))) {
+                        inventory.add(itemStack);
+                    }
+                }
+            }
+            if (gf.getConfig().useMainInventory) {
+                for (ItemStack itemStack : player.getInventory().main) {
+                    if (!inventory.contains(itemStack)) {
+                        inventory.add(itemStack);
+                    }
+                }
+            }
+            if (gf.getConfig().useMainHandInventory) {
+                if (!inventory.contains(player.getMainHandStack())) {
+                    inventory.add(player.getMainHandStack());
+                }
+            }
+            if (gf.getConfig().useOffHandInventory) {
+                if (!inventory.contains(player.getOffHandStack())) {
+                    inventory.add(player.getOffHandStack());
+                }
+            }
+            if (gf.getConfig().useArmorInventory) {
+                for (ItemStack itemStack : player.getArmorItems()) {
+                    if (!inventory.contains(itemStack)) {
+                        inventory.add(itemStack);
+                    }
+                }
+            }
+            for (int slot : gf.getConfig().specificSlots) {
+                ItemStack stack = player.getInventory().getStack(slot);
+                if (!stack.isEmpty() && !inventory.contains(stack)) {
+                    inventory.add(stack);
+                }
+            }
+
             for (ItemStack itemStack : inventory) {
                 if (!itemStack.getComponents().contains(DataComponents.KEY_ITEM)) continue;
                 String key_item = itemStack.getComponents().get(DataComponents.KEY_ITEM);
@@ -73,11 +109,11 @@ public class BattleHandler {
             playerData.getKeyItems().remove(Identifier.of("cobblemon", "z_ring"));
             playerData.getKeyItems().remove(Identifier.of("cobblemon", "tera_orb"));
 
-            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("key_stone") && gf.getConfig().enableMegaEvolution && has_keyStone) {
+            if (!gf.getConfig().disabledItems.contains("key_stone") && gf.getConfig().enableMegaEvolution && has_keyStone) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "key_stone"));
             }
 
-            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand && !has_teraOrb) {
+            if (!gf.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand && !has_teraOrb) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "dynamax_band"));
                 if (!gf.getConfig().useGen9Battles) {
                     for (Pokemon pokemon : playerPartyStore) {
@@ -101,11 +137,11 @@ public class BattleHandler {
                 }
             }
 
-            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && has_zRing) {
+            if (!gf.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && has_zRing) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "z_ring"));
             }
 
-            if (!GenesisForms.INSTANCE.getConfig().disabledItems.contains("tera_orb") && gf.getConfig().enableTera && has_teraOrb) {
+            if (!gf.getConfig().disabledItems.contains("tera_orb") && gf.getConfig().enableTera && has_teraOrb) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "tera_orb"));
             }
         }

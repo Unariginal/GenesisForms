@@ -41,7 +41,6 @@ public class GenesisForms implements ModInitializer {
 
     private final Map<UUID, Pokemon> players_with_mega = new HashMap<>();
     private final List<UUID> mega_evolved_this_battle = new ArrayList<>();
-    private final List<UUID> ultra_burst_this_battle = new ArrayList<>();
     private final Map<UUID, String> tera_pokemon_entities = new HashMap<>();
 
     @Override
@@ -92,10 +91,6 @@ public class GenesisForms implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             this.server = server;
             this.audiences = FabricServerAudiences.of(server);
-
-//            HeldItemProvider.INSTANCE.register(MegaStoneHeldItems.getInstance(), Priority.HIGH);
-//            HeldItemProvider.INSTANCE.register(ZCrystalHeldItems.getInstance(), Priority.HIGH);
-//            HeldItemProvider.INSTANCE.register(HeldItems.getInstance(), Priority.HIGH);
 
             CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
 
@@ -164,10 +159,6 @@ public class GenesisForms implements ModInitializer {
 
     public List<UUID> getMegaEvolvedThisBattle() {
         return mega_evolved_this_battle;
-    }
-
-    public List<UUID> getUltra_burst_this_battle() {
-        return ultra_burst_this_battle;
     }
 
     public Map<UUID, String> getTeraPokemonEntities() {

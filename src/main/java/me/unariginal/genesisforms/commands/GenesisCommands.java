@@ -175,7 +175,6 @@ public class GenesisCommands {
                                                                     GenesisForms.INSTANCE.getPlayersWithMega().remove(player.getUuid());
                                                                 }
                                                                 GenesisForms.INSTANCE.getMegaEvolvedThisBattle().remove(player.getUuid());
-                                                                GenesisForms.INSTANCE.getUltra_burst_this_battle().remove(player.getUuid());
                                                                 Set<Identifier> keyItems = Cobblemon.playerDataManager.getGenericData(player).getKeyItems();
                                                                 keyItems.remove(Identifier.of("cobblemon", "key_stone"));
                                                                 keyItems.remove(Identifier.of("cobblemon", "dynamax_band"));

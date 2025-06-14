@@ -11,6 +11,12 @@ import java.util.List;
 public class Config {
     public boolean debug = false;
 
+    public boolean useHotbarInventory = true;
+    public boolean useMainInventory = true;
+    public boolean useMainHandInventory = true;
+    public boolean useOffHandInventory = true;
+    public boolean useArmorInventory = false;
+    public List<Integer> specificSlots = new ArrayList<>();
     public List<String> disabledItems = new ArrayList<>();
     public record ItemConversion(String input, String output) {}
     public List<ItemConversion> itemConversions = new ArrayList<>();
@@ -68,6 +74,39 @@ public class Config {
         if (root.get("general_settings") != null) {
             generalSettings = root.get("general_settings").getAsJsonObject();
         }
+
+        JsonObject keyItemSlots = new JsonObject();
+        if (root.has("key_item_slots")) {
+            keyItemSlots = root.get("key_item_slots").getAsJsonObject();
+        }
+        if (keyItemSlots.has("hotbar")) {
+            useHotbarInventory = keyItemSlots.get("hotbar").getAsBoolean();
+        }
+        keyItemSlots.addProperty("hotbar", useHotbarInventory);
+        if (keyItemSlots.has("main")) {
+            useMainInventory = keyItemSlots.get("main").getAsBoolean();
+        }
+        keyItemSlots.addProperty("main", useMainInventory);
+        if (keyItemSlots.has("offhand")) {
+            useMainHandInventory = keyItemSlots.get("offhand").getAsBoolean();
+        }
+        keyItemSlots.addProperty("offhand", useMainHandInventory);
+        if (keyItemSlots.has("armor")) {
+            useMainHandInventory = keyItemSlots.get("armor").getAsBoolean();
+        }
+        keyItemSlots.addProperty("armor", useMainHandInventory);
+        if (keyItemSlots.has("specific")) {
+            JsonArray specificSlots = keyItemSlots.get("specific").getAsJsonArray();
+            for (JsonElement element : specificSlots) {
+                this.specificSlots.add(element.getAsInt());
+            }
+        }
+        JsonArray specificSlots = new JsonArray();
+        for (int slot : this.specificSlots) {
+            specificSlots.add(slot);
+        }
+        keyItemSlots.add("specific", specificSlots);
+        generalSettings.add("key_item_slots", keyItemSlots);
 
         JsonArray disabledItems = new JsonArray();
         if (generalSettings.get("disabled_items") != null) {
