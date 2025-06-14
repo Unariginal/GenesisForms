@@ -36,6 +36,7 @@ public class MessagesConfig {
         messages.put("gmax_factor_applied", "<green>%pokemon% can now Gigantamax!");
         messages.put("gmax_factor_removed", "<red>%pokemon% can no longer Gigantamax!");
         messages.put("tera_type_changed", "<green>Set %pokemon%'s tera type to %pokemon.tera_type%!");
+        messages.put("dynamax_level_changed", "<green>%pokemon%'s dynamax level is now %pokemon.dmax_level%!");
     }
 
     public void loadConfig() throws IOException {

@@ -51,7 +51,10 @@ public class DynamaxCandy extends SimplePolymerItem {
                         int currentDmaxLevel = pokemonEntity.getPokemon().getDmaxLevel();
                         if (currentDmaxLevel < 10) {
                             pokemonEntity.getPokemon().setDmaxLevel(currentDmaxLevel + 1);
-                            player.getStackInHand(hand).decrement(1);
+                            if (GenesisForms.INSTANCE.getItemSettings().consumableBagItems.contains("dynamax_candy")) {
+                                player.getStackInHand(hand).decrementUnlessCreative(1, player);
+                            }
+                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("dynamax_level_changed"), pokemonEntity.getPokemon())), true);
                         }
                     }
                 }

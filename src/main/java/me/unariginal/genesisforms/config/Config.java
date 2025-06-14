@@ -86,14 +86,18 @@ public class Config {
             useMainInventory = keyItemSlots.get("main").getAsBoolean();
         }
         keyItemSlots.addProperty("main", useMainInventory);
+        if (keyItemSlots.has("mainhand")) {
+            useMainHandInventory = keyItemSlots.get("mainhand").getAsBoolean();
+        }
+        keyItemSlots.addProperty("mainhand", useMainHandInventory);
         if (keyItemSlots.has("offhand")) {
-            useMainHandInventory = keyItemSlots.get("offhand").getAsBoolean();
+            useOffHandInventory = keyItemSlots.get("offhand").getAsBoolean();
         }
-        keyItemSlots.addProperty("offhand", useMainHandInventory);
+        keyItemSlots.addProperty("offhand", useOffHandInventory);
         if (keyItemSlots.has("armor")) {
-            useMainHandInventory = keyItemSlots.get("armor").getAsBoolean();
+            useArmorInventory = keyItemSlots.get("armor").getAsBoolean();
         }
-        keyItemSlots.addProperty("armor", useMainHandInventory);
+        keyItemSlots.addProperty("armor", useArmorInventory);
         if (keyItemSlots.has("specific")) {
             JsonArray specificSlots = keyItemSlots.get("specific").getAsJsonArray();
             for (JsonElement element : specificSlots) {

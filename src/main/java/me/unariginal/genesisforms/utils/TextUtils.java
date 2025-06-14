@@ -41,7 +41,8 @@ public class TextUtils {
         text = text
                 .replaceAll("%pokemon%", pokemon.getDisplayName().getString())
                 .replaceAll("%pokemon.uuid%", pokemon.getUuid().toString())
-                .replaceAll("%pokemon.tera_type%", pokemon.getTeraType().getDisplayName().getString());
+                .replaceAll("%pokemon.tera_type%", pokemon.getTeraType().getDisplayName().getString())
+                .replaceAll("%pokemon.dmax_level%", String.valueOf(pokemon.getDmaxLevel()));
         return text;
     }
 }

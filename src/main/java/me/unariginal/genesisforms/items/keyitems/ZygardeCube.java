@@ -98,13 +98,23 @@ public class ZygardeCube extends SimplePolymerItem {
                                     new StringSpeciesFeature("percent_cells", "10").apply(pokemonEntity.getPokemon());
                                     pokemonEntity.getPokemon().setAbility$common(ability);
                                 }
+                                // Note to whoever enabled this: why?
+                                if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("zygarde_cube")) {
+                                    stack.decrementUnlessCreative(1, player);
+                                }
                             } else if (NbtUtils.getNbt(stack, GenesisForms.MOD_ID).getString(DataKeys.NBT_CUBE_MODE).equalsIgnoreCase("ability")) {
                                 swapAbility(pokemonEntity.getPokemon());
+                                if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("zygarde_cube")) {
+                                    stack.decrementUnlessCreative(1, player);
+                                }
                             }
                         } else {
                             NbtUtils.setNbtString(stack, GenesisForms.MOD_ID, DataKeys.NBT_CUBE_MODE, "ability");
                             stack.applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false).build());
                             swapAbility(pokemonEntity.getPokemon());
+                            if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains("zygarde_cube")) {
+                                stack.decrementUnlessCreative(1, player);
+                            }
                         }
                     }
                 }

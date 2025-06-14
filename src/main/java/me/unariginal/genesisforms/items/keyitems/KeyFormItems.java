@@ -136,6 +136,9 @@ public class KeyFormItems {
                             } else {
                                 new StringSpeciesFeature(formInformation.feature_name(), formInformation.base_feature_value()).apply(pokemonEntity.getPokemon());
                             }
+                            if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains(id)) {
+                                stack.decrementUnlessCreative(1, player);
+                            }
                         }
                     }
                 }
