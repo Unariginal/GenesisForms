@@ -133,11 +133,16 @@ public class KeyFormItems {
                                 } else {
                                     new StringSpeciesFeature(formInformation.feature_name(), formInformation.alternative_feature_value()).apply(pokemonEntity.getPokemon());
                                 }
+                                if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains(id)) {
+                                    stack.decrementUnlessCreative(1, player);
+                                }
                             } else {
-                                new StringSpeciesFeature(formInformation.feature_name(), formInformation.base_feature_value()).apply(pokemonEntity.getPokemon());
-                            }
-                            if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains(id)) {
-                                stack.decrementUnlessCreative(1, player);
+                                if (pokemonEntity.getPokemon().getAspects().stream().noneMatch(aspect -> aspect.startsWith(formInformation.base_feature_value()))) {
+                                    new StringSpeciesFeature(formInformation.feature_name(), formInformation.base_feature_value()).apply(pokemonEntity.getPokemon());
+                                    if (GenesisForms.INSTANCE.getItemSettings().consumableKeyItems.contains(id)) {
+                                        stack.decrementUnlessCreative(1, player);
+                                    }
+                                }
                             }
                         }
                     }
