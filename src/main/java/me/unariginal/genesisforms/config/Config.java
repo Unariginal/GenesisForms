@@ -40,7 +40,6 @@ public class Config {
 
     public boolean enableDynamax = true;
     public boolean enableGigantamax = true;
-    public boolean useGen9Battles = true;
 
     public boolean enableFusions = true;
 
@@ -252,10 +251,6 @@ public class Config {
             enableGigantamax = dynamaxSettings.get("enable_gigantamax").getAsBoolean();
         }
         dynamaxSettings.addProperty("enable_gigantamax", enableGigantamax);
-        if (dynamaxSettings.get("use_gen_9_battles") != null) {
-            useGen9Battles = dynamaxSettings.get("use_gen_9_battles").getAsBoolean();
-        }
-        dynamaxSettings.addProperty("use_gen_9_battles", useGen9Battles);
         newRoot.add("dynamax_settings", dynamaxSettings);
 
         configFile.delete();

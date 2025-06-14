@@ -21,9 +21,9 @@ public class PacketHandler {
         }
 
         for (ActiveBattlePokemon activeBattlePokemon : battle.getActivePokemon()) {
-            if (activeBattlePokemon.getBattlePokemon() != null
-                    && activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == battlePokemon.getEffectedPokemon().getOwnerPlayer()
-                    && activeBattlePokemon.getBattlePokemon() == battlePokemon)
+            if (activeBattlePokemon.getBattlePokemon() != null &&
+                    activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == battlePokemon.getEffectedPokemon().getOwnerPlayer() &&
+                    activeBattlePokemon.getBattlePokemon() == battlePokemon)
             {
                 battle.sendSidedUpdate(
                         activeBattlePokemon.getActor(),

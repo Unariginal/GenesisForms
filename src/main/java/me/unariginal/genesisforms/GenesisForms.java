@@ -52,6 +52,17 @@ public class GenesisForms implements ModInitializer {
         PolymerResourcePackUtils.markAsRequired();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
 
+        registerItems();
+
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            this.server = server;
+            this.audiences = FabricServerAudiences.of(server);
+
+            registerEvents();
+        });
+    }
+
+    private void registerItems() {
         KeyFormItems.getInstance().loadKeyItemIds();
         KeyFormItems.getInstance().fillPolymerModelData();
         KeyFormItems.getInstance().fillPolymerItems();
@@ -87,34 +98,31 @@ public class GenesisForms implements ModInitializer {
         ZCrystalHeldItems.getInstance().fillPolymerModelData();
         ZCrystalHeldItems.getInstance().fillPolymerItems();
         ZCrystalHeldItems.getInstance().registerItemGroup();
+    }
 
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            this.server = server;
-            this.audiences = FabricServerAudiences.of(server);
+    private void registerEvents() {
+        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
 
-            CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
+        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::mega_event);
+        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::pokemon_released);
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::handleMegaRayquaza);
 
-            CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::mega_event);
-            CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::pokemon_released);
-            CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::handleMegaRayquaza);
+        CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, TeraHandler::teraEvent);
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, TeraHandler::revertTera);
+        CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, TeraHandler::setProperTeraTypes);
 
-            CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, TeraHandler::teraEvent);
-            CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, TeraHandler::revertTera);
-            CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, TeraHandler::setProperTeraTypes);
+        CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
 
-            CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
+        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::form_changes);
 
-            CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::form_changes);
+        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battle_started);
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battle_faint);
+        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battle_ended);
+        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battle_fled);
+        CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
 
-            CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battle_started);
-            CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battle_faint);
-            CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battle_ended);
-            CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battle_fled);
-            CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
-
-            DynamaxHandler.register();
-            UltraBurstHandler.register();
-        });
+        DynamaxHandler.register();
+        UltraBurstHandler.register();
     }
 
     public void logError(String message) {

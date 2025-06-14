@@ -21,7 +21,7 @@ import java.util.*;
 public class DynamaxHandler {
     private static final GenesisForms gf = GenesisForms.INSTANCE;
     private static final Map<UUID, ScalingData> activeScalingAnimations = new HashMap<>();
-    private static final WeakHashMap<UUID, PokemonEntity> entityCache = new WeakHashMap<>();
+    private static final WeakHashMap<UUID, PokemonEntity> scalingEntities = new WeakHashMap<>();
     private static MinecraftServer server;
 
     public static void register() {
@@ -30,12 +30,14 @@ public class DynamaxHandler {
                 new StringSpeciesFeature("dynamax_form", "gmax").apply(pokemon.getEffectedPokemon());
                 for (ActiveBattlePokemon activeBattlePokemon : battle.getActivePokemon()) {
                     if (activeBattlePokemon.getBattlePokemon() != null &&
-                            activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == pokemon.getEffectedPokemon().getOwnerPlayer()
-                            && activeBattlePokemon.getBattlePokemon() == pokemon) {
-                        battle.sendSidedUpdate(activeBattlePokemon.getActor(),
+                            activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == pokemon.getEffectedPokemon().getOwnerPlayer() &&
+                            activeBattlePokemon.getBattlePokemon() == pokemon) {
+                        battle.sendSidedUpdate(
+                                activeBattlePokemon.getActor(),
                                 new BattleTransformPokemonPacket(activeBattlePokemon.getPNX(), pokemon, true),
                                 new BattleTransformPokemonPacket(activeBattlePokemon.getPNX(), pokemon, false),
-                                false);
+                                false
+                        );
                     }
                 }
             }
@@ -89,7 +91,7 @@ public class DynamaxHandler {
                     duration,
                     0
             );
-            entityCache.put(entityId, pokemonEntity);
+            scalingEntities.put(entityId, pokemonEntity);
             activeScalingAnimations.put(entityId, scalingData);
         }
     }
@@ -104,13 +106,13 @@ public class DynamaxHandler {
 
             data.currentTick++;
 
-            PokemonEntity entity = entityCache.get(entityId);
+            PokemonEntity entity = scalingEntities.get(entityId);
 
             if (entity == null || entity.isRemoved()) {
                 for (ServerWorld world : server.getWorlds()) {
                     entity = (PokemonEntity) world.getEntity(entityId);
                     if (entity != null) {
-                        entityCache.put(entityId, entity);
+                        scalingEntities.put(entityId, entity);
                         break;
                     }
                 }
@@ -127,11 +129,11 @@ public class DynamaxHandler {
 
                 if (data.currentTick >= data.durationTicks) {
                     iterator.remove();
-                    entityCache.remove(entityId);
+                    scalingEntities.remove(entityId);
                 }
             } else {
                 iterator.remove();
-                entityCache.remove(entityId);
+                scalingEntities.remove(entityId);
             }
         }
     }

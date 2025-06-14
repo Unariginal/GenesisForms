@@ -8,7 +8,6 @@ import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonFaintedEvent;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.player.GeneralPlayerData;
-import com.cobblemon.mod.common.battles.BattleFormat;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
@@ -18,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,26 +113,6 @@ public class BattleHandler {
 
             if (!gf.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand && !has_teraOrb) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "dynamax_band"));
-                if (!gf.getConfig().useGen9Battles) {
-                    for (Pokemon pokemon : playerPartyStore) {
-                        if (pokemon != null) {
-                            if (pokemon.getSpecies().getName().equalsIgnoreCase("terapagos")) {
-                                event.cancel();
-                                return Unit.INSTANCE;
-                            }
-                        }
-                    }
-
-                    try {
-                        BattleFormat format = event.getBattle().getFormat();
-                        Field field = format.getClass().getDeclaredField("gen");
-                        field.setAccessible(true);
-                        field.set(format, 8);
-                    } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
-                        gf.logError("[Genesis] Failed to set battle gen to 8! Dynamax will not work!");
-                        gf.logError("[Genesis] Error: " + e.getMessage());
-                    }
-                }
             }
 
             if (!gf.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && has_zRing) {
@@ -193,8 +171,12 @@ public class BattleHandler {
     public static void handle_faint(Pokemon pokemon) {
         boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
         boolean isGmax = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("gmax"));
-        boolean isUltra = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("ultra"));
-        if (isMega || isGmax || isUltra || pokemon.getSpecies().getName().equalsIgnoreCase("Aegislash")) {
+        boolean isUltra = pokemon.getAspects().contains("ultra-fusion");
+        if (isMega ||
+                isGmax ||
+                isUltra ||
+                pokemon.getSpecies().getName().equalsIgnoreCase("Aegislash") ||
+                pokemon.getSpecies().getName().equalsIgnoreCase("Morpeko")) {
             FormHandler.revert_forms(pokemon, true);
         }
     }

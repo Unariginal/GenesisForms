@@ -18,7 +18,8 @@ public interface UltraBurstEvent {
                     listener.onUltraBurst(battle, pokemon);
                 }
             },
-            Identifier.of(GenesisForms.MOD_ID, "earliest"), Identifier.of(GenesisForms.MOD_ID, "pre_default"), Event.DEFAULT_PHASE, Identifier.of(GenesisForms.MOD_ID, "post_default"), Identifier.of(GenesisForms.MOD_ID, "latest"));
+            Identifier.of(GenesisForms.MOD_ID, "earliest"), Identifier.of(GenesisForms.MOD_ID, "pre_default"), Event.DEFAULT_PHASE, Identifier.of(GenesisForms.MOD_ID, "post_default"), Identifier.of(GenesisForms.MOD_ID, "latest")
+    );
 
     @FunctionalInterface
     interface UltraBurst {
