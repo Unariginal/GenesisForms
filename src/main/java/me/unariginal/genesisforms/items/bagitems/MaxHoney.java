@@ -109,7 +109,9 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                                      player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);
                                      actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
                                      Identifier stackName = Registries.ITEM.getId(stack.getItem());
-                                     stack.decrementUnlessCreative(1, player);
+                                     if (GenesisForms.INSTANCE.getItemSettings().consumableBagItems.contains("max_honey")) {
+                                         stack.decrementUnlessCreative(1, player);
+                                     }
                                      CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
                                  }
                                  return Unit.INSTANCE;
