@@ -1,9 +1,5 @@
 package me.unariginal.genesisforms.items.helditems.zcrystals;
 
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
-import com.cobblemon.mod.common.api.types.ElementalType;
-import com.cobblemon.mod.common.api.types.ElementalTypes;
-import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.helditem.CobblemonHeldItemManager;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
@@ -41,45 +37,10 @@ public class ZCrystalHeldItems {
         return zCrystalPolymerItems.get(id).getDefaultStack();
     }
 
-    private ElementalType getType(String name) {
-        return ElementalTypes.INSTANCE.get(name);
-    }
-
-    private List<Species> getSpecies(String name) {
-        List<Species> species = new ArrayList<>();
-        for (Map.Entry<String, String> s : SPECIAL_Z_CRYSTAL_IDS.get(name).entrySet()) {
-            species.add(PokemonSpecies.INSTANCE.getByName(s.getKey()));
-        }
-        return species;
-    }
-
     public Set<String> getAllZCrystalIds() {
         Set<String> ids = new HashSet<>(Z_CRYSTAL_IDS.keySet());
         ids.addAll(SPECIAL_Z_CRYSTAL_IDS.keySet());
         return ids;
-    }
-
-    public ElementalType getZCrystalType(String id) {
-        if (Z_CRYSTAL_IDS.containsKey(id)) {
-            return getType(Z_CRYSTAL_IDS.get(id));
-        }
-        return null;
-    }
-
-    public List<Species> getZCrystalSpecies(String id) {
-        if (SPECIAL_Z_CRYSTAL_IDS.containsKey(id)) {
-            return getSpecies(id);
-        }
-        return null;
-    }
-
-    public String getAspect(String key, String species) {
-        if (SPECIAL_Z_CRYSTAL_IDS.containsKey(key)) {
-            if (SPECIAL_Z_CRYSTAL_IDS.get(key).containsKey(species)) {
-                return SPECIAL_Z_CRYSTAL_IDS.get(key).get(species);
-            }
-        }
-        return null;
     }
 
     public void loadZCrystalIds() {

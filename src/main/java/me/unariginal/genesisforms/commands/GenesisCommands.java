@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class GenesisCommands {
     private final GenesisForms gf = GenesisForms.INSTANCE;
-
+    
     public GenesisCommands() {
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> commandDispatcher.register(
                 CommandManager.literal("genesis")

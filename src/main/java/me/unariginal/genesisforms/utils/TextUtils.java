@@ -22,7 +22,7 @@ public class TextUtils {
         text = parse(text);
         text = text
                 .replaceAll("%player%", player.getNameForScoreboard()
-                        .replaceAll("%player.uuid%", player.getUuid().toString()));
+                .replaceAll("%player.uuid%", player.getUuid().toString()));
         return text;
     }
 
@@ -39,7 +39,7 @@ public class TextUtils {
     public static String parse(String text, Pokemon pokemon) {
         text = parse(text);
         text = text
-                .replaceAll("%pokemon%", pokemon.getDisplayName(false).getString())
+                .replaceAll("%pokemon%", pokemon.getDisplayName().getString())
                 .replaceAll("%pokemon.uuid%", pokemon.getUuid().toString())
                 .replaceAll("%pokemon.tera_type%", pokemon.getTeraType().getDisplayName().getString())
                 .replaceAll("%pokemon.dmax_level%", String.valueOf(pokemon.getDmaxLevel()));
