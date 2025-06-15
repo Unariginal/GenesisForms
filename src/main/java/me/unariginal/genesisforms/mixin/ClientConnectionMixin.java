@@ -21,11 +21,11 @@ public class ClientConnectionMixin {
 
             if (errorMessage != null &&
                     (
-                        errorMessage.contains("cobblemon:tera_type_update") ||
-                        errorMessage.contains("minecraft:set_entity_data") ||
-                        errorMessage.contains("minecraft:set_equipment") ||
-                        errorMessage.contains("minecraft:custom_payload") ||
-                        errorMessage.contains("minecraft:system_chat")
+                            errorMessage.contains("cobblemon:tera_type_update") ||
+                                    errorMessage.contains("minecraft:set_entity_data") ||
+                                    errorMessage.contains("minecraft:set_equipment") ||
+                                    errorMessage.contains("minecraft:custom_payload") ||
+                                    errorMessage.contains("minecraft:system_chat")
                     )
             ) {
                 ci.cancel();

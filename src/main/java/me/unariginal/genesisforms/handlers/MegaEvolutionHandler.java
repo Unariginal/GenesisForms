@@ -108,7 +108,7 @@ public class MegaEvolutionHandler {
                 }
             }
         }
-        
+
         PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
         for  (Pokemon pokemon : pcStore) {
             if (pokemon != null) {
