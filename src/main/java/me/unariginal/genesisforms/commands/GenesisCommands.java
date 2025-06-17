@@ -1,7 +1,6 @@
 package me.unariginal.genesisforms.commands;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.net.messages.client.effect.SpawnSnowstormParticlePacket;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.genesisforms.GenesisForms;
@@ -24,8 +23,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class GenesisCommands {
     private final GenesisForms gf = GenesisForms.INSTANCE;
@@ -205,26 +203,6 @@ public class GenesisCommands {
                                             ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reload_command"))));
                                             return 1;
                                         })
-                        )
-                        .then(
-                                CommandManager.literal("testParticles")
-                                        .requires(Permissions.require("genesisforms.testParticles", 4))
-                                        .then(
-                                                CommandManager.argument("identifier", StringArgumentType.string())
-                                                        .then(
-                                                                CommandManager.argument("boolean", StringArgumentType.string())
-                                                                        .suggests((ctx, builder) -> {
-                                                                            builder.suggest("true");
-                                                                            builder.suggest("false");
-                                                                            return builder.buildFuture();
-                                                                        })
-                                                                        .executes(ctx -> {
-                                                                            if (ctx.getSource().getPlayer() == null) return 0;
-                                                                            new SpawnSnowstormParticlePacket(Identifier.of("cobblemon:" + StringArgumentType.getString(ctx, "identifier")), ctx.getSource().getPlayer().getPos().add(2, 0.5, 0)).sendToPlayersAround(ctx.getSource().getPlayer().getX(), ctx.getSource().getPlayer().getY(), ctx.getSource().getPlayer().getZ(), 64.0, ctx.getSource().getPlayer().getWorld().getRegistryKey(), (p) -> Boolean.getBoolean(StringArgumentType.getString(ctx, "boolean")));
-                                                                            return 1;
-                                                                        })
-                                                        )
-                                        )
                         )
                         .then(
                                 CommandManager.literal("convert-item")

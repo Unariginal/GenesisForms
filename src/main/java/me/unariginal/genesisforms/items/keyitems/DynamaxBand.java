@@ -1,15 +1,20 @@
 package me.unariginal.genesisforms.items.keyitems;
 
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.TextUtils;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,21 +40,21 @@ public class DynamaxBand extends SimplePolymerItem {
         }
     }
 
-//    @Override
-//    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-//        if (entity instanceof PokemonEntity pokemonEntity) {
-//            ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
-//            if (player != null) {
-//                boolean isMega = pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
-//                if (!isMega) {
-//                    if (!GenesisForms.INSTANCE.getPlayersWithMega().containsKey(player.getUuid())) {
-//                        MegaEvolution.evolve(pokemonEntity, player, false);
-//                    }
-//                } else {
-//                    MegaEvolution.devolve(pokemonEntity.getPokemon(), false);
-//                }
-//            }
-//        }
-//        return ActionResult.PASS;
-//    }
+    @Override
+    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("dynamax_band") || !GenesisForms.INSTANCE.getConfig().enableDynamax || !GenesisForms.INSTANCE.getConfig().enableGigantamax) return ActionResult.PASS;
+        if (entity instanceof PokemonEntity pokemonEntity) {
+            ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
+            if (player != null) {
+                if (player.getUuid().equals(user.getUuid())) {
+                    if (pokemonEntity.getPokemon().getGmaxFactor()) {
+                        player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("has_gmax_factor"), pokemonEntity.getPokemon())), true);
+                    } else {
+                        player.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("does_not_have_gmax_factor"), pokemonEntity.getPokemon())), true);
+                    }
+                }
+            }
+        }
+        return ActionResult.PASS;
+    }
 }

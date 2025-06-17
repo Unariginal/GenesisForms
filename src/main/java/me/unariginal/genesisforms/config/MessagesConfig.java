@@ -13,6 +13,10 @@ import java.util.Map;
 
 public class MessagesConfig {
     public String prefix = "<dark_gray>[<#35DEC6>Genesis<dark_gray>]";
+    public String teraToastTitle = "Tera Type: %pokemon.tera_type%";
+    public String teraToastDescription = "";
+    public boolean teraToastUseShardIcon = true;
+    public float teraToastDisplaySeconds = 3F;
     public final Map<String, String> messages = new HashMap<>();
 
     public MessagesConfig() {
@@ -35,6 +39,8 @@ public class MessagesConfig {
         messages.put("cube_mode_feedback", "<gray>Cube Mode: <green>%cube_mode%");
         messages.put("gmax_factor_applied", "<green>%pokemon% can now Gigantamax!");
         messages.put("gmax_factor_removed", "<red>%pokemon% can no longer Gigantamax!");
+        messages.put("has_gmax_factor", "<green>%pokemon% can Gigantamax!");
+        messages.put("does_not_have_gmax_factor", "<red>%pokemon% can not Gigantamax!");
         messages.put("tera_type_changed", "<green>Set %pokemon%'s tera type to %pokemon.tera_type%!");
         messages.put("dynamax_level_changed", "<green>%pokemon%'s dynamax level is now %pokemon.dmax_level%!");
     }
@@ -61,6 +67,29 @@ public class MessagesConfig {
         if (root.has("messages")) {
             messages = root.getAsJsonObject("messages");
         }
+
+        JsonObject teraToast = new JsonObject();
+        if (root.has("tera_toast_settings")) {
+            teraToast = root.getAsJsonObject("tera_toast_settings");
+        }
+        if (teraToast.has("toast_title")) {
+            teraToastTitle = teraToast.get("toast_title").getAsString();
+        }
+        teraToast.addProperty("toast_title", teraToastTitle);
+        if (teraToast.has("toast_description")) {
+            teraToastDescription = teraToast.get("toast_description").getAsString();
+        }
+        teraToast.addProperty("toast_description", teraToastDescription);
+        if (teraToast.has("use_shard_icon")) {
+            teraToastUseShardIcon = teraToast.get("use_shard_icon").getAsBoolean();
+        }
+        teraToast.addProperty("use_shard_icon", teraToastUseShardIcon);
+        if (teraToast.has("display_seconds")) {
+            teraToastDisplaySeconds = teraToast.get("display_seconds").getAsFloat();
+        }
+        teraToast.addProperty("display_seconds", teraToastDisplaySeconds);
+        newRoot.add("tera_toast_settings", teraToast);
+
         for (String key : messages.keySet()) {
             if (messages.has(key)) {
                 this.messages.put(key, messages.get(key).getAsString());

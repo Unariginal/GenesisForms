@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleStartedPreEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonFaintedEvent;
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.player.GeneralPlayerData;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -29,9 +30,24 @@ public class BattleHandler {
 
             for (Pokemon pokemon : playerPartyStore) {
                 FormHandler.revert_forms(pokemon, true);
+
+                if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("x"))) {
+                    new StringSpeciesFeature(gf.getConfig().megaXFeatureName, "none").apply(pokemon);
+                    pokemon.setTradeable(true);
+                    gf.getPlayersWithMega().remove(player.getUuid());
+                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                } else if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("y"))) {
+                    new StringSpeciesFeature(gf.getConfig().megaYFeatureName, "none").apply(pokemon);
+                    pokemon.setTradeable(true);
+                    gf.getPlayersWithMega().remove(player.getUuid());
+                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                } else if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"))) {
+                    new StringSpeciesFeature(gf.getConfig().megaFeatureName, "none").apply(pokemon);
+                    pokemon.setTradeable(true);
+                    gf.getPlayersWithMega().remove(player.getUuid());
+                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                }
             }
-            gf.getPlayersWithMega().remove(player.getUuid());
-            gf.getMegaEvolvedThisBattle().remove(player.getUuid());
 
             boolean has_keyStone = false;
             boolean has_dynamaxBand = false;
@@ -134,7 +150,23 @@ public class BattleHandler {
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             for (Pokemon pokemon : playerPartyStore) {
                 gf.logInfo("[Genesis] Reverting player's pokemon: " + pokemon.getSpecies().getName());
-                FormHandler.revert_forms(pokemon, false);
+                FormHandler.revert_forms(pokemon, true);
+                if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("x"))) {
+                    new StringSpeciesFeature(gf.getConfig().megaXFeatureName, "none").apply(pokemon);
+                    pokemon.setTradeable(true);
+                    gf.getPlayersWithMega().remove(player.getUuid());
+                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                } else if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("y"))) {
+                    new StringSpeciesFeature(gf.getConfig().megaYFeatureName, "none").apply(pokemon);
+                    pokemon.setTradeable(true);
+                    gf.getPlayersWithMega().remove(player.getUuid());
+                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                } else if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"))) {
+                    new StringSpeciesFeature(gf.getConfig().megaFeatureName, "none").apply(pokemon);
+                    pokemon.setTradeable(true);
+                    gf.getPlayersWithMega().remove(player.getUuid());
+                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
+                }
             }
         });
         return Unit.INSTANCE;
@@ -144,7 +176,7 @@ public class BattleHandler {
         event.getBattle().getPlayers().forEach(player -> {
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             for (Pokemon pokemon : playerPartyStore) {
-                FormHandler.revert_forms(pokemon, false);
+                FormHandler.revert_forms(pokemon, true);
             }
         });
         return Unit.INSTANCE;
@@ -154,7 +186,7 @@ public class BattleHandler {
         Pokemon pokemon = event.getKilled().getOriginalPokemon();
         ServerPlayerEntity player = pokemon.getOwnerPlayer();
         if (player != null) {
-            handle_faint(pokemon);
+            handle_faint(pokemon, true);
         }
         return Unit.INSTANCE;
     }
@@ -163,12 +195,12 @@ public class BattleHandler {
         Pokemon pokemon = event.getPokemon();
         ServerPlayerEntity player = pokemon.getOwnerPlayer();
         if (player != null) {
-            handle_faint(pokemon);
+            handle_faint(pokemon, false);
         }
         return Unit.INSTANCE;
     }
 
-    public static void handle_faint(Pokemon pokemon) {
+    public static void handle_faint(Pokemon pokemon, boolean fromBattle) {
         boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
         boolean isGmax = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("gmax"));
         boolean isUltra = pokemon.getAspects().contains("ultra-fusion");
@@ -177,7 +209,7 @@ public class BattleHandler {
                 isUltra ||
                 pokemon.getSpecies().getName().equalsIgnoreCase("Aegislash") ||
                 pokemon.getSpecies().getName().equalsIgnoreCase("Morpeko")) {
-            FormHandler.revert_forms(pokemon, true);
+            FormHandler.revert_forms(pokemon, fromBattle);
         }
     }
 }

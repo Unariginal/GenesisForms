@@ -48,13 +48,15 @@ public class MegaCuff extends SimplePolymerItem {
             if (entity instanceof PokemonEntity pokemonEntity) {
                 ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
                 if (player != null) {
-                    boolean isMega = pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
-                    if (!isMega) {
-                        if (!GenesisForms.INSTANCE.getPlayersWithMega().containsKey(player.getUuid())) {
-                            MegaEvolutionHandler.megaEvolve(pokemonEntity, player, false);
+                    if (player.getUuid().equals(user.getUuid())) {
+                        boolean isMega = pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
+                        if (!isMega) {
+                            if (!GenesisForms.INSTANCE.getPlayersWithMega().containsKey(player.getUuid())) {
+                                MegaEvolutionHandler.megaEvolve(pokemonEntity, player, false);
+                            }
+                        } else {
+                            MegaEvolutionHandler.devolveMega(pokemonEntity.getPokemon(), false);
                         }
-                    } else {
-                        MegaEvolutionHandler.devolveMega(pokemonEntity.getPokemon(), false);
                     }
                 }
             }
