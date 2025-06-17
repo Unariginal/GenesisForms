@@ -14,7 +14,8 @@
     "ShowdownSpeciesMixin",
     "ShowdownUnbundlerMixin",
     "StartInstructionAccessor",
-    "StartInstructionMixin"
+    "StartInstructionMixin",
+    "StopBattleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
