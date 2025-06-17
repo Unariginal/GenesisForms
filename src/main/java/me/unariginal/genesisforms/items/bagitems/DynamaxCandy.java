@@ -1,5 +1,6 @@
 package me.unariginal.genesisforms.items.bagitems;
 
+import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
@@ -51,6 +52,12 @@ public class DynamaxCandy extends SimplePolymerItem {
                         int currentDmaxLevel = pokemonEntity.getPokemon().getDmaxLevel();
                         if (currentDmaxLevel < 10) {
                             pokemonEntity.getPokemon().setDmaxLevel(currentDmaxLevel + 1);
+
+                            IntSpeciesFeature dynamaxLevelFeature = (IntSpeciesFeature) pokemonEntity.getPokemon().getFeature("dynamax_level");
+                            assert dynamaxLevelFeature != null;
+                            dynamaxLevelFeature.setValue(pokemonEntity.getPokemon().getDmaxLevel());
+                            pokemonEntity.getPokemon().markFeatureDirty(dynamaxLevelFeature);
+
                             if (GenesisForms.INSTANCE.getItemSettings().consumableBagItems.contains("dynamax_candy")) {
                                 player.getStackInHand(hand).decrementUnlessCreative(1, player);
                             }

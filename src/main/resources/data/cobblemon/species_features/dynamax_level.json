@@ -1,0 +1,12 @@
+{
+  "type": "integer",
+  "keys": ["dynamax_level"],
+  "default": 0,
+  "min": 0,
+  "max": 10,
+  "visible": true,
+  "display": {
+    "name": "Dynamax Level",
+    "color": [240, 100, 120]
+  }
+}
