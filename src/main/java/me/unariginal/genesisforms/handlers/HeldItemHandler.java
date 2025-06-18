@@ -25,6 +25,23 @@ public class HeldItemHandler {
         return Unit.INSTANCE;
     }
 
+    public static Unit convert_item(HeldItemEvent.Pre pre) {
+        if (!GenesisForms.INSTANCE.getConfig().convertOnHeldItemChange || pre.getPokemon().getOwnerPlayer() == null) {
+            return Unit.INSTANCE;
+        }
+
+        ItemStack converted = GenesisForms.INSTANCE.getGenesisCommands().convertItem(pre.getReceiving());
+        if (converted != null) {
+            pre.setReceiving(converted);
+        }
+
+        converted = GenesisForms.INSTANCE.getGenesisCommands().convertItem(pre.getReturning());
+        if (converted != null) {
+            pre.setReturning(converted);
+        }
+        return Unit.INSTANCE;
+    }
+
     public static void mega_event(HeldItemEvent.Post post) {
         Pokemon pokemon = post.getPokemon();
         if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"))) {
