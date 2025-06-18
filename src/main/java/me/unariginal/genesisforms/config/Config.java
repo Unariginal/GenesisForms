@@ -18,6 +18,8 @@ public class Config {
     public boolean useArmorInventory = false;
     public List<Integer> specificSlots = new ArrayList<>();
     public List<String> disabledItems = new ArrayList<>();
+    public boolean convertOnJoin = false;
+    public boolean convertOnHeldItemChange = false;
     public record ItemConversion(String input, String output) {}
     public List<ItemConversion> itemConversions = new ArrayList<>();
 
@@ -120,6 +122,16 @@ public class Config {
             disabledItems.add(item);
         }
         generalSettings.add("disabled_items", disabledItems);
+
+        if (generalSettings.has("convert_on_join")) {
+            convertOnJoin = generalSettings.get("convert_on_join").getAsBoolean();
+        }
+        generalSettings.addProperty("convert_on_join", convertOnJoin);
+
+        if (generalSettings.has("convert_on_held_item_change")) {
+            convertOnHeldItemChange = generalSettings.get("convert_on_held_item_change").getAsBoolean();
+        }
+        generalSettings.addProperty("convert_on_held_item_change", convertOnHeldItemChange);
 
         JsonArray itemConversions = new JsonArray();
         if (generalSettings.get("item_conversions") != null) {

@@ -1,9 +1,12 @@
 package me.unariginal.genesisforms;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
+import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.config.Config;
@@ -21,7 +24,9 @@ import me.unariginal.genesisforms.polymer.KeyItems;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +46,8 @@ public class GenesisForms implements ModInitializer {
     private AnimationConfig animationConfig = new AnimationConfig();
     private MessagesConfig messagesConfig = new MessagesConfig();
 
+    private GenesisCommands commands;
+
     private final Map<UUID, Pokemon> players_with_mega = new HashMap<>();
     private final List<UUID> mega_evolved_this_battle = new ArrayList<>();
     private final Map<UUID, String> tera_pokemon_entities = new HashMap<>();
@@ -49,7 +56,7 @@ public class GenesisForms implements ModInitializer {
     public void onInitialize() {
         INSTANCE = this;
 
-        new GenesisCommands();
+        commands = new GenesisCommands();
 
         PolymerResourcePackUtils.markAsRequired();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
@@ -61,6 +68,39 @@ public class GenesisForms implements ModInitializer {
             this.audiences = FabricServerAudiences.of(server);
 
             registerEvents();
+        });
+
+        PlatformEvents.SERVER_PLAYER_LOGIN.subscribe(Priority.NORMAL, event -> {
+            if (config.convertOnJoin) {
+                ServerPlayerEntity player = event.getPlayer();
+                for (ItemStack stack : player.getInventory().main) {
+                    ItemStack converted = commands.convertItem(stack);
+                    if (converted == null) continue;
+                    stack.decrement(stack.getCount());
+                    player.giveItemStack(converted);
+                }
+                for (ItemStack stack : player.getInventory().offHand) {
+                    ItemStack converted = commands.convertItem(stack);
+                    if (converted == null) continue;
+                    stack.decrement(stack.getCount());
+                    player.giveItemStack(converted);
+                }
+                for (ItemStack stack : player.getInventory().armor) {
+                    ItemStack converted = commands.convertItem(stack);
+                    if (converted == null) continue;
+                    stack.decrement(stack.getCount());
+                    player.giveItemStack(converted);
+                }
+                for (Pokemon pokemon : Cobblemon.INSTANCE.getStorage().getParty(player)) {
+                    if (pokemon == null) continue;
+                    if (pokemon.heldItem().isEmpty()) continue;
+                    ItemStack heldItem = pokemon.heldItem();
+                    ItemStack converted = commands.convertItem(heldItem);
+                    if (converted == null) continue;
+                    pokemon.setHeldItem$common(converted);
+                }
+            }
+            return Unit.INSTANCE;
         });
     }
 
@@ -103,6 +143,7 @@ public class GenesisForms implements ModInitializer {
     }
 
     private void registerEvents() {
+        CobblemonEvents.HELD_ITEM_PRE.subscribe(Priority.NORMAL, HeldItemHandler::convert_item);
         CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
 
         CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::mega_event);
@@ -143,6 +184,10 @@ public class GenesisForms implements ModInitializer {
 
     public FabricServerAudiences getAudiences() {
         return audiences;
+    }
+
+    public GenesisCommands getGenesisCommands() {
+        return commands;
     }
 
     public void reload() {
