@@ -56,25 +56,25 @@ public class TeraShardBagItems {
     }
 
     public void loadTeraShardIds() {
-        TERA_SHARD_IDS.put("normal", TeraTypes.getNORMAL());
-        TERA_SHARD_IDS.put("fire", TeraTypes.getFIRE());
-        TERA_SHARD_IDS.put("water", TeraTypes.getWATER());
-        TERA_SHARD_IDS.put("electric", TeraTypes.getELECTRIC());
-        TERA_SHARD_IDS.put("grass", TeraTypes.getGRASS());
-        TERA_SHARD_IDS.put("ice", TeraTypes.getICE());
-        TERA_SHARD_IDS.put("fighting", TeraTypes.getFIGHTING());
-        TERA_SHARD_IDS.put("poison", TeraTypes.getPOISON());
-        TERA_SHARD_IDS.put("ground", TeraTypes.getGROUND());
-        TERA_SHARD_IDS.put("flying", TeraTypes.getFLYING());
-        TERA_SHARD_IDS.put("psychic", TeraTypes.getPSYCHIC());
-        TERA_SHARD_IDS.put("bug", TeraTypes.getBUG());
-        TERA_SHARD_IDS.put("rock", TeraTypes.getROCK());
-        TERA_SHARD_IDS.put("ghost", TeraTypes.getGHOST());
-        TERA_SHARD_IDS.put("dragon", TeraTypes.getDRAGON());
-        TERA_SHARD_IDS.put("dark", TeraTypes.getDARK());
-        TERA_SHARD_IDS.put("steel", TeraTypes.getSTEEL());
-        TERA_SHARD_IDS.put("fairy", TeraTypes.getFAIRY());
-        TERA_SHARD_IDS.put("stellar", TeraTypes.getSTELLAR());
+        TERA_SHARD_IDS.put("normal_tera_shard", TeraTypes.getNORMAL());
+        TERA_SHARD_IDS.put("fire_tera_shard", TeraTypes.getFIRE());
+        TERA_SHARD_IDS.put("water_tera_shard", TeraTypes.getWATER());
+        TERA_SHARD_IDS.put("electric_tera_shard", TeraTypes.getELECTRIC());
+        TERA_SHARD_IDS.put("grass_tera_shard", TeraTypes.getGRASS());
+        TERA_SHARD_IDS.put("ice_tera_shard", TeraTypes.getICE());
+        TERA_SHARD_IDS.put("fighting_tera_shard", TeraTypes.getFIGHTING());
+        TERA_SHARD_IDS.put("poison_tera_shard", TeraTypes.getPOISON());
+        TERA_SHARD_IDS.put("ground_tera_shard", TeraTypes.getGROUND());
+        TERA_SHARD_IDS.put("flying_tera_shard", TeraTypes.getFLYING());
+        TERA_SHARD_IDS.put("psychic_tera_shard", TeraTypes.getPSYCHIC());
+        TERA_SHARD_IDS.put("bug_tera_shard", TeraTypes.getBUG());
+        TERA_SHARD_IDS.put("rock_tera_shard", TeraTypes.getROCK());
+        TERA_SHARD_IDS.put("ghost_tera_shard", TeraTypes.getGHOST());
+        TERA_SHARD_IDS.put("dragon_tera_shard", TeraTypes.getDRAGON());
+        TERA_SHARD_IDS.put("dark_tera_shard", TeraTypes.getDARK());
+        TERA_SHARD_IDS.put("steel_tera_shard", TeraTypes.getSTEEL());
+        TERA_SHARD_IDS.put("fairy_tera_shard", TeraTypes.getFAIRY());
+        TERA_SHARD_IDS.put("stellar_tera_shard", TeraTypes.getSTELLAR());
     }
 
     public Map<String, TeraShardPolymerItem> teraShardPolymerItems = new HashMap<>();
@@ -84,19 +84,19 @@ public class TeraShardBagItems {
 
     public void fillPolymerItems() {
         for (String key : TERA_SHARD_IDS.keySet()) {
-            teraShardPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key + "_tera_shard"), new TeraShardPolymerItem(itemSettings.component(DataComponents.TERA_SHARD, key + "_tera_shard"), baseVanillaItem, key)));
+            teraShardPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new TeraShardPolymerItem(itemSettings.component(DataComponents.TERA_SHARD, key), baseVanillaItem, key)));
         }
     }
 
     public void fillPolymerModelData() {
         for (String key : TERA_SHARD_IDS.keySet()) {
-            teraShardPolymerModelData.put(key, PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/" + key + "_tera_shard")));
+            teraShardPolymerModelData.put(key, PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/" + key)));
         }
     }
 
     public void registerItemGroup() {
         ItemGroup TERA_SHARDS = FabricItemGroup.builder()
-                .icon(teraShardPolymerItems.get("fire")::getDefaultStack)
+                .icon(teraShardPolymerItems.get("fire_tera_shard")::getDefaultStack)
                 .displayName(Text.literal("Tera Shards"))
                 .entries((displayContext, entries) -> {
                     for (String key : teraShardPolymerModelData.keySet()) {

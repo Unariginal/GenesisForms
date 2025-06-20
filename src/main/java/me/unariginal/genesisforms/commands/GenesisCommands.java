@@ -93,7 +93,8 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = HeldItems.getInstance().getHeldItem(StringArgumentType.getString(ctx, "held-item")).copy();
+                                                                            String itemId = StringArgumentType.getString(ctx, "held-item");
+                                                                            ItemStack toGive = HeldItems.getInstance().getHeldItem(itemId).copy();
                                                                             player.giveItemStack(toGive);
                                                                             player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
                                                                             ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));

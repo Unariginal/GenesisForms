@@ -31,21 +31,19 @@ public class BattleHandler {
             for (Pokemon pokemon : playerPartyStore) {
                 FormHandler.revert_forms(pokemon, true);
 
+                gf.getMegaEvolvedThisBattle().remove(player.getUuid());
                 if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("x"))) {
                     new StringSpeciesFeature(gf.getConfig().megaXFeatureName, "none").apply(pokemon);
                     pokemon.setTradeable(true);
                     gf.getPlayersWithMega().remove(player.getUuid());
-                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
                 } else if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("y"))) {
                     new StringSpeciesFeature(gf.getConfig().megaYFeatureName, "none").apply(pokemon);
                     pokemon.setTradeable(true);
                     gf.getPlayersWithMega().remove(player.getUuid());
-                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
                 } else if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"))) {
                     new StringSpeciesFeature(gf.getConfig().megaFeatureName, "none").apply(pokemon);
                     pokemon.setTradeable(true);
                     gf.getPlayersWithMega().remove(player.getUuid());
-                    gf.getMegaEvolvedThisBattle().remove(player.getUuid());
                 }
             }
 

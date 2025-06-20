@@ -34,7 +34,7 @@ public class ShowdownUnbundlerMixin {
                 Files.createDirectories(showdown_sim);
                 Files.createDirectories(showdown_data);
 
-                replaceFile("/showdown_scripts/battle-actions.js", showdown_sim.resolve("battle-actions.js"));
+                replaceFile("/showdown_scripts/battle-action.js", showdown_sim.resolve("battle-actions.js"));
                 replaceFile("/showdown_scripts/pokemon.js", showdown_sim.resolve("pokemon.js"));
                 replaceFile("/showdown_scripts/conditions.js", showdown_sim.resolve("conditions.js"));
                 replaceFile("/showdown_scripts/index.js", showdown_dir.resolve("index.js"));
