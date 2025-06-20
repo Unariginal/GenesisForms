@@ -43,6 +43,11 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
     PolymerModelData modelData;
     BagItem bagItem = new BagItem() {
         @Override
+        public boolean canStillUse(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull PokemonBattle pokemonBattle, @NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack itemStack) {
+            return false;
+        }
+
+        @Override
         public @NotNull String getItemName() {
             return "max_honey";
         }
@@ -53,7 +58,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
         }
 
         @Override
-        public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle battle, BattlePokemon target) {
+        public boolean canUse(@NotNull PokemonBattle battle, BattlePokemon target) {
             return target.getHealth() <= 0;
         }
 
@@ -98,7 +103,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                      } else {
                          try {
                              int turn = battle.getTurn();
-                             PartySelectCallbacks.INSTANCE.createBattleSelect(player, battlePokemonList, (battlePokemon) -> bagItem.canUse(stack, battle, battlePokemon), (battlePokemon) ->
+                             PartySelectCallbacks.INSTANCE.createBattleSelect(player, battlePokemonList, (battlePokemon) -> bagItem.canUse(battle, battlePokemon), (battlePokemon) ->
                              {
                                  if (actor.canFitForcedAction() && battlePokemon.getHealth() <= 0 && battle.getTurn() == turn) {
                                      player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);

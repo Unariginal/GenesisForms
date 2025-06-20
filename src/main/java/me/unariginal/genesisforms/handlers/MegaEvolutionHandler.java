@@ -169,16 +169,16 @@ public class MegaEvolutionHandler {
 
         if (species.getName().equalsIgnoreCase(pokemon.getSpecies().getName())) {
             if (species.getName().equalsIgnoreCase("Charizard")) {
-                if (stoneId.equalsIgnoreCase("charizardite-x")){
+                if (stoneId.equalsIgnoreCase("charizardite-x")) {
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaXFeatureValue, fromBattle);
-                } else if (stoneId.equalsIgnoreCase("charizardite-y")){
+                } else if (stoneId.equalsIgnoreCase("charizardite-y")) {
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaYFeatureValue, fromBattle);
                 }
             }
             else if (species.getName().equalsIgnoreCase("Mewtwo")) {
                 if (stoneId.equalsIgnoreCase("mewtwonite-x")){
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaXFeatureValue, fromBattle);
-                } else if (stoneId.equalsIgnoreCase("mewtwonite-y")){
+                } else if (stoneId.equalsIgnoreCase("mewtwonite-y")) {
                     changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaYFeatureValue, fromBattle);
                 }
             } else {
@@ -198,16 +198,77 @@ public class MegaEvolutionHandler {
         }
     }
 
-    private static void changeMegaFormWithAnimation(PokemonEntity pokemonEntity, Pokemon pokemon, ServerPlayerEntity player, String form, boolean fromBattle) {
-        gf.getPlayersWithMega().put(player.getUuid(), pokemon);
-        if (fromBattle) {
-            gf.getMegaEvolvedThisBattle().add(player.getUuid());
+    public static boolean canMegaEvolve(Pokemon pokemon) {
+        if (pokemon.getSpecies().getName().equalsIgnoreCase("Rayquaza")) {
+            gf.logInfo("This is rayquaza! Checking for dragonascent move.");
+            for (Move move : pokemon.getMoveSet().getMoves()) {
+                if (move.getName().equalsIgnoreCase("dragonascent")) {
+                    return true;
+                }
+            }
         }
+
+        ItemStack heldItem = pokemon.heldItem();
+        if (!heldItem.getComponents().contains(DataComponents.MEGA_STONE)) {
+            gf.logInfo("No mega stone component");
+            return false;
+        }
+        String stoneId = heldItem.getComponents().get(DataComponents.MEGA_STONE);
+        if (stoneId == null) {
+            gf.logInfo("Stone id null");
+            return false;
+        }
+
+        Species species = MegaStoneHeldItems.getInstance().getMegaStoneSpecies(stoneId);
+
+        if (species == null) {
+            gf.logInfo("No mega stone found! Not invoking mega evolution.");
+            return false;
+        }
+
+        gf.logInfo("Species Name: " + species.getName());
+
+        if (!species.getName().equalsIgnoreCase(pokemon.getSpecies().getName())) {
+            gf.logInfo("Mismatched species");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void changeMegaFormWithAnimation(PokemonEntity pokemonEntity, Pokemon pokemon, ServerPlayerEntity player, String form, boolean fromBattle) {
         if (gf.getAnimationConfig().megaEnabled) {
             if (!activeMegaAnimations.contains(pokemon)) {
                 ParticleUtils.spawnParticle(gf.getAnimationConfig().megaIdentifier, pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
                 activeMegaAnimations.add(pokemon);
                 pokemonEntity.after(gf.getAnimationConfig().megaSeconds, () -> {
+                    if (canMegaEvolve(pokemon)) {
+                        gf.getPlayersWithMega().put(player.getUuid(), pokemon);
+                        if (fromBattle) {
+                            gf.getMegaEvolvedThisBattle().add(player.getUuid());
+                        }
+
+                        if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
+                            new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
+                        } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
+                            new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
+                        } else {
+                            new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
+                        }
+                        pokemon.setTradeable(false);
+                    }
+                    activeMegaAnimations.remove(pokemon);
+                    return Unit.INSTANCE;
+                });
+            }
+        } else {
+            pokemonEntity.after(0.2F, () -> {
+                if (canMegaEvolve(pokemon)) {
+                    gf.getPlayersWithMega().put(player.getUuid(), pokemon);
+                    if (fromBattle) {
+                        gf.getMegaEvolvedThisBattle().add(player.getUuid());
+                    }
+
                     if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
                         new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
                     } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
@@ -216,20 +277,7 @@ public class MegaEvolutionHandler {
                         new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
                     }
                     pokemon.setTradeable(false);
-                    activeMegaAnimations.remove(pokemon);
-                    return Unit.INSTANCE;
-                });
-            }
-        } else {
-            pokemonEntity.after(0.2F, () -> {
-                if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
-                    new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
-                } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
-                    new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
-                } else {
-                    new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
                 }
-                pokemon.setTradeable(false);
                 return Unit.INSTANCE;
             });
         }
