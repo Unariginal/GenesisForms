@@ -24,8 +24,12 @@ import me.unariginal.genesisforms.utils.ParticleUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MegaEvolutionHandler {
     private final static GenesisForms gf = GenesisForms.INSTANCE;
+    public static List<Pokemon> activeMegaAnimations = new ArrayList<>();
 
     public static Unit mega_event(MegaEvolutionEvent event) {
         PokemonBattle battle = event.getBattle();
@@ -110,7 +114,7 @@ public class MegaEvolutionHandler {
         }
 
         PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
-        for  (Pokemon pokemon : pcStore) {
+        for (Pokemon pokemon : pcStore) {
             if (pokemon != null) {
                 boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
                 if (isMega) {
@@ -122,6 +126,17 @@ public class MegaEvolutionHandler {
         }
 
         Pokemon pokemon = pokemonEntity.getPokemon();
+
+        if (pokemon.getSpecies().getName().equalsIgnoreCase("Rayquaza")) {
+            gf.logInfo("This is rayquaza! Checking for dragonascent move.");
+            for (Move move : pokemon.getMoveSet().getMoves()) {
+                if (move.getName().equalsIgnoreCase("dragonascent")) {
+                    changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaFeatureValue, fromBattle);
+                }
+            }
+            return;
+        }
+
         ItemStack heldItem = pokemon.heldItem();
         if (!heldItem.getComponents().contains(DataComponents.MEGA_STONE)) {
             gf.logInfo("No mega stone component");
@@ -149,16 +164,6 @@ public class MegaEvolutionHandler {
 
         if (pokemonEntity.isBattling() && !fromBattle) {
             gf.logInfo("Battling but not from battle! Not invoking mega evolution.");
-            return;
-        }
-
-        if (pokemon.getSpecies().getName().equalsIgnoreCase("Rayquaza")) {
-            gf.logInfo("This is rayquaza! Checking for dragonascent move.");
-            for (Move move : pokemon.getMoveSet().getMoves()) {
-                if (move.getName().equalsIgnoreCase("dragonascent")) {
-                    changeMegaFormWithAnimation(pokemonEntity, pokemon, player, gf.getConfig().megaFeatureValue, fromBattle);
-                }
-            }
             return;
         }
 
@@ -199,18 +204,22 @@ public class MegaEvolutionHandler {
             gf.getMegaEvolvedThisBattle().add(player.getUuid());
         }
         if (gf.getAnimationConfig().megaEnabled) {
-            ParticleUtils.spawnParticle(gf.getAnimationConfig().megaIdentifier, pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
-            pokemonEntity.after(gf.getAnimationConfig().megaSeconds, () -> {
-                if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
-                    new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
-                } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
-                    new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
-                } else {
-                    new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
-                }
-                pokemon.setTradeable(false);
-                return Unit.INSTANCE;
-            });
+            if (!activeMegaAnimations.contains(pokemon)) {
+                ParticleUtils.spawnParticle(gf.getAnimationConfig().megaIdentifier, pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
+                activeMegaAnimations.add(pokemon);
+                pokemonEntity.after(gf.getAnimationConfig().megaSeconds, () -> {
+                    if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {
+                        new StringSpeciesFeature(gf.getConfig().megaXFeatureName, form).apply(pokemon);
+                    } else if (form.equalsIgnoreCase(gf.getConfig().megaYFeatureValue)) {
+                        new StringSpeciesFeature(gf.getConfig().megaYFeatureName, form).apply(pokemon);
+                    } else {
+                        new StringSpeciesFeature(gf.getConfig().megaFeatureName, form).apply(pokemon);
+                    }
+                    pokemon.setTradeable(false);
+                    activeMegaAnimations.remove(pokemon);
+                    return Unit.INSTANCE;
+                });
+            }
         } else {
             pokemonEntity.after(0.2F, () -> {
                 if (form.equalsIgnoreCase(gf.getConfig().megaXFeatureValue)) {

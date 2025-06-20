@@ -26,6 +26,10 @@ public class HeldItemHandler {
     }
 
     public static Unit convert_item(HeldItemEvent.Pre pre) {
+        if (MegaEvolutionHandler.activeMegaAnimations.contains(pre.getPokemon())) {
+//            pre.setReturning(pre.getReceiving());
+        }
+
         if (!GenesisForms.INSTANCE.getConfig().convertOnHeldItemChange || pre.getPokemon().getOwnerPlayer() == null) {
             return Unit.INSTANCE;
         }

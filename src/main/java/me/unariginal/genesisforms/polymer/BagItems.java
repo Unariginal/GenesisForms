@@ -13,18 +13,24 @@ import me.unariginal.genesisforms.items.bagitems.MaxSoup;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 
 public class BagItems {
     private static final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.UNCOMMON).fireproof();
@@ -52,7 +58,7 @@ public class BagItems {
     public static void registerItems() {
         DYNAMAX_CANDY = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "dynamax_candy"), new DynamaxCandy(itemSettings, baseVanillaItem));
         MAX_HONEY = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_honey"), new MaxHoney(itemSettings, baseVanillaItem));
-        MAX_MUSHROOMS_BLOCK = Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsBlock(AbstractBlock.Settings.copy(Blocks.BROWN_MUSHROOM), BlockModelType.BIOME_PLANT_BLOCK, "block/max_mushrooms"));
+        MAX_MUSHROOMS_BLOCK = Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsBlock(AbstractBlock.Settings.copy(Blocks.RED_MUSHROOM).nonOpaque().noCollision().mapColor(MapColor.DULL_PINK).breakInstantly().sounds(BlockSoundGroup.CHERRY_LEAVES).postProcess(Blocks::always).pistonBehavior(PistonBehavior.DESTROY).noBlockBreakParticles().luminance(value -> 4), BlockModelType.BIOME_PLANT_BLOCK, "block/max_mushrooms"));
         MAX_MUSHROOMS_ITEM = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_mushrooms"), new MaxMushroomsItem(itemSettings, MAX_MUSHROOMS_BLOCK, "item/max_mushrooms"));
         MAX_SOUP = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "max_soup"), new MaxSoup(itemSettings, baseVanillaItem));
     }
