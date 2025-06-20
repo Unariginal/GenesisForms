@@ -1,6 +1,5 @@
 package me.unariginal.genesisforms.utils;
 
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import me.unariginal.genesisforms.GenesisForms;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -40,7 +39,7 @@ public class TextUtils {
     public static String parse(String text, Pokemon pokemon) {
         text = parse(text);
         text = text
-                .replaceAll("%pokemon%", pokemon.getDisplayName(false).getString())
+                .replaceAll("%pokemon%", pokemon.getDisplayName().getString())
                 .replaceAll("%pokemon.uuid%", pokemon.getUuid().toString())
                 .replaceAll("%pokemon.tera_type%", pokemon.getTeraType().getDisplayName().getString())
                 .replaceAll("%pokemon.dmax_level%", String.valueOf(pokemon.getDmaxLevel()));
