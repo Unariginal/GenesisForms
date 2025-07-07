@@ -20,7 +20,7 @@ public class Config {
     public List<String> disabledItems = new ArrayList<>();
     public boolean convertOnJoin = false;
     public boolean convertOnHeldItemChange = false;
-    public record ItemConversion(String input, String output) {}
+    public record ItemConversion(String input, String output, Integer customModelData) {}
     public List<ItemConversion> itemConversions = new ArrayList<>();
 
     public boolean enableMegaEvolution = true;
@@ -139,7 +139,8 @@ public class Config {
             for (JsonElement element : generalSettings.get("item_conversions").getAsJsonArray()) {
                 JsonObject itemConversion = element.getAsJsonObject();
                 if (itemConversion.get("input") != null && itemConversion.get("output") != null) {
-                    this.itemConversions.add(new ItemConversion(itemConversion.get("input").getAsString(), itemConversion.get("output").getAsString()));
+                    Integer customModelData = itemConversion.has("custom_model_data") ? itemConversion.get("custom_model_data").getAsInt() : null;
+                    this.itemConversions.add(new ItemConversion(itemConversion.get("input").getAsString(), itemConversion.get("output").getAsString(), customModelData));
                 }
             }
         }
@@ -147,6 +148,7 @@ public class Config {
             JsonObject itemConversionJson = new JsonObject();
             itemConversionJson.addProperty("input", itemConversion.input);
             itemConversionJson.addProperty("output", itemConversion.output);
+            if (itemConversion.customModelData != null) itemConversionJson.addProperty("custom_model_data", itemConversion.customModelData);
             itemConversions.add(itemConversionJson);
         }
         generalSettings.add("item_conversions", itemConversions);
