@@ -112,6 +112,10 @@ public class KeyItems {
                     for (String key : FusionItems.getInstance().getAllFusionItemIds()) {
                         entries.add(FusionItems.getInstance().fusionItemPolymerItems.get(key));
                     }
+
+                    for (String key : PossessionBlockItems.getInstance().getAllPossessionItemIds()) {
+                        entries.add(PossessionBlockItems.getInstance().possessionItemPolymerItems.get(key));
+                    }
                 })
                 .build();
 
@@ -136,6 +140,10 @@ public class KeyItems {
 
         for (String key : FusionItems.getInstance().getAllFusionItemIds()) {
             keyItemStacks.put(key, FusionItems.getInstance().getFusionItem(key));
+        }
+
+        for (String key : PossessionBlockItems.getInstance().getAllPossessionItemIds()) {
+            keyItemStacks.put(key, PossessionBlockItems.getInstance().getPossessionItem(key));
         }
     }
 }
