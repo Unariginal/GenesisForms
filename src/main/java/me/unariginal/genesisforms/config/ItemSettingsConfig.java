@@ -1,6 +1,5 @@
 package me.unariginal.genesisforms.config;
 
-import com.cobblemon.mod.common.api.types.tera.TeraTypes;
 import com.google.gson.*;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.items.keyitems.KeyFormItems;
@@ -501,5 +500,6 @@ public class ItemSettingsConfig {
         item_lore.put("rotom_fan", List.of("<gray>This item can be possessed by a certain pokemon!"));
         item_lore.put("rotom_light_bulb", List.of("<gray>This item can be possessed by a certain pokemon!"));
         item_lore.put("rotom_refrigerator", List.of("<gray>This item can be possessed by a certain pokemon!"));
+        item_lore.put("rotom_catalog", List.of("<gray>A catalog of devices that Rotom like.", "<gray>Use the catalog to have Rotom hop in and out of the various devices listed within."));
     }
 }

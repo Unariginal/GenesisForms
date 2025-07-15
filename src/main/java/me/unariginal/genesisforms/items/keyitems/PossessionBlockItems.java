@@ -1,20 +1,17 @@
 package me.unariginal.genesisforms.items.keyitems;
 
-import com.cobblemon.mod.common.api.moves.BenchedMove;
-import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.core.api.item.PolymerItem;
-import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.blocks.PossessionBlock;
 import me.unariginal.genesisforms.data.DataComponents;
+import me.unariginal.genesisforms.utils.PokemonUtils;
 import me.unariginal.genesisforms.utils.TextUtils;
-import net.kyori.adventure.text.NBTComponent;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -143,43 +140,18 @@ public class PossessionBlockItems {
                                 if (pokemon.getAspects().stream().noneMatch(aspect -> aspect.startsWith(formInformation.feature_value()))) {
                                     alreadyInForm = false;
                                     new StringSpeciesFeature(formInformation.feature_name, formInformation.feature_value).apply(pokemon);
-                                    pokemon.updateAspects();
-                                    pokemon.updateForm();
                                 }
                             } else {
                                 if (pokemon.getFeatures().stream().anyMatch(feature -> feature.getName().equalsIgnoreCase(formInformation.feature_name))) {
                                     alreadyInForm = false;
                                     pokemon.getFeatures().removeIf(feature -> feature.getName().equalsIgnoreCase(formInformation.feature_name));
-                                    pokemon.updateAspects();
-                                    pokemon.updateForm();
-                                    List<Move> newMoves = new ArrayList<>();
-                                    for (Move move : pokemon.getMoveSet().getMoves()) {
-                                        if (!(move.getTemplate().getName().equalsIgnoreCase("overheat") ||
-                                                move.getTemplate().getName().equalsIgnoreCase("hydropump") ||
-                                                move.getTemplate().getName().equalsIgnoreCase("blizzard") ||
-                                                move.getTemplate().getName().equalsIgnoreCase("airslash") ||
-                                                move.getTemplate().getName().equalsIgnoreCase("leafstorm"))) {
-                                            newMoves.add(move);
-                                        }
-                                    }
-                                    for (int i = 0; i < newMoves.size(); i++) {
-                                        pokemon.getMoveSet().setMove(i, newMoves.get(i));
-                                    }
 
-                                    List<BenchedMove> newBenchedMoves = new ArrayList<>();
-                                    for (BenchedMove move : pokemon.getBenchedMoves()) {
-                                        if (!(move.getMoveTemplate().getName().equalsIgnoreCase("overheat") ||
-                                                move.getMoveTemplate().getName().equalsIgnoreCase("hydropump") ||
-                                                move.getMoveTemplate().getName().equalsIgnoreCase("blizzard") ||
-                                                move.getMoveTemplate().getName().equalsIgnoreCase("airslash") ||
-                                                move.getMoveTemplate().getName().equalsIgnoreCase("leafstorm"))) {
-                                            newBenchedMoves.add(move);
-                                        }
-                                    }
-                                    pokemon.getBenchedMoves().clear();
-                                    pokemon.getBenchedMoves().addAll(newBenchedMoves);
+                                    PokemonUtils.fixRotomMoves(pokemon);
                                 }
                             }
+
+                            pokemon.updateAspects();
+                            pokemon.updateForm();
 
                             if (!alreadyInForm) {
                                 NbtCompound data = pokemon.getPersistentData();

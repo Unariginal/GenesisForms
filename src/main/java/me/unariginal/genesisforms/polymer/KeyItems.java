@@ -36,7 +36,8 @@ public class KeyItems {
             sparklingStoneModelData,
             wishingStarModelData,
             teraOrbModelData,
-            zygardeCubeModelData;
+            zygardeCubeModelData,
+            rotomCatalogModelData;
 
     public static KeyStone KEY_STONE;
     public static MegaBracelet MEGA_BRACELET;
@@ -51,6 +52,7 @@ public class KeyItems {
     public static SparklingStone SPARKLING_STONE;
     public static WishingStar WISHING_STAR;
     public static ZygardeCube ZYGARDE_CUBE;
+    public static RotomCatalog ROTOM_CATALOG;
 
     public static Map<String, ItemStack> keyItemStacks = new HashMap<>();
 
@@ -68,6 +70,7 @@ public class KeyItems {
         sparklingStoneModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/sparkling_stone"));
         wishingStarModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/wishing_star"));
         zygardeCubeModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/zygarde_cube"));
+        rotomCatalogModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/rotom_catalog"));
     }
 
     public static void registerItems() {
@@ -80,10 +83,11 @@ public class KeyItems {
         Z_POWER_RING = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "z_power_ring"), new ZPowerRing(itemSettings.component(DataComponents.KEY_ITEM, "z_power_ring"), baseVanillaItem));
         TERA_ORB = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "tera_orb"), new TeraOrb(itemSettings.component(DataComponents.KEY_ITEM, "tera_orb"), baseVanillaItem));
         DYNAMAX_BAND = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "dynamax_band"), new DynamaxBand(itemSettings.component(DataComponents.KEY_ITEM, "dynamax_band"), baseVanillaItem));
-        METEORITE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "meteorite"), new Meteorite(itemSettings, baseVanillaItem));
+        METEORITE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "meteorite"), new Meteorite(itemSettings.component(DataComponents.KEY_ITEM, "meteorite"), baseVanillaItem));
         SPARKLING_STONE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "sparkling_stone"), new SparklingStone(itemSettings, baseVanillaItem));
         WISHING_STAR = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "wishing_star"), new WishingStar(itemSettings, baseVanillaItem));
         ZYGARDE_CUBE = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "zygarde_cube"), new ZygardeCube(itemSettings.component(DataComponents.KEY_ITEM, "zygarde_cube"), baseVanillaItem));
+        ROTOM_CATALOG = Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, "rotom_catalog"), new RotomCatalog(itemSettings.component(DataComponents.KEY_ITEM, "rotom_catalog"), baseVanillaItem));
     }
 
     public static void registerItemGroup() {
@@ -104,6 +108,7 @@ public class KeyItems {
                     entries.add(WISHING_STAR);
                     entries.add(METEORITE);
                     entries.add(ZYGARDE_CUBE);
+                    entries.add(ROTOM_CATALOG);
 
                     for (String key : KeyFormItems.getInstance().keyItemPolymerItems.keySet()) {
                         entries.add(KeyFormItems.getInstance().keyItemPolymerItems.get(key));
@@ -133,6 +138,7 @@ public class KeyItems {
         keyItemStacks.put("wishing_star", WISHING_STAR.getDefaultStack());
         keyItemStacks.put("meteorite", METEORITE.getDefaultStack());
         keyItemStacks.put("zygarde_cube", ZYGARDE_CUBE.getDefaultStack());
+        keyItemStacks.put("rotom_catalog", ROTOM_CATALOG.getDefaultStack());
 
         for (String key : KeyFormItems.getInstance().getAllKeyItemIds()) {
             keyItemStacks.put(key, KeyFormItems.getInstance().getKeyItem(key));

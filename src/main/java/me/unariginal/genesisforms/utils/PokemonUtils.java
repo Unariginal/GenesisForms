@@ -1,15 +1,16 @@
 package me.unariginal.genesisforms.utils;
 
+import com.cobblemon.mod.common.api.moves.BenchedMove;
+import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
-import com.cobblemon.mod.common.pokemon.EVs;
-import com.cobblemon.mod.common.pokemon.Gender;
-import com.cobblemon.mod.common.pokemon.IVs;
-import com.cobblemon.mod.common.pokemon.OriginalTrainerType;
+import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.DataKeys;
 import net.minecraft.nbt.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class PokemonUtils {
     public static NbtCompound saveToNBT(PokemonProperties properties) {
@@ -164,5 +165,34 @@ public class PokemonUtils {
         }
         properties.updateAspects();
         return properties;
+    }
+
+    public static void fixRotomMoves(Pokemon pokemon) {
+        List<Move> newMoves = new ArrayList<>();
+        for (Move move : pokemon.getMoveSet().getMoves()) {
+            if (!(move.getTemplate().getName().equalsIgnoreCase("overheat") ||
+                    move.getTemplate().getName().equalsIgnoreCase("hydropump") ||
+                    move.getTemplate().getName().equalsIgnoreCase("blizzard") ||
+                    move.getTemplate().getName().equalsIgnoreCase("airslash") ||
+                    move.getTemplate().getName().equalsIgnoreCase("leafstorm"))) {
+                newMoves.add(move);
+            }
+        }
+        for (int i = 0; i < newMoves.size(); i++) {
+            pokemon.getMoveSet().setMove(i, newMoves.get(i));
+        }
+
+        List<BenchedMove> newBenchedMoves = new ArrayList<>();
+        for (BenchedMove move : pokemon.getBenchedMoves()) {
+            if (!(move.getMoveTemplate().getName().equalsIgnoreCase("overheat") ||
+                    move.getMoveTemplate().getName().equalsIgnoreCase("hydropump") ||
+                    move.getMoveTemplate().getName().equalsIgnoreCase("blizzard") ||
+                    move.getMoveTemplate().getName().equalsIgnoreCase("airslash") ||
+                    move.getMoveTemplate().getName().equalsIgnoreCase("leafstorm"))) {
+                newBenchedMoves.add(move);
+            }
+        }
+        pokemon.getBenchedMoves().clear();
+        pokemon.getBenchedMoves().addAll(newBenchedMoves);
     }
 }
