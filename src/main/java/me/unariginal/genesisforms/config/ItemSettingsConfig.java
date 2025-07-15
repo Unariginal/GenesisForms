@@ -485,5 +485,21 @@ public class ItemSettingsConfig {
         item_lore.put("steel_tera_shard", List.of("<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."));
         item_lore.put("fairy_tera_shard", List.of("<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."));
         item_lore.put("stellar_tera_shard", List.of("<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."));
+
+        item_lore.put("soul_dew", List.of("<gray>A wondrous orb to be held by Latios or Latias.", "<gray>It boosts the power of their Psychic- and Dragon-type moves."));
+        item_lore.put("lucky_punch", List.of("<gray>An item to be held by Chansey.", "<gray> This lucky boxing glove boosts the critical-hit ratio of Chansey's moves."));
+        item_lore.put("berserk_gene", List.of("<gray>Boosts Attack but causes confusion."));
+        item_lore.put("adamant_orb", List.of("<gray>A brightly shining gem to be held by Dialga.", "<gray>It boosts the power of Dialga’s Dragon- and Steel-type moves."));
+        item_lore.put("lustrous_orb", List.of("<gray>A beautifully shining gem to be held by Palkia.", "<gray>It boosts the power of Palkia’s Dragon- and Water-type moves."));
+        item_lore.put("griseous_orb", List.of("<gray>A shining gem to be held by Giratina.", "<gray>It boosts the power of Giratina's Dragon- and Ghost-type moves."));
+        item_lore.put("adrenaline_orb", List.of("<gray>An item to be held by a Pokémon.", "<gray>This orb boosts the Speed stat if the holder is intimidated."));
+        item_lore.put("booster_energy", List.of("<gray>An item to be held by Pokémon with certain Abilities.", "<gray>The energy that fills this capsule boosts the strength of the Pokémon."));
+
+        item_lore.put("rotom_microwave_oven", List.of("<gray>This item can be possessed by a certain pokemon!"));
+        item_lore.put("rotom_lawn_mower", List.of("<gray>This item can be possessed by a certain pokemon!"));
+        item_lore.put("rotom_washing_machine", List.of("<gray>This item can be possessed by a certain pokemon!"));
+        item_lore.put("rotom_fan", List.of("<gray>This item can be possessed by a certain pokemon!"));
+        item_lore.put("rotom_light_bulb", List.of("<gray>This item can be possessed by a certain pokemon!"));
+        item_lore.put("rotom_refrigerator", List.of("<gray>This item can be possessed by a certain pokemon!"));
     }
 }
