@@ -19,6 +19,7 @@ import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
 import me.unariginal.genesisforms.items.keyitems.FusionItems;
 import me.unariginal.genesisforms.items.keyitems.KeyFormItems;
+import me.unariginal.genesisforms.items.keyitems.PossessionBlockItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import net.fabricmc.api.ModInitializer;
@@ -112,6 +113,10 @@ public class GenesisForms implements ModInitializer {
         FusionItems.getInstance().loadFusionItemIds();
         FusionItems.getInstance().fillPolymerModelData();
         FusionItems.getInstance().fillPolymerItems();
+
+        PossessionBlockItems.getInstance().loadPossessionItemIds();
+        PossessionBlockItems.getInstance().fillPolymerModelData();
+        PossessionBlockItems.getInstance().fillPolymerItems();
 
         KeyItems.requestModel();
         KeyItems.registerItems();

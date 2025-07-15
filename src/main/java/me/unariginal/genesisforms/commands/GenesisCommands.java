@@ -16,6 +16,7 @@ import me.unariginal.genesisforms.utils.NbtUtils;
 import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
@@ -24,6 +25,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
+
+import static net.minecraft.component.DataComponentTypes.CUSTOM_MODEL_DATA;
 
 public class GenesisCommands {
     private final GenesisForms gf = GenesisForms.INSTANCE;
@@ -263,6 +266,13 @@ public class GenesisCommands {
 
     public ItemStack convertItem(ItemStack itemStack) {
         for (Config.ItemConversion itemConversion : gf.getConfig().itemConversions) {
+            Integer customModelData = itemConversion.customModelData();
+            if (customModelData != null) {
+                CustomModelDataComponent customModelDataComponent = itemStack.getComponents().get(CUSTOM_MODEL_DATA);
+                if (customModelDataComponent == null || customModelDataComponent.value() != customModelData) {
+                    continue;
+                }
+            }
             if (itemConversion.input().contains(":")) {
                 if (Registries.ITEM.containsId(Identifier.of(itemConversion.input()))) {
                     if (itemStack.getRegistryEntry().matchesId(Identifier.of(itemConversion.input()))) {

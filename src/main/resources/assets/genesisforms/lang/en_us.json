@@ -26,6 +26,12 @@
   "item.genesisforms.n_lunarizer": "N-Lunarizer",
   "item.genesisforms.reins_of_unity": "Reins Of Unity",
   "item.genesisforms.zygarde_cube": "Zygarde Cube",
+  "block.genesisforms.rotom_lawn_mower": "Lawn Mower",
+  "block.genesisforms.rotom_washing_machine": "Washing Machine",
+  "block.genesisforms.rotom_microwave_oven": "Microwave Oven",
+  "block.genesisforms.rotom_refrigerator": "Refrigerator",
+  "block.genesisforms.rotom_fan": "Fan",
+  "block.genesisforms.rotom_light_bulb": "Light Bulb",
   "item.genesisforms.dynamax_candy": "Dynamax Candy",
   "item.genesisforms.max_honey": "Max Honey",
   "item.genesisforms.max_soup": "Max Soup",
@@ -179,5 +185,29 @@
   "item.genesisforms.fire_tera_shard": "Fire Tera Shard",
   "item.genesisforms.ground_tera_shard": "Ground Tera Shard",
   "item.genesisforms.psychic_tera_shard": "Psychic Tera Shard",
-  "item.genesisforms.fairy_tera_shard": "Fairy Tera Shard"
+  "item.genesisforms.fairy_tera_shard": "Fairy Tera Shard",
+  "item.genesisforms.soul_dew": "Soul Dew",
+  "item.genesisforms.berserk_gene": "Berserk Gene",
+  "item.genesisforms.booster_energy": "Booster Energy",
+  "item.genesisforms.adrenaline_orb": "Adrenaline Orb",
+  "item.genesisforms.griseous_orb": "Griseous Orb",
+  "item.genesisforms.adamant_orb": "Adamant Orb",
+  "item.genesisforms.lustrous_orb": "Lustrous Orb",
+  "item.genesisforms.lucky_punch": "Lucky Punch",
+
+  "cobblemon.battle.activate.quarkdrive": "%1$s activated Quark Drive!",
+  "cobblemon.battle.start.quarkdriveatk": "%1$s's Attack was heightened!",
+  "cobblemon.battle.start.quarkdrivedef": "%1$s's Defense was heightened!",
+  "cobblemon.battle.start.quarkdrivespa": "%1$s's Special Attack was heightened!",
+  "cobblemon.battle.start.quarkdrivespd": "%1$s's Special Defense was heightened!",
+  "cobblemon.battle.start.quarkdrivespe": "%1$s's Speed was heightened!",
+
+  "cobblemon.battle.activate.protosynthesis": "%1$s activated Protosynthesis!",
+  "cobblemon.battle.start.protosynthesisatk": "%1$s's Attack was heightened!",
+  "cobblemon.battle.start.protosynthesisdef": "%1$s's Defense was heightened!",
+  "cobblemon.battle.start.protosynthesisspa": "%1$s's Special Attack was heightened!",
+  "cobblemon.battle.start.protosynthesisspd": "%1$s's Special Defense was heightened!",
+  "cobblemon.battle.start.protosynthesisspe": "%1$s's Speed was heightened!",
+
+  "cobblemon.battle.enditem.adrenalineorb": "%1$s used its Adrenaline Orb!"
 }

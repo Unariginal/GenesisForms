@@ -37,9 +37,10 @@ public class HeldItems {
     }
 
     private final Map<String, String> HELD_ITEM_IDS = new HashMap<>();
+    private final Map<String, String> HELD_BATTLE_ITEM_IDS = new HashMap<>();
 
     public ItemStack getHeldItem(String id) {
-        if (!HELD_ITEM_IDS.containsKey(id)) return ItemStack.EMPTY;
+        if (!heldItemPolymerItems.containsKey(id)) return ItemStack.EMPTY;
         return heldItemPolymerItems.get(id).getDefaultStack();
     }
 
@@ -48,7 +49,7 @@ public class HeldItems {
     }
 
     public Set<String> getAllHeldItemIds() {
-        return HELD_ITEM_IDS.keySet();
+        return heldItemPolymerItems.keySet();
     }
 
     public Species getHeldItemSpecies(String id) {
@@ -117,6 +118,16 @@ public class HeldItems {
             ItemSettingsConfig.CustomHeldItem item = GenesisForms.INSTANCE.getItemSettings().custom_held_items.get(key);
             HELD_ITEM_IDS.put(key, item.species());
         }
+
+        HELD_BATTLE_ITEM_IDS.put("adamant_orb", "adamantorb");
+        HELD_BATTLE_ITEM_IDS.put("adrenaline_orb", "adrenalineorb");
+        HELD_BATTLE_ITEM_IDS.put("berserk_gene", "berserkgene");
+        HELD_BATTLE_ITEM_IDS.put("booster_energy", "boosterenergy");
+        HELD_BATTLE_ITEM_IDS.put("griseous_orb", "griseousorb");
+        HELD_BATTLE_ITEM_IDS.put("lucky_punch", "luckypunch");
+        HELD_BATTLE_ITEM_IDS.put("lustrous_orb", "lustrousorb");
+//        HELD_BATTLE_ITEM_IDS.put("macho_brace", "machobrace");
+        HELD_BATTLE_ITEM_IDS.put("soul_dew", "souldew");
     }
 
     public Map<String, HeldItemPolymerItem> heldItemPolymerItems = new HashMap<>();
@@ -128,10 +139,18 @@ public class HeldItems {
         for (String key : HELD_ITEM_IDS.keySet()) {
             heldItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new HeldItemPolymerItem(itemSettings.component(DataComponents.HELD_ITEM, key), baseVanillaItem, key)));
         }
+
+        for (String key : HELD_BATTLE_ITEM_IDS.keySet()) {
+            heldItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new HeldItemPolymerItem(itemSettings.component(DataComponents.HELD_ITEM, key), baseVanillaItem, key)));
+        }
     }
 
     public void fillPolymerModelData() {
         for (String key : HELD_ITEM_IDS.keySet()) {
+            heldItemPolymerModelData.put(key, PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/" + key)));
+        }
+
+        for (String key : HELD_BATTLE_ITEM_IDS.keySet()) {
             heldItemPolymerModelData.put(key, PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/" + key)));
         }
     }
@@ -141,7 +160,7 @@ public class HeldItems {
                 .icon(heldItemPolymerItems.get("rusted_sword")::getDefaultStack)
                 .displayName(Text.literal("Held Items"))
                 .entries((displayContext, entries) -> {
-                    for (String key : heldItemPolymerModelData.keySet()) {
+                    for (String key : heldItemPolymerItems.keySet()) {
                         entries.add(heldItemPolymerItems.get(key));
                     }
                 }).build();
@@ -149,7 +168,11 @@ public class HeldItems {
         PolymerItemGroupUtils.registerPolymerItemGroup(Identifier.of(GenesisForms.MOD_ID, "held_items"), HELD_ITEMS);
 
         for (String key : HELD_ITEM_IDS.keySet()) {
-            CobblemonHeldItemManager.INSTANCE.registerRemap(heldItemPolymerItems.get(key), key);
+            CobblemonHeldItemManager.INSTANCE.registerRemap(heldItemPolymerItems.get(key), key.replaceAll("_", ""));
+        }
+
+        for (String key : HELD_BATTLE_ITEM_IDS.keySet()) {
+            CobblemonHeldItemManager.INSTANCE.registerRemap(heldItemPolymerItems.get(key), HELD_BATTLE_ITEM_IDS.get(key));
         }
     }
 
