@@ -487,7 +487,7 @@ public class ItemSettingsConfig {
         item_lore.put("stellar_tera_shard", List.of("<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."));
 
         item_lore.put("soul_dew", List.of("<gray>A wondrous orb to be held by Latios or Latias.", "<gray>It boosts the power of their Psychic- and Dragon-type moves."));
-        item_lore.put("lucky_punch", List.of("<gray>An item to be held by Chansey.", "<gray> This lucky boxing glove boosts the critical-hit ratio of Chansey's moves."));
+        item_lore.put("lucky_punch", List.of("<gray>An item to be held by Chansey.", "<gray>This lucky boxing glove boosts the critical-hit ratio of Chansey's moves."));
         item_lore.put("berserk_gene", List.of("<gray>Boosts Attack but causes confusion."));
         item_lore.put("adamant_orb", List.of("<gray>A brightly shining gem to be held by Dialga.", "<gray>It boosts the power of Dialga’s Dragon- and Steel-type moves."));
         item_lore.put("lustrous_orb", List.of("<gray>A beautifully shining gem to be held by Palkia.", "<gray>It boosts the power of Palkia’s Dragon- and Water-type moves."));
