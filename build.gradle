@@ -46,9 +46,11 @@ dependencies {
     modImplementation include("net.kyori:adventure-text-minimessage:4.17.0")
     modImplementation include("net.kyori:adventure-platform-fabric:5.14.1")
 
-    modImplementation include("eu.pb4:polymer-core:0.9.18+1.21.1")
-    modImplementation include("eu.pb4:polymer-blocks:0.9.18+1.21.1")
-    modImplementation include("eu.pb4:polymer-resource-pack:0.9.18+1.21.1")
+    modImplementation "eu.pb4:polymer-core:0.9.18+1.21.1"
+    modImplementation "eu.pb4:polymer-blocks:0.9.18+1.21.1"
+    modImplementation "eu.pb4:polymer-resource-pack:0.9.18+1.21.1"
+    modImplementation "eu.pb4:polymer-virtual-entity:0.9.18+1.21.1"
+    modImplementation include('eu.pb4:factorytools:0.3.2+1.21')
 
     modImplementation "com.cobblemon:fabric:${project.cobblemon_version}"
 }

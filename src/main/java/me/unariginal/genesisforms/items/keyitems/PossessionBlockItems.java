@@ -79,14 +79,14 @@ public class PossessionBlockItems {
 
     public void fillPolymerItems() {
         for (String key : POSSESSION_ITEM_IDS.keySet()) {
-            possessionBlocks.put(key, Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, key), new PossessionBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.TERRACOTTA_ORANGE).sounds(BlockSoundGroup.METAL).postProcess(Blocks::always).noBlockBreakParticles(), BlockModelType.FULL_BLOCK, "block/" + key)));
+            possessionBlocks.put(key, Registry.register(Registries.BLOCK, Identifier.of(GenesisForms.MOD_ID, key), new PossessionBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).mapColor(MapColor.TERRACOTTA_ORANGE).nonOpaque().solidBlock(Blocks::never)/*, BlockModelType.TRANSPARENT_BLOCK, "block/" + key*/)));
             possessionItemPolymerItems.put(key, Registry.register(Registries.ITEM, Identifier.of(GenesisForms.MOD_ID, key), new PossessionItemPolymerItem(itemSettings.component(DataComponents.KEY_ITEM, key), possessionBlocks.get(key), key)));
         }
     }
 
     public void fillPolymerModelData() {
         for (String key : POSSESSION_ITEM_IDS.keySet()) {
-            possessionItemPolymerModelData.put(key, PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/" + key)));
+            possessionItemPolymerModelData.put(key, PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "block/" + key)));
         }
     }
 
