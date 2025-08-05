@@ -277,7 +277,7 @@ public class ItemSettingsConfig {
         itemSettingsFile.delete();
         itemSettingsFile.createNewFile();
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         Writer writer = new FileWriter(itemSettingsFile);
         gson.toJson(newRoot, writer);
         writer.close();

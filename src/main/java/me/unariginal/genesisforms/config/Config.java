@@ -37,6 +37,7 @@ public class Config {
     public boolean enableZCrystals = true;
 
     public boolean enableTera = true;
+    public int teraShardsRequired = 50;
     public boolean fixOgerponTeraType = true;
     public boolean fixTerapagosTeraType = true;
 
@@ -55,51 +56,48 @@ public class Config {
 
     public void loadConfig() throws IOException {
         File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms").toFile();
-        if (!rootFolder.exists()) {
+        if (!rootFolder.exists())
             rootFolder.mkdirs();
-        }
 
         File configFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/config.json").toFile();
         JsonObject newRoot = new JsonObject();
         JsonObject root = new JsonObject();
-        if (configFile.exists()) {
+        if (configFile.exists())
             root = JsonParser.parseReader(new FileReader(configFile)).getAsJsonObject();
-        }
 
-        if (root.get("debug") != null) {
+        if (root.has("debug"))
             debug = root.get("debug").getAsBoolean();
-        }
         newRoot.addProperty("debug", debug);
 
         JsonObject generalSettings = new JsonObject();
-        if (root.get("general_settings") != null) {
+        if (root.has("general_settings"))
             generalSettings = root.get("general_settings").getAsJsonObject();
-        }
 
         JsonObject keyItemSlots = new JsonObject();
-        if (root.has("key_item_slots")) {
+
+        if (root.has("key_item_slots"))
             keyItemSlots = root.get("key_item_slots").getAsJsonObject();
-        }
-        if (keyItemSlots.has("hotbar")) {
+
+        if (keyItemSlots.has("hotbar"))
             useHotbarInventory = keyItemSlots.get("hotbar").getAsBoolean();
-        }
         keyItemSlots.addProperty("hotbar", useHotbarInventory);
-        if (keyItemSlots.has("main")) {
+
+        if (keyItemSlots.has("main"))
             useMainInventory = keyItemSlots.get("main").getAsBoolean();
-        }
         keyItemSlots.addProperty("main", useMainInventory);
-        if (keyItemSlots.has("mainhand")) {
+
+        if (keyItemSlots.has("mainhand"))
             useMainHandInventory = keyItemSlots.get("mainhand").getAsBoolean();
-        }
         keyItemSlots.addProperty("mainhand", useMainHandInventory);
-        if (keyItemSlots.has("offhand")) {
+
+        if (keyItemSlots.has("offhand"))
             useOffHandInventory = keyItemSlots.get("offhand").getAsBoolean();
-        }
         keyItemSlots.addProperty("offhand", useOffHandInventory);
-        if (keyItemSlots.has("armor")) {
+
+        if (keyItemSlots.has("armor"))
             useArmorInventory = keyItemSlots.get("armor").getAsBoolean();
-        }
         keyItemSlots.addProperty("armor", useArmorInventory);
+
         if (keyItemSlots.has("specific")) {
             JsonArray specificSlots = keyItemSlots.get("specific").getAsJsonArray();
             for (JsonElement element : specificSlots) {
@@ -111,10 +109,11 @@ public class Config {
             specificSlots.add(slot);
         }
         keyItemSlots.add("specific", specificSlots);
+
         generalSettings.add("key_item_slots", keyItemSlots);
 
         JsonArray disabledItems = new JsonArray();
-        if (generalSettings.get("disabled_items") != null) {
+        if (generalSettings.has("disabled_items")) {
             this.disabledItems.clear();
             generalSettings.get("disabled_items").getAsJsonArray().forEach(element -> disabledItems.add(element.getAsString()));
         }
@@ -123,22 +122,20 @@ public class Config {
         }
         generalSettings.add("disabled_items", disabledItems);
 
-        if (generalSettings.has("convert_on_join")) {
+        if (generalSettings.has("convert_on_join"))
             convertOnJoin = generalSettings.get("convert_on_join").getAsBoolean();
-        }
         generalSettings.addProperty("convert_on_join", convertOnJoin);
 
-        if (generalSettings.has("convert_on_held_item_change")) {
+        if (generalSettings.has("convert_on_held_item_change"))
             convertOnHeldItemChange = generalSettings.get("convert_on_held_item_change").getAsBoolean();
-        }
         generalSettings.addProperty("convert_on_held_item_change", convertOnHeldItemChange);
 
         JsonArray itemConversions = new JsonArray();
-        if (generalSettings.get("item_conversions") != null) {
+        if (generalSettings.has("item_conversions")) {
             this.itemConversions.clear();
             for (JsonElement element : generalSettings.get("item_conversions").getAsJsonArray()) {
                 JsonObject itemConversion = element.getAsJsonObject();
-                if (itemConversion.get("input") != null && itemConversion.get("output") != null) {
+                if (itemConversion.has("input") && itemConversion.has("output")) {
                     Integer customModelData = itemConversion.has("custom_model_data") ? itemConversion.get("custom_model_data").getAsInt() : null;
                     this.itemConversions.add(new ItemConversion(itemConversion.get("input").getAsString(), itemConversion.get("output").getAsString(), customModelData));
                 }
@@ -152,51 +149,43 @@ public class Config {
             itemConversions.add(itemConversionJson);
         }
         generalSettings.add("item_conversions", itemConversions);
+
         newRoot.add("general_settings", generalSettings);
 
         JsonObject megaSettings = new JsonObject();
-        if (root.get("mega_settings") != null) {
+        if (root.has("mega_settings"))
             megaSettings = root.get("mega_settings").getAsJsonObject();
-        }
 
-        if (megaSettings.get("enable_mega_evolution") != null) {
+        if (megaSettings.has("enable_mega_evolution"))
             enableMegaEvolution = megaSettings.get("enable_mega_evolution").getAsBoolean();
-        }
         megaSettings.addProperty("enable_mega_evolution", enableMegaEvolution);
 
-        if (megaSettings.get("allow_mega_outside_battles") != null) {
+        if (megaSettings.has("allow_mega_outside_battles"))
             allowMegaOutsideBattles = megaSettings.get("allow_mega_outside_battles").getAsBoolean();
-        }
         megaSettings.addProperty("allow_mega_outside_battles", allowMegaOutsideBattles);
 
-        if (megaSettings.get("mega_feature_name") != null) {
+        if (megaSettings.has("mega_feature_name"))
             megaFeatureName = megaSettings.get("mega_feature_name").getAsString();
-        }
         megaSettings.addProperty("mega_feature_name", megaFeatureName);
 
-        if (megaSettings.get("mega_feature_value") != null) {
+        if (megaSettings.has("mega_feature_value"))
             megaFeatureValue = megaSettings.get("mega_feature_value").getAsString();
-        }
         megaSettings.addProperty("mega_feature_value", megaFeatureValue);
 
-        if (megaSettings.get("mega_x_feature_name") != null) {
+        if (megaSettings.has("mega_x_feature_name"))
             megaXFeatureName = megaSettings.get("mega_x_feature_name").getAsString();
-        }
         megaSettings.addProperty("mega_x_feature_name", megaXFeatureName);
 
-        if (megaSettings.get("mega_x_feature_value") != null) {
+        if (megaSettings.has("mega_x_feature_value"))
             megaXFeatureValue = megaSettings.get("mega_x_feature_value").getAsString();
-        }
         megaSettings.addProperty("mega_x_feature_value", megaXFeatureValue);
 
-        if (megaSettings.get("mega_y_feature_name") != null) {
+        if (megaSettings.has("mega_y_feature_name"))
             megaYFeatureName = megaSettings.get("mega_y_feature_name").getAsString();
-        }
         megaSettings.addProperty("mega_y_feature_name", megaYFeatureName);
 
-        if (megaSettings.get("mega_y_feature_value") != null) {
+        if (megaSettings.has("mega_y_feature_value"))
             megaYFeatureValue = megaSettings.get("mega_y_feature_value").getAsString();
-        }
         megaSettings.addProperty("mega_y_feature_value", megaYFeatureValue);
 
         JsonArray customMegaList = new JsonArray();
@@ -204,7 +193,7 @@ public class Config {
             this.customMegaList.clear();
             for (JsonElement element : megaSettings.get("custom_megas").getAsJsonArray()) {
                 JsonObject customMega = element.getAsJsonObject();
-                if (customMega.get("base_species") != null && customMega.get("megastone_id") != null && customMega.get("mega_form") != null) {
+                if (customMega.has("base_species") && customMega.has("megastone_id") && customMega.has("mega_form")) {
                     this.customMegaList.add(new CustomMega(customMega.get("base_species").getAsString(), customMega.get("megastone_id").getAsString(), customMega.get("mega_form").getAsString()));
                 }
             }
@@ -217,58 +206,68 @@ public class Config {
             customMegaList.add(customMegaObject);
         }
         megaSettings.add("custom_megas", customMegaList);
+
         newRoot.add("mega_settings", megaSettings);
 
         JsonObject zPowerSettings = new JsonObject();
-        if (root.get("z_power_settings") != null) {
+        if (root.has("z_power_settings"))
             zPowerSettings = root.get("z_power_settings").getAsJsonObject();
-        }
-        if (zPowerSettings.get("enable_z_crystals") != null) {
+
+        if (zPowerSettings.has("enable_z_crystals"))
             enableZCrystals = zPowerSettings.get("enable_z_crystals").getAsBoolean();
-        }
         zPowerSettings.addProperty("enable_z_crystals", enableZCrystals);
+
         newRoot.add("z_power_settings", zPowerSettings);
 
         JsonObject teraSettings = new JsonObject();
-        if (root.get("tera_settings") != null) {
+        if (root.has("tera_settings"))
             teraSettings = root.get("tera_settings").getAsJsonObject();
-        }
-        if (teraSettings.get("enable_tera") != null) {
+
+        if (teraSettings.has("enable_tera"))
             enableTera = teraSettings.get("enable_tera").getAsBoolean();
-        }
         teraSettings.addProperty("enable_tera", enableTera);
-        if (teraSettings.get("fix_ogerpon_tera_type") != null) {
+
+        if (teraSettings.has("tera_shards_required"))
+            teraShardsRequired = teraSettings.get("tera_shards_required").getAsInt();
+        if (teraShardsRequired > 64) teraShardsRequired = 64;
+        if (teraShardsRequired < 1) teraShardsRequired = 1;
+        teraSettings.addProperty("tera_shards_required", teraShardsRequired);
+
+        if (teraSettings.has("fix_ogerpon_tera_type"))
             fixOgerponTeraType = teraSettings.get("fix_ogerpon_tera_type").getAsBoolean();
-        }
         teraSettings.addProperty("fix_ogerpon_tera_type", fixOgerponTeraType);
-        if (teraSettings.get("fix_terapagos_tera_type") != null) {
+
+        if (teraSettings.has("fix_terapagos_tera_type"))
             fixTerapagosTeraType = teraSettings.get("fix_terapagos_tera_type").getAsBoolean();
-        }
         teraSettings.addProperty("fix_terapagos_tera_type", fixTerapagosTeraType);
+
         newRoot.add("tera_settings", teraSettings);
 
         JsonObject fusionSettings = new JsonObject();
-        if (root.get("fusion_settings") != null) {
+        if (root.has("fusion_settings"))
             fusionSettings = root.get("fusion_settings").getAsJsonObject();
-        }
-        if (fusionSettings.get("enable_fusions") != null) {
+
+        if (fusionSettings.has("enable_fusions"))
             enableFusions = fusionSettings.get("enable_fusions").getAsBoolean();
-        }
+
         fusionSettings.addProperty("enable_fusions", enableFusions);
+
         newRoot.add("fusion_settings", fusionSettings);
 
         JsonObject dynamaxSettings = new JsonObject();
-        if (root.get("dynamax_settings") != null) {
+        if (root.has("dynamax_settings"))
             dynamaxSettings = root.get("dynamax_settings").getAsJsonObject();
-        }
-        if (dynamaxSettings.get("enable_dynamax") != null) {
+
+        if (dynamaxSettings.has("enable_dynamax"))
             enableDynamax = dynamaxSettings.get("enable_dynamax").getAsBoolean();
-        }
+
         dynamaxSettings.addProperty("enable_dynamax", enableDynamax);
-        if (dynamaxSettings.get("enable_gigantamax") != null) {
+
+        if (dynamaxSettings.has("enable_gigantamax"))
             enableGigantamax = dynamaxSettings.get("enable_gigantamax").getAsBoolean();
-        }
+
         dynamaxSettings.addProperty("enable_gigantamax", enableGigantamax);
+
         newRoot.add("dynamax_settings", dynamaxSettings);
 
         configFile.delete();

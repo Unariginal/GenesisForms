@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.client.net.pokemon.update.PokemonUpdatePacketHan
 import com.cobblemon.mod.common.net.PacketRegisterInfo;
 import com.cobblemon.mod.common.net.messages.client.pokemon.update.DmaxLevelUpdatePacket;
 import com.cobblemon.mod.common.net.messages.client.pokemon.update.GmaxFactorUpdatePacket;
+import com.cobblemon.mod.common.net.messages.client.pokemon.update.TeraTypeUpdatePacket;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.loader.api.FabricLoader;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,15 +15,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
-/**
- * These packets are handled properly in 1.7 Snapshots
- * Adapted from GMG/Mega Showdown @ yajatkaul
- */
+// These packets are handled properly in 1.7
 @Mixin(CobblemonNetwork.class)
 public class CobblemonNetworkMixin {
     @Inject(method = "generateS2CPacketInfoList", at = @At("RETURN"), remap = false)
     private void generateS2CPacketInfoList (CallbackInfoReturnable<List<PacketRegisterInfo<?>>> cir, @Local List<PacketRegisterInfo<?>> list) {
         if (!FabricLoader.getInstance().isModLoaded("gimme-that-gimmick")) {
+            list.add(
+                    new PacketRegisterInfo<>(
+                            TeraTypeUpdatePacket.Companion.getID(),
+                            TeraTypeUpdatePacket.Companion::decode,
+                            new PokemonUpdatePacketHandler<>(),
+                            null
+                    )
+            );
+
             list.add(
                     new PacketRegisterInfo<>(
                             DmaxLevelUpdatePacket.Companion.getID(),

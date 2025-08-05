@@ -8,10 +8,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Most of these probably don't need to be here...
- * Adapted from Niko's Tera! @ Nxkorasu
- */
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
     @Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)
@@ -21,7 +17,6 @@ public class ClientConnectionMixin {
 
             if (errorMessage != null &&
                     (
-                            errorMessage.contains("cobblemon:tera_type_update") ||
                             errorMessage.contains("minecraft:set_entity_data") ||
                             errorMessage.contains("minecraft:set_equipment") ||
                             errorMessage.contains("minecraft:custom_payload") ||
