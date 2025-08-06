@@ -402,7 +402,7 @@ public class ItemSettingsConfig {
         item_lore.put("mawilite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Mawile hold it, and this stone will enable it to Mega Evolve during battle."));
         item_lore.put("aggronite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Aggron hold it, and this stone will enable it to Mega Evolve during battle."));
         item_lore.put("medichamite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Medicham hold it, and this stone will enable it to Mega Evolve during battle."));
-        item_lore.put("manectite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Manectite hold it, and this stone will enable it to Mega Evolve during battle."));
+        item_lore.put("manectite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Manectric hold it, and this stone will enable it to Mega Evolve during battle."));
         item_lore.put("banettite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Banette hold it, and this stone will enable it to Mega Evolve during battle."));
         item_lore.put("absolite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Absol hold it, and this stone will enable it to Mega Evolve during battle."));
         item_lore.put("latiasite", List.of("<gray>One of a variety of mysterious Mega Stones.", "<gray>Have Latias hold it, and this stone will enable it to Mega Evolve during battle."));

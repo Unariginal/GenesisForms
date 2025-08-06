@@ -80,7 +80,7 @@ public class MegaStoneHeldItems {
         MEGA_STONE_IDS.put("mawilite", "mawile");
         MEGA_STONE_IDS.put("aggronite", "aggron");
         MEGA_STONE_IDS.put("medichamite", "medicham");
-        MEGA_STONE_IDS.put("manectite", "manetric");
+        MEGA_STONE_IDS.put("manectite", "manectric");
         MEGA_STONE_IDS.put("banettite", "banette");
         MEGA_STONE_IDS.put("absolite", "absol");
         MEGA_STONE_IDS.put("latiasite", "latias");
