@@ -40,6 +40,34 @@ public class ShowdownUnbundlerMixin {
                 replaceFile("/showdown_scripts/index.js", showdown_dir.resolve("index.js"));
                 replaceFile("/showdown_scripts/side.js", showdown_sim.resolve("side.js"));
                 GenesisForms.LOGGER.info("[Genesis] Showdown files loaded!");
+
+
+
+                // TESTING AUTOMATIC CUSTOM MEGAS
+                // Adding mega stone item
+//                Path itemsFilePath = showdown_data.resolve("items.js");
+//                String itemsFileContent = new String(Files.readAllBytes(itemsFilePath));
+//                if (!itemsFileContent.contains("miloticite")) {
+//                    String modifiedItemsFileContent = itemsFileContent.replace("const Items = {",
+//                            "const Items = {\n" +
+//                                    "  miloticite: {\n" +
+//                                    "    name: \"Miloticite\",\n" +
+//                                    "    spritenum: 575,\n" +
+//                                    "    megaStone: \"Milotic-Mega\",\n" +
+//                                    "    megaEvolves: \"Milotic\",\n" +
+//                                    "    itemUser: [\"Milotic\"],\n" +
+//                                    "    onTakeItem(item, source) {\n" +
+//                                    "      if (item.megaEvolves === source.baseSpecies.baseSpecies)\n" +
+//                                    "        return false;\n" +
+//                                    "      return true;\n" +
+//                                    "    },\n" +
+//                                    "    num: 674,\n" +
+//                                    "    gen: 6,\n" +
+//                                    "    isNonstandard: \"Past\"\n" +
+//                                    "  },"
+//                    );
+//                    Files.write(itemsFilePath, modifiedItemsFileContent.getBytes());
+//                }
             } catch (IOException e) {
                 GenesisForms.LOGGER.error("[Genesis] Showdown files failed to load!");
             }
