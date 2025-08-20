@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"particle": "#0",
-		"0": "genesisforms:block/max_mushrooms"
+		"0": "genesisforms:block/max_mushrooms",
+		"particle": "genesisforms:block/max_mushrooms"
 	},
 	"elements": [
 		{
@@ -99,5 +99,32 @@
 			}
 		}
 	],
-	"display": {}
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 2, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 2, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"firstperson_righthand": {
+			"rotation": [-5, -34, -5],
+			"translation": [6, 1.25, -4.25]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-5, -34, -5],
+			"translation": [6, 1.25, -4.25]
+		},
+		"ground": {
+			"translation": [0, 3.75, 0]
+		},
+		"gui": {
+			"rotation": [24, 26, 0],
+			"translation": [0, 1.75, 0]
+		},
+		"head": {
+			"translation": [0, 14.25, 0]
+		}
+	}
 }

@@ -24,21 +24,14 @@ import org.joml.Vector3f;
 
 
 public class PossessionBlock extends Block implements FactoryBlock {
-//    private final BlockState polymerBlockState;
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     private final Block base;
 
     public PossessionBlock(AbstractBlock.Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState());
-//        = PolymerBlockResourceUtils.requestBlock(type, PolymerBlockModel.of(Identifier.of(GenesisForms.MOD_ID, modelId)));
         base = Blocks.ORANGE_TERRACOTTA;
     }
-
-//    @Override
-//    public BlockState getPolymerBlockState(BlockState state) {
-//        return this.getDefaultState();
-//    }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {

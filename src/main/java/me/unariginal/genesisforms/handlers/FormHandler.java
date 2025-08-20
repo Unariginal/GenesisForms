@@ -56,7 +56,6 @@ public class FormHandler {
             case "Xerneas" -> new StringSpeciesFeature("life_mode", "neutral").apply(pokemon);
             case "Zygarde" -> {
                 if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("complete"))) {
-                    new FlagSpeciesFeature("power_construct", false).apply(pokemon);
                     new StringSpeciesFeature("percent_cells", "50").apply(pokemon);
                 }
             }
