@@ -126,7 +126,7 @@ public class HeldItems {
         HELD_BATTLE_ITEM_IDS.put("griseous_orb", "griseousorb");
         HELD_BATTLE_ITEM_IDS.put("lucky_punch", "luckypunch");
         HELD_BATTLE_ITEM_IDS.put("lustrous_orb", "lustrousorb");
-//        HELD_BATTLE_ITEM_IDS.put("macho_brace", "machobrace");
+        HELD_BATTLE_ITEM_IDS.put("macho_brace", "machobrace");
         HELD_BATTLE_ITEM_IDS.put("soul_dew", "souldew");
     }
 

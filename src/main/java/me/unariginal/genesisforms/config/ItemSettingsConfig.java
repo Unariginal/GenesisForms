@@ -493,6 +493,7 @@ public class ItemSettingsConfig {
         item_lore.put("griseous_orb", List.of("<gray>A shining gem to be held by Giratina.", "<gray>It boosts the power of Giratina's Dragon- and Ghost-type moves."));
         item_lore.put("adrenaline_orb", List.of("<gray>An item to be held by a Pokémon.", "<gray>This orb boosts the Speed stat if the holder is intimidated."));
         item_lore.put("booster_energy", List.of("<gray>An item to be held by Pokémon with certain Abilities.", "<gray>The energy that fills this capsule boosts the strength of the Pokémon."));
+        item_lore.put("macho_brace", List.of("<gray>An item to be held by a Pokémon.", "<gray>Holding this stiff, heavy brace reduces a Pokémon's Speed in battle but allows its stats to grow more quickly."));
 
         item_lore.put("rotom_microwave_oven", List.of("<gray>This item can be possessed by a certain pokemon!"));
         item_lore.put("rotom_lawn_mower", List.of("<gray>This item can be possessed by a certain pokemon!"));
