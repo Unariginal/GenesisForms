@@ -42,7 +42,7 @@ public class PossessionBlockItems {
     }
 
     public record FormInformation(List<String> species, String feature_name, String feature_value) {}
-    private final Map<String, FormInformation> POSSESSION_ITEM_IDS = new HashMap<>();
+    private final LinkedHashMap<String, FormInformation> POSSESSION_ITEM_IDS = new LinkedHashMap<>();
 
     public ItemStack getPossessionItem(String id) {
         if (!possessionItemPolymerItems.containsKey(id)) return ItemStack.EMPTY;
@@ -69,9 +69,9 @@ public class PossessionBlockItems {
         POSSESSION_ITEM_IDS.put("rotom_lawn_mower", new FormInformation(List.of("rotom"), "appliance", "mow"));
     }
 
-    public Map<String, PossessionItemPolymerItem> possessionItemPolymerItems = new HashMap<>();
-    public Map<String, PossessionBlock> possessionBlocks = new HashMap<>();
-    public Map<String, PolymerModelData> possessionItemPolymerModelData = new HashMap<>();
+    public LinkedHashMap<String, PossessionItemPolymerItem> possessionItemPolymerItems = new LinkedHashMap<>();
+    public LinkedHashMap<String, PossessionBlock> possessionBlocks = new LinkedHashMap<>();
+    public LinkedHashMap<String, PolymerModelData> possessionItemPolymerModelData = new LinkedHashMap<>();
     private final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.RARE).fireproof();
     private final Item baseVanillaItem = Items.IRON_INGOT;
 

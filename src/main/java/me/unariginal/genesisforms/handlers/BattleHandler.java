@@ -3,7 +3,7 @@ package me.unariginal.genesisforms.handlers;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
-import com.cobblemon.mod.common.api.events.battles.BattleStartedPreEvent;
+import com.cobblemon.mod.common.api.events.battles.BattleStartedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonFaintedEvent;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
@@ -24,12 +24,12 @@ import java.util.List;
 public class BattleHandler {
     private final static GenesisForms gf = GenesisForms.INSTANCE;
 
-    public static Unit battle_started(BattleStartedPreEvent event) {
+    public static Unit battleStarted(BattleStartedEvent.Pre event) {
         for (ServerPlayerEntity player : event.getBattle().getPlayers()) {
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
 
             for (Pokemon pokemon : playerPartyStore) {
-                FormHandler.revert_forms(pokemon, true);
+                FormHandler.revertForms(pokemon, true);
 
                 gf.getMegaEvolvedThisBattle().remove(player.getUuid());
                 if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("x"))) {
@@ -47,10 +47,10 @@ public class BattleHandler {
                 }
             }
 
-            boolean has_keyStone = false;
-            boolean has_dynamaxBand = false;
-            boolean has_zRing = false;
-            boolean has_teraOrb = false;
+            boolean hasKeyStone = false;
+            boolean hasDynamaxBand = false;
+            boolean hasZRing = false;
+            boolean hasTeraOrb = false;
 
             List<ItemStack> inventory = new ArrayList<>();
             if (gf.getConfig().useHotbarInventory) {
@@ -93,25 +93,25 @@ public class BattleHandler {
 
             for (ItemStack itemStack : inventory) {
                 if (!itemStack.getComponents().contains(DataComponents.KEY_ITEM)) continue;
-                String key_item = itemStack.getComponents().get(DataComponents.KEY_ITEM);
-                if (key_item == null || key_item.isEmpty()) continue;
-                if (key_item.equalsIgnoreCase("key_stone") ||
-                        key_item.equalsIgnoreCase("mega_bracelet") ||
-                        key_item.equalsIgnoreCase("mega_charm") ||
-                        key_item.equalsIgnoreCase("mega_cuff") ||
-                        key_item.equalsIgnoreCase("mega_ring")) {
+                String keyItem = itemStack.getComponents().get(DataComponents.KEY_ITEM);
+                if (keyItem == null || keyItem.isEmpty()) continue;
+                if (keyItem.equalsIgnoreCase("key_stone") ||
+                        keyItem.equalsIgnoreCase("mega_bracelet") ||
+                        keyItem.equalsIgnoreCase("mega_charm") ||
+                        keyItem.equalsIgnoreCase("mega_cuff") ||
+                        keyItem.equalsIgnoreCase("mega_ring")) {
                     gf.logInfo("[Genesis] Found key stone in inventory!");
-                    has_keyStone = true;
-                } else if (key_item.equalsIgnoreCase("dynamax_band")) {
+                    hasKeyStone = true;
+                } else if (keyItem.equalsIgnoreCase("dynamax_band")) {
                     gf.logInfo("[Genesis] Found dynamax band in inventory!");
-                    has_dynamaxBand = true;
-                } else if (key_item.equalsIgnoreCase("z_ring") ||
-                        key_item.equalsIgnoreCase("z_power_ring")) {
+                    hasDynamaxBand = true;
+                } else if (keyItem.equalsIgnoreCase("z_ring") ||
+                        keyItem.equalsIgnoreCase("z_power_ring")) {
                     gf.logInfo("[Genesis] Found z ring in inventory!");
-                    has_zRing = true;
-                } else if (key_item.equalsIgnoreCase("tera_orb")) {
+                    hasZRing = true;
+                } else if (keyItem.equalsIgnoreCase("tera_orb")) {
                     gf.logInfo("[Genesis] Found tera orb in inventory!");
-                    has_teraOrb = true;
+                    hasTeraOrb = true;
                 }
             }
 
@@ -121,19 +121,19 @@ public class BattleHandler {
             playerData.getKeyItems().remove(Identifier.of("cobblemon", "z_ring"));
             playerData.getKeyItems().remove(Identifier.of("cobblemon", "tera_orb"));
 
-            if (!gf.getConfig().disabledItems.contains("key_stone") && gf.getConfig().enableMegaEvolution && has_keyStone) {
+            if (!gf.getConfig().disabledItems.contains("key_stone") && gf.getConfig().enableMegaEvolution && hasKeyStone) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "key_stone"));
             }
 
-            if (!gf.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && has_dynamaxBand && !has_teraOrb) {
+            if (!gf.getConfig().disabledItems.contains("dynamax_band") && gf.getConfig().enableDynamax && hasDynamaxBand && !hasTeraOrb) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "dynamax_band"));
             }
 
-            if (!gf.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && has_zRing) {
+            if (!gf.getConfig().disabledItems.contains("z_ring") && gf.getConfig().enableZCrystals && hasZRing) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "z_ring"));
             }
 
-            if (!gf.getConfig().disabledItems.contains("tera_orb") && gf.getConfig().enableTera && has_teraOrb) {
+            if (!gf.getConfig().disabledItems.contains("tera_orb") && gf.getConfig().enableTera && hasTeraOrb) {
                 playerData.getKeyItems().add(Identifier.of("cobblemon", "tera_orb"));
             }
         }
@@ -141,14 +141,11 @@ public class BattleHandler {
         return Unit.INSTANCE;
     }
 
-    public static Unit battle_ended(BattleVictoryEvent event) {
-        gf.logInfo("[Genesis] Battle ended (victory event)!");
+    public static Unit battleEnded(BattleVictoryEvent event) {
         event.getBattle().getPlayers().forEach(player -> {
-            gf.logInfo("[Genesis] Player loop " + player.getNameForScoreboard());
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             for (Pokemon pokemon : playerPartyStore) {
-                gf.logInfo("[Genesis] Reverting player's pokemon: " + pokemon.getSpecies().getName());
-                FormHandler.revert_forms(pokemon, true);
+                FormHandler.revertForms(pokemon, true);
                 if (pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega") && aspect.contains("x"))) {
                     new StringSpeciesFeature(gf.getConfig().megaXFeatureName, "none").apply(pokemon);
                     pokemon.setTradeable(true);
@@ -170,35 +167,35 @@ public class BattleHandler {
         return Unit.INSTANCE;
     }
 
-    public static Unit battle_fled(BattleFledEvent event) {
+    public static Unit battleFled(BattleFledEvent event) {
         event.getBattle().getPlayers().forEach(player -> {
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             for (Pokemon pokemon : playerPartyStore) {
-                FormHandler.revert_forms(pokemon, true);
+                FormHandler.revertForms(pokemon, true);
             }
         });
         return Unit.INSTANCE;
     }
 
-    public static Unit battle_faint(BattleFaintedEvent event) {
+    public static Unit battleFaint(BattleFaintedEvent event) {
         Pokemon pokemon = event.getKilled().getOriginalPokemon();
         ServerPlayerEntity player = pokemon.getOwnerPlayer();
         if (player != null) {
-            handle_faint(pokemon, true);
+            handleFaint(pokemon, true);
         }
         return Unit.INSTANCE;
     }
 
-    public static Unit pokemon_faint(PokemonFaintedEvent event) {
+    public static Unit pokemonFaint(PokemonFaintedEvent event) {
         Pokemon pokemon = event.getPokemon();
         ServerPlayerEntity player = pokemon.getOwnerPlayer();
         if (player != null) {
-            handle_faint(pokemon, false);
+            handleFaint(pokemon, false);
         }
         return Unit.INSTANCE;
     }
 
-    public static void handle_faint(Pokemon pokemon, boolean fromBattle) {
+    public static void handleFaint(Pokemon pokemon, boolean fromBattle) {
         boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
         boolean isGmax = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("gmax"));
         boolean isUltra = pokemon.getAspects().contains("ultra-fusion");
@@ -207,7 +204,7 @@ public class BattleHandler {
                 isUltra ||
                 pokemon.getSpecies().getName().equalsIgnoreCase("Aegislash") ||
                 pokemon.getSpecies().getName().equalsIgnoreCase("Morpeko")) {
-            FormHandler.revert_forms(pokemon, fromBattle);
+            FormHandler.revertForms(pokemon, fromBattle);
         }
     }
 }

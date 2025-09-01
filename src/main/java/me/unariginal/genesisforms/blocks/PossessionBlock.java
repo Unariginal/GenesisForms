@@ -19,6 +19,7 @@ import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -31,6 +32,11 @@ public class PossessionBlock extends Block implements FactoryBlock {
         super(settings);
         this.setDefaultState(this.getDefaultState());
         base = Blocks.ORANGE_TERRACOTTA;
+    }
+
+    @Override
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        return super.canPlaceAt(state, world, pos);
     }
 
     @Override

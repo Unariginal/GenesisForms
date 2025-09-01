@@ -9,7 +9,7 @@ import me.unariginal.genesisforms.handlers.FormHandler;
 import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
 import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
-import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
+import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
 import me.unariginal.genesisforms.utils.NbtUtils;
@@ -65,7 +65,7 @@ public class GenesisCommands {
                                                         .then(
                                                                 CommandManager.argument("z-crystal", StringArgumentType.string())
                                                                         .suggests((ctx, builder) -> {
-                                                                            for (String id : ZCrystalHeldItems.getInstance().getAllZCrystalIds()) {
+                                                                            for (String id : ZCrystalItems.getInstance().getAllZCrystalIds()) {
                                                                                 builder.suggest(id);
                                                                             }
                                                                             return builder.buildFuture();
@@ -73,7 +73,7 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = ZCrystalHeldItems.getInstance().getZCrystalItem(StringArgumentType.getString(ctx, "z-crystal")).copy();
+                                                                            ItemStack toGive = ZCrystalItems.getInstance().getZCrystalItem(StringArgumentType.getString(ctx, "z-crystal")).copy();
                                                                             player.giveItemStack(toGive);
                                                                             player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, toGive, null, 1)));
                                                                             ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, toGive, null, 1)));
@@ -183,7 +183,7 @@ public class GenesisCommands {
                                                         .executes(ctx -> {
                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                             if (gf.getPlayersWithMega().containsKey(player.getUuid())) {
-                                                                FormHandler.revert_forms(gf.getPlayersWithMega().get(player.getUuid()), false);
+                                                                FormHandler.revertForms(gf.getPlayersWithMega().get(player.getUuid()), false);
                                                                 gf.getPlayersWithMega().remove(player.getUuid());
                                                             }
                                                             gf.getMegaEvolvedThisBattle().remove(player.getUuid());

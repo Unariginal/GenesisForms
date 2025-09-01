@@ -17,8 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class KeyItems {
     private static final Item.Settings itemSettings = new Item.Settings().maxCount(1).rarity(Rarity.EPIC).fireproof();
@@ -54,7 +53,7 @@ public class KeyItems {
     public static ZygardeCube ZYGARDE_CUBE;
     public static RotomCatalog ROTOM_CATALOG;
 
-    public static Map<String, ItemStack> keyItemStacks = new HashMap<>();
+    public static LinkedHashMap<String, ItemStack> keyItemStacks = new LinkedHashMap<>();
 
     public static void requestModel() {
         keyStoneModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/key_stone"));

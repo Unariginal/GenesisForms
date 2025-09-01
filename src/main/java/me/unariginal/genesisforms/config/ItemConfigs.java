@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemSettingsConfig {
+public class ItemConfigs {
     public Map<String, List<String>> item_lore = new HashMap<>();
     public boolean consumeTeraShards = true;
     public List<String> consumableBagItems = new ArrayList<>(List.of("dynamax_candy", "max_honey", "max_mushrooms", "max_soup"));
@@ -64,7 +64,7 @@ public class ItemSettingsConfig {
             )
     );
 
-    public ItemSettingsConfig() {
+    public ItemConfigs() {
         fillItemLore();
         try {
             loadConfig();

@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.battles.instruction.MegaEvolutionEvent;
-import com.cobblemon.mod.common.api.events.pokemon.PokemonSentPostEvent;
+import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
 import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
@@ -31,7 +31,7 @@ public class MegaEvolutionHandler {
     private final static GenesisForms gf = GenesisForms.INSTANCE;
     public static List<Pokemon> activeMegaAnimations = new ArrayList<>();
 
-    public static Unit mega_event(MegaEvolutionEvent event) {
+    public static Unit megaEvent(MegaEvolutionEvent event) {
         PokemonBattle battle = event.getBattle();
         Pokemon pokemon = event.getPokemon().getEffectedPokemon();
         PokemonEntity pokemonEntity = pokemon.getEntity();
@@ -44,7 +44,7 @@ public class MegaEvolutionHandler {
         return Unit.INSTANCE;
     }
 
-    public static Unit handleMegaRayquaza(PokemonSentPostEvent event) {
+    public static Unit handleMegaRayquaza(PokemonSentEvent.Post event) {
         Pokemon pokemon = event.getPokemon();
         ServerPlayerEntity player = pokemon.getOwnerPlayer();
         if (gf.getConfig().enableMegaEvolution) {
@@ -85,7 +85,7 @@ public class MegaEvolutionHandler {
                 gf.logInfo("Attempting evolution");
                 pokemonEntity.after(0.5f, () -> {
                     megaEvolve(pokemonEntity, player, true);
-                    PacketHandler.update_packets(battle, battlePokemon, true);
+                    PacketHandler.updatePackets(battle, battlePokemon, true);
                     return Unit.INSTANCE;
                 });
             }

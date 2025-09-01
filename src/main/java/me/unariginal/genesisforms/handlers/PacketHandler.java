@@ -8,11 +8,8 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleUpdateTeamPokem
 import com.cobblemon.mod.common.net.messages.client.pokemon.update.AbilityUpdatePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 
-/**
- * Adapted from Mega Showdown @ yajatkaul
- */
 public class PacketHandler {
-    public static void update_packets(PokemonBattle battle, BattlePokemon battlePokemon, boolean abilities) {
+    public static void updatePackets(PokemonBattle battle, BattlePokemon battlePokemon, boolean abilities) {
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
 
         if (abilities) {
@@ -21,10 +18,11 @@ public class PacketHandler {
         }
 
         for (ActiveBattlePokemon activeBattlePokemon : battle.getActivePokemon()) {
-            if (activeBattlePokemon.getBattlePokemon() != null &&
-                    activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == battlePokemon.getEffectedPokemon().getOwnerPlayer() &&
-                    activeBattlePokemon.getBattlePokemon() == battlePokemon)
-            {
+            if (
+                    activeBattlePokemon.getBattlePokemon() != null
+                    && activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == battlePokemon.getEffectedPokemon().getOwnerPlayer()
+                    && activeBattlePokemon.getBattlePokemon() == battlePokemon
+            ) {
                 battle.sendSidedUpdate(
                         activeBattlePokemon.getActor(),
                         new BattleTransformPokemonPacket(activeBattlePokemon.getPNX(), battlePokemon, true),

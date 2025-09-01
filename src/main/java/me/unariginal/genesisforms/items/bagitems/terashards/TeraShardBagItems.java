@@ -29,14 +29,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TeraShardBagItems {
     private final static TeraShardBagItems INSTANCE = new TeraShardBagItems();
-    private final Map<String, TeraType> TERA_SHARD_IDS = new HashMap<>();
+    private final LinkedHashMap<String, TeraType> TERA_SHARD_IDS = new LinkedHashMap<>();
 
     public static TeraShardBagItems getInstance() {
         return INSTANCE;
@@ -56,29 +53,29 @@ public class TeraShardBagItems {
     }
 
     public void loadTeraShardIds() {
-        TERA_SHARD_IDS.put("normal_tera_shard", TeraTypes.getNORMAL());
-        TERA_SHARD_IDS.put("fire_tera_shard", TeraTypes.getFIRE());
-        TERA_SHARD_IDS.put("water_tera_shard", TeraTypes.getWATER());
-        TERA_SHARD_IDS.put("electric_tera_shard", TeraTypes.getELECTRIC());
-        TERA_SHARD_IDS.put("grass_tera_shard", TeraTypes.getGRASS());
-        TERA_SHARD_IDS.put("ice_tera_shard", TeraTypes.getICE());
-        TERA_SHARD_IDS.put("fighting_tera_shard", TeraTypes.getFIGHTING());
-        TERA_SHARD_IDS.put("poison_tera_shard", TeraTypes.getPOISON());
-        TERA_SHARD_IDS.put("ground_tera_shard", TeraTypes.getGROUND());
-        TERA_SHARD_IDS.put("flying_tera_shard", TeraTypes.getFLYING());
-        TERA_SHARD_IDS.put("psychic_tera_shard", TeraTypes.getPSYCHIC());
         TERA_SHARD_IDS.put("bug_tera_shard", TeraTypes.getBUG());
-        TERA_SHARD_IDS.put("rock_tera_shard", TeraTypes.getROCK());
-        TERA_SHARD_IDS.put("ghost_tera_shard", TeraTypes.getGHOST());
-        TERA_SHARD_IDS.put("dragon_tera_shard", TeraTypes.getDRAGON());
         TERA_SHARD_IDS.put("dark_tera_shard", TeraTypes.getDARK());
-        TERA_SHARD_IDS.put("steel_tera_shard", TeraTypes.getSTEEL());
+        TERA_SHARD_IDS.put("dragon_tera_shard", TeraTypes.getDRAGON());
+        TERA_SHARD_IDS.put("electric_tera_shard", TeraTypes.getELECTRIC());
         TERA_SHARD_IDS.put("fairy_tera_shard", TeraTypes.getFAIRY());
+        TERA_SHARD_IDS.put("fighting_tera_shard", TeraTypes.getFIGHTING());
+        TERA_SHARD_IDS.put("fire_tera_shard", TeraTypes.getFIRE());
+        TERA_SHARD_IDS.put("flying_tera_shard", TeraTypes.getFLYING());
+        TERA_SHARD_IDS.put("ghost_tera_shard", TeraTypes.getGHOST());
+        TERA_SHARD_IDS.put("grass_tera_shard", TeraTypes.getGRASS());
+        TERA_SHARD_IDS.put("ground_tera_shard", TeraTypes.getGROUND());
+        TERA_SHARD_IDS.put("ice_tera_shard", TeraTypes.getICE());
+        TERA_SHARD_IDS.put("normal_tera_shard", TeraTypes.getNORMAL());
+        TERA_SHARD_IDS.put("poison_tera_shard", TeraTypes.getPOISON());
+        TERA_SHARD_IDS.put("psychic_tera_shard", TeraTypes.getPSYCHIC());
+        TERA_SHARD_IDS.put("rock_tera_shard", TeraTypes.getROCK());
+        TERA_SHARD_IDS.put("steel_tera_shard", TeraTypes.getSTEEL());
         TERA_SHARD_IDS.put("stellar_tera_shard", TeraTypes.getSTELLAR());
+        TERA_SHARD_IDS.put("water_tera_shard", TeraTypes.getWATER());
     }
 
-    public Map<String, TeraShardPolymerItem> teraShardPolymerItems = new HashMap<>();
-    public Map<String, PolymerModelData> teraShardPolymerModelData = new HashMap<>();
+    public LinkedHashMap<String, TeraShardPolymerItem> teraShardPolymerItems = new LinkedHashMap<>();
+    public LinkedHashMap<String, PolymerModelData> teraShardPolymerModelData = new LinkedHashMap<>();
     private final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.RARE).fireproof();
     private final Item baseVanillaItem = Items.AMETHYST_SHARD;
 

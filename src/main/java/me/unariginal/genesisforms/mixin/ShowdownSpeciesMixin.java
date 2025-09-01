@@ -28,8 +28,6 @@ public class ShowdownSpeciesMixin {
     private void populateAbilities(Species species, FormData formData, CallbackInfo ci) {
         if (formData == null) return;
         Iterator<PotentialAbility> abilityIterator = formData.getAbilities().iterator();
-        abilities = Map.of(
-                "0", abilityIterator.hasNext() ? abilityIterator.next().getTemplate().getName() : "No Ability"
-        );
+        abilities = Map.of("0", abilityIterator.hasNext() ? abilityIterator.next().getTemplate().getName() : "No Ability");
     }
 }

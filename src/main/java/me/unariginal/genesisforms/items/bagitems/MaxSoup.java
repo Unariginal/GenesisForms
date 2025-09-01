@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MaxSoup extends SimplePolymerItem implements PokemonSelectingItem {
-    PolymerModelData modelData;
+    private final PolymerModelData modelData;
 
     public MaxSoup(Settings settings, Item polymerItem) {
         super(settings, polymerItem);
@@ -59,13 +59,8 @@ public class MaxSoup extends SimplePolymerItem implements PokemonSelectingItem {
     }
 
     @Override
-    public @NotNull TypedActionResult<ItemStack> use(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack) {
-        return PokemonSelectingItem.DefaultImpls.use(this, serverPlayerEntity, itemStack);
-    }
-
-    @Override
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
-        if (!this.canUseOnPokemon(pokemon)) return TypedActionResult.fail(itemStack);
+        if (!this.canUseOnPokemon(itemStack, pokemon)) return TypedActionResult.fail(itemStack);
         if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("max_soup") ||
             !GenesisForms.INSTANCE.getConfig().enableDynamax ||
             !GenesisForms.INSTANCE.getConfig().enableGigantamax) return TypedActionResult.fail(itemStack);
@@ -83,28 +78,18 @@ public class MaxSoup extends SimplePolymerItem implements PokemonSelectingItem {
     }
 
     @Override
-    public void applyToBattlePokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull BattlePokemon battlePokemon) {
-
-    }
-
-    @Override
-    public boolean canUseOnPokemon(@NotNull Pokemon pokemon) {
+    public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
         return pokemon.getSpecies().getForms().stream().anyMatch(formData -> formData.getLabels().contains("gmax"));
     }
 
     @Override
-    public boolean canUseOnBattlePokemon(@NotNull BattlePokemon battlePokemon) {
+    public boolean canUseOnBattlePokemon(@NotNull ItemStack stack, @NotNull BattlePokemon battlePokemon) {
         return false;
     }
 
     @Override
     public @NotNull TypedActionResult<ItemStack> interactWithSpecificBattle(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull BattlePokemon battlePokemon) {
         return TypedActionResult.fail(itemStack);
-    }
-
-    @Override
-    public @NotNull TypedActionResult<ItemStack> interactGeneral(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack) {
-        return PokemonSelectingItem.DefaultImpls.interactGeneral(this, serverPlayerEntity, itemStack);
     }
 
     @Override

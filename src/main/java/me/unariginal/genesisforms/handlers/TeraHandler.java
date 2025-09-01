@@ -2,7 +2,7 @@ package me.unariginal.genesisforms.handlers;
 
 import com.cobblemon.mod.common.api.events.battles.instruction.TerastallizationEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonGainedEvent;
-import com.cobblemon.mod.common.api.events.pokemon.PokemonSentPostEvent;
+import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.types.tera.TeraType;
@@ -45,7 +45,7 @@ public class TeraHandler {
         return Unit.INSTANCE;
     }
 
-    public static Unit revertTera(PokemonSentPostEvent event) {
+    public static Unit revertTera(PokemonSentEvent.Post event) {
         Pokemon pokemon = event.getPokemon();
         if (pokemon.getSpecies().getName().equalsIgnoreCase("Terapagos")) {
             new StringSpeciesFeature("tera_form", "terastal").apply(pokemon);

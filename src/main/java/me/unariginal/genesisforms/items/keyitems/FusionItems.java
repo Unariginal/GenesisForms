@@ -11,7 +11,7 @@ import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.config.ItemSettingsConfig;
+import me.unariginal.genesisforms.config.ItemConfigs;
 import me.unariginal.genesisforms.data.DataComponents;
 import me.unariginal.genesisforms.utils.PokemonUtils;
 import me.unariginal.genesisforms.utils.TextUtils;
@@ -101,14 +101,14 @@ public class FusionItems {
             if (GenesisForms.INSTANCE.getConfig().enableFusions) {
                 if (entity instanceof PokemonEntity pokemonEntity) {
                     if (GenesisForms.INSTANCE.getItemSettings().fusionList.containsKey(id)) {
-                        for (ItemSettingsConfig.Fusion fusion : GenesisForms.INSTANCE.getItemSettings().fusionList.get(id)) {
+                        for (ItemConfigs.Fusion fusion : GenesisForms.INSTANCE.getItemSettings().fusionList.get(id)) {
                             if (pokemonEntity.getExposedSpecies().getName().equalsIgnoreCase(fusion.corePokemon())) {
                                 ServerPlayerEntity player = pokemonEntity.getPokemon().getOwnerPlayer();
                                 if (player != null) {
                                     if (player.getUuid().equals(user.getUuid()) && !pokemonEntity.isBattling()) {
                                         PlayerPartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
                                         boolean isFused = false;
-                                        for (ItemSettingsConfig.FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
+                                        for (ItemConfigs.FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
                                             if (pokemonEntity.getPokemon().getAspects().stream().anyMatch(aspect -> aspect.startsWith(fuelPokemon.featureValue()))) {
                                                 isFused = true;
 
@@ -126,7 +126,7 @@ public class FusionItems {
                                             partyLoop:
                                             for (Pokemon pokemon : partyStore) {
                                                 if (pokemon != null) {
-                                                    for (ItemSettingsConfig.FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
+                                                    for (ItemConfigs.FuelPokemon fuelPokemon : fusion.fuelPokemon()) {
                                                         if (pokemon.getSpecies().getName().equalsIgnoreCase(fuelPokemon.species())) {
                                                             new StringSpeciesFeature(fuelPokemon.featureName(), fuelPokemon.featureValue()).apply(pokemonEntity.getPokemon());
                                                             pokemonEntity.getPokemon().setPersistentData$common(PokemonUtils.saveToNBT(pokemon.createPokemonProperties(PokemonPropertyExtractor.ALL)));

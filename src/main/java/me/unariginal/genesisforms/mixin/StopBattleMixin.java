@@ -1,15 +1,12 @@
 package me.unariginal.genesisforms.mixin;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.data.DataComponents;
 import me.unariginal.genesisforms.handlers.FormHandler;
-import net.minecraft.component.ComponentMap;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 
 @Mixin(value = PokemonBattle.class, remap = false)
 public abstract class StopBattleMixin {
@@ -33,8 +29,8 @@ public abstract class StopBattleMixin {
                 Pokemon effectedPokemon = pokemon.getEffectedPokemon();
                 Pokemon originalPokemon = pokemon.getOriginalPokemon();
                 
-                FormHandler.revert_forms(effectedPokemon, true);
-                FormHandler.revert_forms(originalPokemon, true);
+                FormHandler.revertForms(effectedPokemon, true);
+                FormHandler.revertForms(originalPokemon, true);
                 
                 // Just in case cause megas are being wierd
                 ServerPlayerEntity player = effectedPokemon.getOwnerPlayer();
@@ -83,33 +79,6 @@ public abstract class StopBattleMixin {
                     if (player != null) {
                         GenesisForms.INSTANCE.getPlayersWithMega().remove(player.getUuid());
                         GenesisForms.INSTANCE.getMegaEvolvedThisBattle().remove(player.getUuid());
-                    }
-                }
-            }
-        }
-    }
-
-    // TODO: 1.7 has an EvGainedEvent, this is a reminder to myself to use it.
-    @Inject(method = "end", at = @At("HEAD"))
-    private void calculateMachoBrace(CallbackInfo ci) {
-        for (BattleActor actor : this.getActors()) {
-            List<BattlePokemon> faintedPokemons = actor.getPokemonList().stream().filter(pkmn -> pkmn.getHealth() <= 0).toList();
-            for (BattleActor opponent : actor.getSide().getOppositeSide().getActors()) {
-                List<BattlePokemon> opponentNonFaintedPokemons = opponent.getPokemonList().stream().filter(pkmn -> pkmn.getHealth() > 0).toList();
-                for (BattlePokemon faintedPokemon : faintedPokemons) {
-                    for (BattlePokemon opponentPokemon : opponentNonFaintedPokemons) {
-                        Pokemon pokemon = opponentPokemon.getEffectedPokemon();
-                        ComponentMap components = pokemon.heldItem().getComponents();
-                        if (components.contains(DataComponents.HELD_ITEM)) {
-                            String heldItemComponent = components.get(DataComponents.HELD_ITEM);
-                            if (heldItemComponent != null && !heldItemComponent.isEmpty()) {
-                                if (heldItemComponent.equalsIgnoreCase("macho_brace") || heldItemComponent.equalsIgnoreCase("machobrace")) {
-                                    Cobblemon.INSTANCE.getEvYieldCalculator().calculate(opponentPokemon, faintedPokemon).forEach((stat, amount) -> {
-                                        pokemon.getEvs().add(stat, amount);
-                                    });
-                                }
-                            }
-                        }
                     }
                 }
             }

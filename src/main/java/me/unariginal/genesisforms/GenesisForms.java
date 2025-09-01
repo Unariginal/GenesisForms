@@ -10,13 +10,14 @@ import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.config.Config;
-import me.unariginal.genesisforms.config.ItemSettingsConfig;
+import me.unariginal.genesisforms.config.ItemConfigs;
 import me.unariginal.genesisforms.config.MessagesConfig;
+import me.unariginal.genesisforms.data.DataComponents;
 import me.unariginal.genesisforms.handlers.*;
 import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
 import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
-import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalHeldItems;
+import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalItems;
 import me.unariginal.genesisforms.items.keyitems.FusionItems;
 import me.unariginal.genesisforms.items.keyitems.KeyFormItems;
 import me.unariginal.genesisforms.items.keyitems.PossessionBlockItems;
@@ -25,6 +26,7 @@ import me.unariginal.genesisforms.polymer.KeyItems;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -43,7 +45,7 @@ public class GenesisForms implements ModInitializer {
     private FabricServerAudiences audiences;
 
     private Config config = new Config();
-    private ItemSettingsConfig itemSettings = new ItemSettingsConfig();
+    private ItemConfigs itemSettings = new ItemConfigs();
     private AnimationConfig animationConfig = new AnimationConfig();
     private MessagesConfig messagesConfig = new MessagesConfig();
 
@@ -126,10 +128,7 @@ public class GenesisForms implements ModInitializer {
         BagItems.registerItems();
         BagItems.registerItemGroup();
 
-        HeldItems.getInstance().loadHeldItemIds();
-        HeldItems.getInstance().fillPolymerModelData();
-        HeldItems.getInstance().fillPolymerItems();
-        HeldItems.getInstance().registerItemGroup();
+        HeldItems.getInstance().register();
 
         MegaStoneHeldItems.getInstance().loadMegaStoneIds();
         MegaStoneHeldItems.getInstance().fillPolymerModelData();
@@ -141,17 +140,13 @@ public class GenesisForms implements ModInitializer {
         TeraShardBagItems.getInstance().fillPolymerItems();
         TeraShardBagItems.getInstance().registerItemGroup();
 
-        ZCrystalHeldItems.getInstance().loadZCrystalIds();
-        ZCrystalHeldItems.getInstance().fillPolymerModelData();
-        ZCrystalHeldItems.getInstance().fillPolymerItems();
-        ZCrystalHeldItems.getInstance().registerItemGroup();
+        ZCrystalItems.getInstance().register();
     }
 
     private void registerEvents() {
-        CobblemonEvents.HELD_ITEM_PRE.subscribe(Priority.NORMAL, HeldItemHandler::convert_item);
-        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::held_item_change);
+        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::heldItemChange);
 
-        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::mega_event);
+        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::megaEvent);
         CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::pokemon_released);
         CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::handleMegaRayquaza);
 
@@ -161,13 +156,29 @@ public class GenesisForms implements ModInitializer {
 
         CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
 
-        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::form_changes);
+        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::formChanges);
 
-        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battle_started);
-        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battle_faint);
-        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battle_ended);
-        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battle_fled);
-        CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemon_faint);
+        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battleStarted);
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battleFaint);
+        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battleEnded);
+        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battleFled);
+        CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemonFaint);
+
+        CobblemonEvents.EV_GAINED_EVENT_PRE.subscribe(Priority.NORMAL, event -> {
+            Pokemon pokemon = event.getPokemon();
+            ComponentMap components = pokemon.heldItem().getComponents();
+            if (event.getSource().isBattle()) {
+                if (components.contains(DataComponents.HELD_ITEM)) {
+                    String heldItemComponent = components.get(DataComponents.HELD_ITEM);
+                    if (heldItemComponent != null && !heldItemComponent.isEmpty()) {
+                        if (heldItemComponent.equalsIgnoreCase("macho_brace") || heldItemComponent.equalsIgnoreCase("machobrace")) {
+                            event.setAmount(event.getAmount() * 2);
+                        }
+                    }
+                }
+            }
+            return Unit.INSTANCE;
+        });
 
         DynamaxHandler.register();
         UltraBurstHandler.register();
@@ -197,7 +208,7 @@ public class GenesisForms implements ModInitializer {
 
     public void reload() {
         this.config = new Config();
-        this.itemSettings = new ItemSettingsConfig();
+        this.itemSettings = new ItemConfigs();
         this.animationConfig = new AnimationConfig();
         this.messagesConfig = new MessagesConfig();
     }
@@ -206,7 +217,7 @@ public class GenesisForms implements ModInitializer {
         return config;
     }
 
-    public ItemSettingsConfig getItemSettings() {
+    public ItemConfigs getItemSettings() {
         return itemSettings;
     }
 

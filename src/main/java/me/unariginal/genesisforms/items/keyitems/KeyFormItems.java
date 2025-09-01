@@ -24,10 +24,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class KeyFormItems {
     private static final KeyFormItems INSTANCE = new KeyFormItems();
@@ -36,7 +33,7 @@ public class KeyFormItems {
     }
 
     public record FormInformation(List<String> species, String feature_name, String base_feature_value, String alternative_feature_value) {}
-    private final Map<String, FormInformation> KEY_ITEM_IDS = new HashMap<>();
+    private final LinkedHashMap<String, FormInformation> KEY_ITEM_IDS = new LinkedHashMap<>();
 
     public ItemStack getKeyItem(String id) {
         if (!KEY_ITEM_IDS.containsKey(id)) return ItemStack.EMPTY;
@@ -56,23 +53,24 @@ public class KeyFormItems {
 
     public void loadKeyItemIds() {
         KEY_ITEM_IDS.put("adamant_crystal", new FormInformation(List.of("dialga"), "orb_forme", "altered", "origin"));
-        KEY_ITEM_IDS.put("gracidea_flower", new FormInformation(List.of("shaymin"), "gracidea_forme", "sky", "land"));
         KEY_ITEM_IDS.put("griseous_core", new FormInformation(List.of("giratina"), "orb_forme", "altered", "origin"));
         KEY_ITEM_IDS.put("lustrous_globe", new FormInformation(List.of("palkia"), "orb_forme", "altered", "origin"));
-        KEY_ITEM_IDS.put("pink_nectar", new FormInformation(List.of("oricorio"), "dance_style", "pa'u", null));
+        KEY_ITEM_IDS.put("gracidea_flower", new FormInformation(List.of("shaymin"), "gracidea_forme", "sky", "land"));
         KEY_ITEM_IDS.put("prison_bottle", new FormInformation(List.of("hoopa"), "djinn_state", "confined", "unbound"));
+        KEY_ITEM_IDS.put("reveal_glass", new FormInformation(List.of("landorus", "thundurus", "tornadus", "enamorus"), "mirror_forme", "incarnate", "therian"));
+        KEY_ITEM_IDS.put("pink_nectar", new FormInformation(List.of("oricorio"), "dance_style", "pa'u", null));
         KEY_ITEM_IDS.put("purple_nectar", new FormInformation(List.of("oricorio"), "dance_style", "sensu", null));
         KEY_ITEM_IDS.put("red_nectar", new FormInformation(List.of("oricorio"), "dance_style", "baile", null));
-        KEY_ITEM_IDS.put("reveal_glass", new FormInformation(List.of("landorus", "thundurus", "tornadus", "enamorus"), "mirror_forme", "incarnate", "therian"));
         KEY_ITEM_IDS.put("yellow_nectar", new FormInformation(List.of("oricorio"), "dance_style", "pom_pom", null));
+
         for (String key : GenesisForms.INSTANCE.getItemSettings().custom_key_form_items.keySet()) {
             FormInformation form = GenesisForms.INSTANCE.getItemSettings().custom_key_form_items.get(key);
             KEY_ITEM_IDS.put(key, form);
         }
     }
 
-    public Map<String, KeyItemPolymerItem> keyItemPolymerItems = new HashMap<>();
-    public Map<String, PolymerModelData> keyItemPolymerModelData = new HashMap<>();
+    public LinkedHashMap<String, KeyItemPolymerItem> keyItemPolymerItems = new LinkedHashMap<>();
+    public LinkedHashMap<String, PolymerModelData> keyItemPolymerModelData = new LinkedHashMap<>();
     private final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.EPIC).maxCount(1).fireproof();
     private final Item baseVanillaItem = Items.DIAMOND;
 

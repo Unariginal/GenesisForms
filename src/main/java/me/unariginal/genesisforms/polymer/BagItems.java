@@ -26,8 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BagItems {
     private static final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.UNCOMMON).fireproof();
@@ -44,7 +43,7 @@ public class BagItems {
     public static MaxMushroomsBlock MAX_MUSHROOMS_BLOCK;
     public static MaxMushroomsItem MAX_MUSHROOMS_ITEM;
 
-    public static Map<String, ItemStack> bagItemStacks = new HashMap<>();
+    public static LinkedHashMap<String, ItemStack> bagItemStacks = new LinkedHashMap<>();
 
     public static void requestModel() {
         dynamaxCandyModelData = PolymerResourcePackUtils.requestModel(baseVanillaItem, Identifier.of(GenesisForms.MOD_ID, "item/dynamax_candy"));
