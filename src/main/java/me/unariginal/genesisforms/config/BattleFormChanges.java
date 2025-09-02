@@ -37,6 +37,15 @@ public class BattleFormChanges {
         }
     }
 
+    public static Map.Entry<String, BattleFormInformation> getBattleForm(String species) {
+        for (Map.Entry<String, BattleFormInformation> entry : battleForms.entrySet()) {
+            if (entry.getValue().species.equalsIgnoreCase(species)) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
     public BattleFormChanges() throws IOException {
 //        File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms").toFile();
 //        if (!rootFolder.exists()) rootFolder.mkdirs();

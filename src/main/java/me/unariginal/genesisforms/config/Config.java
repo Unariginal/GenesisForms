@@ -6,7 +6,9 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Config {
     public boolean debug = false;
@@ -18,10 +20,6 @@ public class Config {
     public boolean useArmorInventory = false;
     public List<Integer> specificSlots = new ArrayList<>();
     public List<String> disabledItems = new ArrayList<>();
-    public boolean convertOnJoin = false;
-    public boolean convertOnHeldItemChange = false;
-    public record ItemConversion(String input, String output, Integer customModelData) {}
-    public List<ItemConversion> itemConversions = new ArrayList<>();
 
     public boolean enableMegaEvolution = true;
     public boolean allowMegaOutsideBattles = true;
@@ -122,33 +120,32 @@ public class Config {
         }
         generalSettings.add("disabled_items", disabledItems);
 
-        if (generalSettings.has("convert_on_join"))
-            convertOnJoin = generalSettings.get("convert_on_join").getAsBoolean();
-        generalSettings.addProperty("convert_on_join", convertOnJoin);
+        JsonObject customBattleForms = new JsonObject();
+        if (generalSettings.has("custom_battle_forms"))
+            customBattleForms = generalSettings.get("custom_battle_forms").getAsJsonObject();
+        for (String battleFormKey : customBattleForms.keySet()) {
+            JsonObject battleFormObject = customBattleForms.get(battleFormKey).getAsJsonObject();
+            if (!(battleFormObject.has("species") && battleFormObject.has("default_form") && battleFormObject.has("forms"))) continue;
+            String species = battleFormObject.get("species").getAsString();
+            JsonObject defaultFormObject = battleFormObject.get("default_form").getAsJsonObject();
+            JsonObject formsObject = defaultFormObject.get("forms").getAsJsonObject();
 
-        if (generalSettings.has("convert_on_held_item_change"))
-            convertOnHeldItemChange = generalSettings.get("convert_on_held_item_change").getAsBoolean();
-        generalSettings.addProperty("convert_on_held_item_change", convertOnHeldItemChange);
+            if (!(defaultFormObject.has("feature_name") && defaultFormObject.has("feature_value"))) continue;
+            String defaultFeatureName = defaultFormObject.get("feature_name").getAsString();
+            String defaultFeatureValue = defaultFormObject.get("feature_value").getAsString();
 
-        JsonArray itemConversions = new JsonArray();
-        if (generalSettings.has("item_conversions")) {
-            this.itemConversions.clear();
-            for (JsonElement element : generalSettings.get("item_conversions").getAsJsonArray()) {
-                JsonObject itemConversion = element.getAsJsonObject();
-                if (itemConversion.has("input") && itemConversion.has("output")) {
-                    Integer customModelData = itemConversion.has("custom_model_data") ? itemConversion.get("custom_model_data").getAsInt() : null;
-                    this.itemConversions.add(new ItemConversion(itemConversion.get("input").getAsString(), itemConversion.get("output").getAsString(), customModelData));
-                }
+            Map<String, BattleFormChanges.BattleForm> battleFormMap = new HashMap<>();
+            for (String formName : formsObject.keySet()) {
+                JsonObject formObject = formsObject.get(formName).getAsJsonObject();
+                if (!(formObject.has("feature_name") && formObject.has("feature_value"))) continue;
+                String featureName = formObject.get("feature_name").getAsString();
+                String featureValue = formObject.get("feature_value").getAsString();
+                battleFormMap.put(formName, new BattleFormChanges.BattleForm(featureName, featureValue));
             }
+
+            BattleFormChanges.battleForms.put(battleFormKey, new BattleFormChanges.BattleFormInformation(species, new BattleFormChanges.BattleForm(defaultFeatureName, defaultFeatureValue), battleFormMap));
         }
-        for (ItemConversion itemConversion : this.itemConversions) {
-            JsonObject itemConversionJson = new JsonObject();
-            itemConversionJson.addProperty("input", itemConversion.input);
-            itemConversionJson.addProperty("output", itemConversion.output);
-            if (itemConversion.customModelData != null) itemConversionJson.addProperty("custom_model_data", itemConversion.customModelData);
-            itemConversions.add(itemConversionJson);
-        }
-        generalSettings.add("item_conversions", itemConversions);
+        generalSettings.add("custom_battle_forms", customBattleForms);
 
         newRoot.add("general_settings", generalSettings);
 

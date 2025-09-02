@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.config.Config;
 import me.unariginal.genesisforms.handlers.FormHandler;
 import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
 import me.unariginal.genesisforms.items.helditems.HeldItems;
@@ -12,21 +11,15 @@ import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
 import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalItems;
 import me.unariginal.genesisforms.polymer.BagItems;
 import me.unariginal.genesisforms.polymer.KeyItems;
-import me.unariginal.genesisforms.utils.NbtUtils;
 import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
-
-import static net.minecraft.component.DataComponentTypes.CUSTOM_MODEL_DATA;
 
 public class GenesisCommands {
     private final GenesisForms gf = GenesisForms.INSTANCE;
@@ -208,110 +201,6 @@ public class GenesisCommands {
                                             return 1;
                                         })
                         )
-                        .then(
-                                CommandManager.literal("convert-item")
-                                        .requires(Permissions.require("genesisforms.convertItem", 4))
-                                        .then(
-                                                CommandManager.literal("hand")
-                                                        .requires(Permissions.require("genesisforms.convertItem.hand", 4))
-                                                        .executes(ctx -> {
-                                                            if (ctx.getSource().getPlayer() == null) return 0;
-                                                            ServerPlayerEntity player = ctx.getSource().getPlayer();
-
-                                                            ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
-                                                            ItemStack converted = convertItem(stack);
-                                                            if (converted == null) return 0;
-                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("convert_command_hand"), player, stack, converted, stack.getCount())));
-                                                            stack.decrement(stack.getCount());
-                                                            player.giveItemStack(converted);
-
-                                                            return 1;
-                                                        })
-                                        )
-                                        .then(
-                                                CommandManager.literal("inventory")
-                                                        .requires(Permissions.require("genesisforms.convertItem.inventory", 4))
-                                                        .executes(ctx -> {
-                                                            if (ctx.getSource().getPlayer() == null) return 0;
-                                                            ServerPlayerEntity player = ctx.getSource().getPlayer();
-                                                            int convertedCount = 0;
-                                                            for (ItemStack stack : player.getInventory().main) {
-                                                                ItemStack converted = convertItem(stack);
-                                                                if (converted == null) continue;
-                                                                convertedCount += stack.getCount();
-                                                                stack.decrement(stack.getCount());
-                                                                player.giveItemStack(converted);
-                                                            }
-                                                            for (ItemStack stack : player.getInventory().offHand) {
-                                                                ItemStack converted = convertItem(stack);
-                                                                if (converted == null) continue;
-                                                                convertedCount += stack.getCount();
-                                                                stack.decrement(stack.getCount());
-                                                                player.giveItemStack(converted);
-                                                            }
-                                                            for (ItemStack stack : player.getInventory().armor) {
-                                                                ItemStack converted = convertItem(stack);
-                                                                if (converted == null) continue;
-                                                                convertedCount += stack.getCount();
-                                                                stack.decrement(stack.getCount());
-                                                                player.giveItemStack(converted);
-                                                            }
-                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("convert_command_inventory"), player, null, null, convertedCount)));
-                                                            return 1;
-                                                        })
-                                        )
-                        )
         ));
-    }
-
-    public ItemStack convertItem(ItemStack itemStack) {
-        for (Config.ItemConversion itemConversion : gf.getConfig().itemConversions) {
-            Integer customModelData = itemConversion.customModelData();
-            if (customModelData != null) {
-                CustomModelDataComponent customModelDataComponent = itemStack.getComponents().get(CUSTOM_MODEL_DATA);
-                if (customModelDataComponent == null || customModelDataComponent.value() != customModelData) {
-                    continue;
-                }
-            }
-            if (itemConversion.input().contains(":")) {
-                if (Registries.ITEM.containsId(Identifier.of(itemConversion.input()))) {
-                    if (itemStack.getRegistryEntry().matchesId(Identifier.of(itemConversion.input()))) {
-                        if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
-                            ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
-                            returnStack.setCount(itemStack.getCount());
-                            return returnStack;
-                        } else {
-                            gf.logError("Invalid output item: " + itemConversion.output());
-                            return null;
-                        }
-                    }
-                }
-            }
-            String itemName = NbtUtils.getItemName(itemStack);
-            if (itemName.toLowerCase().contains(itemConversion.input().toLowerCase())) {
-                if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
-                    ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
-                    returnStack.setCount(itemStack.getCount());
-                    return returnStack;
-                } else {
-                    gf.logError("Invalid output item: " + itemConversion.output());
-                    return null;
-                }
-            }
-            List<String> itemLore = NbtUtils.getItemLore(itemStack);
-            for (String lore : itemLore) {
-                if (lore.toLowerCase().contains(itemConversion.input().toLowerCase())) {
-                    if (Registries.ITEM.containsId(Identifier.of(itemConversion.output()))) {
-                        ItemStack returnStack = Registries.ITEM.get(Identifier.of(itemConversion.output())).getDefaultStack();
-                        returnStack.setCount(itemStack.getCount());
-                        return returnStack;
-                    } else {
-                        gf.logError("Invalid output item: " + itemConversion.output());
-                        return null;
-                    }
-                }
-            }
-        }
-        return null;
     }
 }

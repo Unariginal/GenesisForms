@@ -1,9 +1,7 @@
 package me.unariginal.genesisforms;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
-import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
@@ -27,9 +25,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.component.ComponentMap;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,39 +67,6 @@ public class GenesisForms implements ModInitializer {
             this.audiences = FabricServerAudiences.of(server);
 
             registerEvents();
-        });
-
-        PlatformEvents.SERVER_PLAYER_LOGIN.subscribe(Priority.NORMAL, event -> {
-            if (config.convertOnJoin) {
-                ServerPlayerEntity player = event.getPlayer();
-                for (ItemStack stack : player.getInventory().main) {
-                    ItemStack converted = commands.convertItem(stack);
-                    if (converted == null) continue;
-                    stack.decrement(stack.getCount());
-                    player.giveItemStack(converted);
-                }
-                for (ItemStack stack : player.getInventory().offHand) {
-                    ItemStack converted = commands.convertItem(stack);
-                    if (converted == null) continue;
-                    stack.decrement(stack.getCount());
-                    player.giveItemStack(converted);
-                }
-                for (ItemStack stack : player.getInventory().armor) {
-                    ItemStack converted = commands.convertItem(stack);
-                    if (converted == null) continue;
-                    stack.decrement(stack.getCount());
-                    player.giveItemStack(converted);
-                }
-                for (Pokemon pokemon : Cobblemon.INSTANCE.getStorage().getParty(player)) {
-                    if (pokemon == null) continue;
-                    if (pokemon.heldItem().isEmpty()) continue;
-                    ItemStack heldItem = pokemon.heldItem();
-                    ItemStack converted = commands.convertItem(heldItem);
-                    if (converted == null) continue;
-                    pokemon.setHeldItem$common(converted);
-                }
-            }
-            return Unit.INSTANCE;
         });
     }
 
