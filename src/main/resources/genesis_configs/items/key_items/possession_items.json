@@ -1,0 +1,44 @@
+{
+  "rotom_fan": {
+    "placeable": true,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_value": "fan",
+    "lore": ["<gray>This item can be possessed by a certain pokemon!"]
+  },
+  "rotom_microwave_oven": {
+    "placeable": true,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_value": "heat",
+    "lore": ["<gray>This item can be possessed by a certain pokemon!"]
+  },
+  "rotom_lawn_mower": {
+    "placeable": true,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_value": "mow",
+    "lore": ["<gray>This item can be possessed by a certain pokemon!"]
+  },
+  "rotom_refrigerator": {
+    "placeable": true,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_value": "frost",
+    "lore": ["<gray>This item can be possessed by a certain pokemon!"]
+  },
+  "rotom_washing_machine": {
+    "placeable": true,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_value": "wash",
+    "lore": ["<gray>This item can be possessed by a certain pokemon!"]
+  },
+  "rotom_light_bulb": {
+    "placeable": true,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_value": "null",
+    "lore": ["<gray>This item can be possessed by a certain pokemon!"]
+  }
+}

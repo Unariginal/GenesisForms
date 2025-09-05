@@ -1,0 +1,24 @@
+{
+  "zygarde_cube": {
+    "enable_ability_swap": true,
+    "enable_form_swap": true,
+    "feature_name": "percent_cells",
+    "feature_values": ["10", "50"],
+    "lore": [
+      "<gray>An item in which Zygarde Cores and Cells are gathered.",
+      "<gray>You can also use it to change Zygarde's forms."
+    ]
+  },
+  "wishing_star": {
+    "lore": [
+      "<gray>A stone found in the Galar region with a mysterious power.",
+      "<gray>It's said that your dreams come true if you find one."
+    ]
+  },
+  "sparkling_stone": {
+    "lore": [
+      "<gray>A stone entrusted to you by a Pokémon that has been venerated as a guardian deity in the Alola region.",
+      "<gray>There is said to be some secret in how it sparkles."
+    ]
+  }
+}

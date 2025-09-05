@@ -4,10 +4,8 @@
   "package": "me.unariginal.genesisforms.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ClientConnectionMixin",
     "EndInstructionAccessor",
     "EndInstructionMixin",
-    "MoveActionResponseMixin",
     "ShowdownActionRequestMixin",
     "ShowdownInterpreterMixin",
     "ShowdownSpeciesMixin",

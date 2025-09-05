@@ -1,0 +1,30 @@
+{
+  "dynamax_candy": {
+    "consumable": true,
+    "lore": [
+      "<gray>A candy that is packed with energy.",
+      "<gray>If consumed, it raises the Dynamax Level of a Pokémon by one.",
+      "<gray>A higher level means higher HP when Dynamaxed."
+    ]
+  },
+  "max_honey": {
+    "consumable": true,
+    "lore": [
+      "<gray>Honey that Dynamax Vespiquen produces. Adding this honey to Max Soup makes the taste very smooth.",
+      "<gray>It also has the same effect as a Max Revive."
+    ]
+  },
+  "max_mushrooms": {
+    "consumable": true,
+    "lore": [
+      "<gray>Mushrooms that have the power of changing Dynamax forms.",
+      "<gray>They boost all stats of a Pokémon during battle."
+    ]
+  },
+  "max_soup": {
+    "consumable": true,
+    "lore": [
+      "<gray>The soup can be fed to any Pokémon that has a Gigantamax form, which either adds or removes the Gigantamax Factor."
+    ]
+  }
+}

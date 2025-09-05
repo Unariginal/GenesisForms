@@ -15,16 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Adapted from Cobblemon Megas @ davo899 / jornadascobblemon
- */
-@Mixin(PokemonSpecies.ShowdownSpecies.class)
+@Mixin(value = PokemonSpecies.ShowdownSpecies.class, remap = false)
 public class ShowdownSpeciesMixin {
-    @Shadow(remap = false) @Final
+    @Shadow
+    @Final
     @Mutable
     private Map<String, String> abilities;
 
-    @Inject(method = "<init>", at = @At("TAIL"), remap = false)
+    @Inject(method = "<init>", at = @At("TAIL"))
     private void populateAbilities(Species species, FormData formData, CallbackInfo ci) {
         if (formData == null) return;
         Iterator<PotentialAbility> abilityIterator = formData.getAbilities().iterator();

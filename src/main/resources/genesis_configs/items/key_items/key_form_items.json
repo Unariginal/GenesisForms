@@ -1,0 +1,132 @@
+{
+  "adamant_crystal": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["dialga"],
+    "feature_name": "orb_forme",
+    "feature_values": ["altered", "origin"],
+    "lore": [
+      "<gray>An item to be held by Dialga.",
+      "<gray>This large, glowing gem wells with power and allows the Pokémon to change form."
+    ]
+  },
+  "lustrous_globe": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["palkia"],
+    "feature_name": "orb_forme",
+    "feature_values": ["altered", "origin"],
+    "lore": [
+      "<gray>An item to be held by Palkia.",
+      "<gray>This large, glowing orb wells with power and allows the Pokémon to change form."
+    ]
+  },
+  "griseous_core": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["giratina"],
+    "feature_name": "orb_forme",
+    "feature_values": ["altered", "origin"],
+    "lore": [
+      "<gray>An item to be held by Giratina.",
+      "<gray>This large, glowing gem wells with power and allows the Pokémon to change form."
+    ]
+  },
+  "gracidea_flower": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["shaymin"],
+    "feature_name": "gracidea_forme",
+    "feature_values": ["land", "sky"],
+    "lore": [
+      "<gray>A flower sometimes bundled into a bouquet to be given as an expression of gratitude on special occasions, such as birthdays and anniversaries."
+    ]
+  },
+  "pink_nectar": {
+    "consumable": true,
+    "max_stack_size": 64,
+    "species": ["oricorio"],
+    "feature_name": "dance_style",
+    "feature_values": ["pa'u"],
+    "lore": [
+      "<gray>Flower nectar obtained from a pink flower.",
+      "<gray>It changes the form of a certain species of Pokémon."
+    ]
+  },
+  "purple_nectar": {
+    "consumable": true,
+    "max_stack_size": 64,
+    "species": ["oricorio"],
+    "feature_name": "dance_style",
+    "feature_values": ["sensu"],
+    "lore": [
+      "<gray>Flower nectar obtained from a purple flower.",
+      "<gray>It changes the form of a certain species of Pokémon."
+    ]
+  },
+  "red_nectar": {
+    "consumable": true,
+    "max_stack_size": 64,
+    "species": ["oricorio"],
+    "feature_name": "dance_style",
+    "feature_values": ["baile"],
+    "lore": [
+      "<gray>Flower nectar obtained from a red flower.",
+      "<gray>It changes the form of a certain species of Pokémon."
+    ]
+  },
+  "yellow_nectar": {
+    "consumable": true,
+    "max_stack_size": 64,
+    "species": ["oricorio"],
+    "feature_name": "dance_style",
+    "feature_values": ["pom_pom"],
+    "lore": [
+      "<gray>Flower nectar obtained from a yellow flower.",
+      "<gray>It changes the form of a certain species of Pokémon."
+    ]
+  },
+  "prison_bottle": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["hoopa"],
+    "feature_name": "djinn_state",
+    "feature_values": ["confined", "unbound"],
+    "lore": [
+      "<gray>A bottle believed to have been used to seal away the power of a certain Pokémon long, long ago."
+    ]
+  },
+  "reveal_glass": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["landorus", "thundurus", "tornadus", "enamorus"],
+    "feature_name": "mirror_forme",
+    "feature_values": ["incarnate", "therian"],
+    "lore": [
+      "<gray>A mysterious looking glass that reveals the truth.",
+      "<gray>It can return a Pokémon to its original shape."
+    ]
+  },
+  "meteorite": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["deoxys"],
+    "feature_name": "meteorite_forme",
+    "feature_values": ["normal", "attack", "defense", "speed"],
+    "lore": [
+      "<gray>A rock that fell to earth from space. It’s slightly warm to the touch.",
+      "<gray>It allows a certain species of Pokémon to change forms."
+    ]
+  },
+  "rotom_catalog": {
+    "consumable": false,
+    "max_stack_size": 1,
+    "species": ["rotom"],
+    "feature_name": "appliance",
+    "feature_values": ["null", "heat", "wash", "frost", "fan", "mow"],
+    "lore": [
+      "<gray>A catalog of devices that Rotom like.",
+      "<gray>Use the catalog to have Rotom hop in and out of the various devices listed within."
+    ]
+  }
+}

@@ -1,0 +1,528 @@
+{
+  "rusted_sword": {
+    "showdown_id": "rustedsword",
+    "species": ["zacian"],
+    "feature_name": "behemoth_warrior",
+    "default_value": "hero",
+    "alternate_value": "crowned",
+    "lore": [
+      "<gray>It is said that a hero used this sword to halt a terrible disaster in ancient times.",
+      "<gray>But it's grown rusty and worn."
+    ]
+  },
+  "rusted_shield": {
+    "showdown_id": "rustedshield",
+    "species": ["zamazenta"],
+    "feature_name": "behemoth_warrior",
+    "default_value": "hero",
+    "alternate_value": "crowned",
+    "lore": [
+      "<gray>It is said that a hero used this shield to halt a terrible disaster in ancient times.",
+      "<gray>But it's grown rusty and worn."
+    ]
+  },
+  "red_orb": {
+    "showdown_id": "redorb",
+    "species": ["groudon"],
+    "feature_name": "reversion_state",
+    "default_value": "standard",
+    "alternate_value": "primal",
+    "lore": [
+      "<gray>A shiny red orb that is said to have a deep connection to a legend of the Hoenn region."
+    ]
+  },
+  "blue_orb": {
+    "showdown_id": "blueorb",
+    "species": ["kyogre"],
+    "feature_name": "reversion_state",
+    "default_value": "standard",
+    "alternate_value": "primal",
+    "lore": [
+      "<gray>A shiny blue orb that is said to have a deep connection to a legend of the Hoenn region."
+    ]
+  },
+  "shock_drive": {
+    "showdown_id": "shockdrive",
+    "species": ["genesect"],
+    "feature_name": "techno_drive",
+    "default_value": "normal",
+    "alternate_value": "electric",
+    "lore": [
+      "<gray>A cassette to be held by Genesect.",
+      "<gray>It changes Genesect's Techno Blast move so it becomes Electric type."
+    ]
+  },
+  "burn_drive": {
+    "showdown_id": "burndrive",
+    "species": ["genesect"],
+    "feature_name": "techno_drive",
+    "default_value": "normal",
+    "alternate_value": "fire",
+    "lore": [
+      "<gray>A cassette to be held by Genesect.",
+      "<gray>It changes Genesect's Techno Blast move so it becomes Fire type."
+    ]
+  },
+  "chill_drive": {
+    "showdown_id": "chilldrive",
+    "species": ["genesect"],
+    "feature_name": "techno_drive",
+    "default_value": "normal",
+    "alternate_value": "ice",
+    "lore": [
+      "<gray>A cassette to be held by Genesect.",
+      "<gray>It changes Genesect's Techno Blast move so it becomes Ice type."
+    ]
+  },
+  "douse_drive": {
+    "showdown_id": "dousedrive",
+    "species": ["genesect"],
+    "feature_name": "techno_drive",
+    "default_value": "normal",
+    "alternate_value": "water",
+    "lore": [
+      "<gray>A cassette to be held by Genesect.",
+      "<gray>It changes Genesect's Techno Blast move so it becomes Water type."
+    ]
+  },
+  "teal_mask": {
+    "showdown_id": "tealmask",
+    "species": ["ogerpon"],
+    "feature_name": "ogre_mask",
+    "default_value": "teal",
+    "alternate_value": "teal",
+    "lore": [
+      "<gray>A teal mask patterned after the face of an ogre.",
+      "<gray>Ogerpon dropped it while fleeing up the stairs after visiting the Festival of Masks."
+    ]
+  },
+  "hearthflame_mask": {
+    "showdown_id": "hearthflamemask",
+    "species": ["ogerpon"],
+    "feature_name": "ogre_mask",
+    "default_value": "teal",
+    "alternate_value": "hearthflame",
+    "lore": [
+      "<gray>An item to be held by Ogerpon.",
+      "<gray>This carved wooden mask is adorned with crystals and allows Ogerpon to wield the Fire type during battle."
+    ]
+  },
+  "wellspring_mask": {
+    "showdown_id": "wellspringmask",
+    "species": ["ogerpon"],
+    "feature_name": "ogre_mask",
+    "default_value": "teal",
+    "alternate_value": "wellspring",
+    "lore": [
+      "<gray>An item to be held by Ogerpon.",
+      "<gray>This carved wooden mask is adorned with crystals and allows Ogerpon to wield the Water type during battle."
+    ]
+  },
+  "cornerstone_mask": {
+    "showdown_id": "cornerstonemask",
+    "species": ["ogerpon"],
+    "feature_name": "ogre_mask",
+    "default_value": "teal",
+    "alternate_value": "cornerstone",
+    "lore": [
+      "<gray>An item to be held by Ogerpon.",
+      "<gray>This carved wooden mask is adorned with crystals and allows Ogerpon to wield the Rock type during battle."
+    ]
+  },
+  "bug_memory": {
+    "showdown_id": "bugmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "bug",
+    "lore": [
+      "<gray>A memory disc that contains Bug-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "dark_memory": {
+    "showdown_id": "darkmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "dark",
+    "lore": [
+      "<gray>A memory disc that contains Dark-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "dragon_memory": {
+    "showdown_id": "dragonmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "dragon",
+    "lore": [
+      "<gray>A memory disc that contains Dragon-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon"
+    ]
+  },
+  "electric_memory": {
+    "showdown_id": "electricmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "electric",
+    "lore": [
+      "<gray>A memory disc that contains Electric-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "fairy_memory": {
+    "showdown_id": "fairymemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "fairy",
+    "lore": [
+      "<gray>A memory disc that contains Fairy-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "fighting_memory": {
+    "showdown_id": "fightingmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "fighting",
+    "lore": [
+      "<gray>A memory disc that contains Fighting-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "fire_memory": {
+    "showdown_id": "firememory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "fire",
+    "lore": [
+      "<gray>A memory disc that contains Fire-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "flying_memory": {
+    "showdown_id": "flyingmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "flying",
+    "lore": [
+      "<gray>A memory disc that contains Flying-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "ghost_memory": {
+    "showdown_id": "ghostmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "ghost",
+    "lore": [
+      "<gray>A memory disc that contains Ghost-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "grass_memory": {
+    "showdown_id": "grassmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "grass",
+    "lore": [
+      "<gray>A memory disc that contains Grass-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "ground_memory": {
+    "showdown_id": "groundmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "ground",
+    "lore": [
+      "<gray>A memory disc that contains Ground-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "ice_memory": {
+    "showdown_id": "icememory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "ice",
+    "lore": [
+      "<gray>A memory disc that contains Ice-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "poison_memory": {
+    "showdown_id": "poisonmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "poison",
+    "lore": [
+      "<gray>A memory disc that contains Poison-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "psychic_memory": {
+    "showdown_id": "psychicmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "psychic",
+    "lore": [
+      "<gray>A memory disc that contains Psychic-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "rock_memory": {
+    "showdown_id": "rockmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "rock",
+    "lore": [
+      "<gray>A memory disc that contains Rock-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "steel_memory": {
+    "showdown_id": "bugmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "steel",
+    "lore": [
+      "<gray>A memory disc that contains Steel-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "water_memory": {
+    "showdown_id": "bugmemory",
+    "species": ["silvally"],
+    "feature_name": "rks_memory",
+    "default_value": "normal",
+    "alternate_value": "water",
+    "lore": [
+      "<gray>A memory disc that contains Water-type data.",
+      "<gray>It changes the type of the holder if held by a certain species of Pokémon."
+    ]
+  },
+  "insect_plate": {
+    "showdown_id": "insectplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "bug",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of bugs and boosts the power of the holder’s Bug-type moves."
+    ]
+  },
+  "dread_plate": {
+    "showdown_id": "dreadplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "dark",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of darkness and boosts the power of the holder’s Dark-type moves."
+    ]
+  },
+  "draco_plate": {
+    "showdown_id": "dracoplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "dragon",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of dragons and boosts the power of the holder’s Dragon-type moves."
+    ]
+  },
+  "zap_plate": {
+    "showdown_id": "zapplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "electric",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of electricity and boosts the power of the holder’s Electric-type moves."
+    ]
+  },
+  "pixie_plate": {
+    "showdown_id": "pixieplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "fairy",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of fairies and boosts the power of the holder’s Fairy-type moves."
+    ]
+  },
+  "fist_plate": {
+    "showdown_id": "fistplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "fighting",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of the fighting spirit and boosts the power of the holder’s Fighting-type moves."
+    ]
+  },
+  "flame_plate": {
+    "showdown_id": "flameplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "fire",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of fire and boosts the power of the holder’s Fire-type moves."
+    ]
+  },
+  "sky_plate": {
+    "showdown_id": "skyplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "flying",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of flight and boosts the power of the holder’s Flying-type moves."
+    ]
+  },
+  "spooky_plate": {
+    "showdown_id": "spookyplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "ghost",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of ghosts and boosts the power of the holder’s Ghost-type moves."
+    ]
+  },
+  "meadow_plate": {
+    "showdown_id": "meadowplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "grass",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of plants and boosts the power of the holder’s Grass-type moves."
+    ]
+  },
+  "earth_plate": {
+    "showdown_id": "earthplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "ground",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of the earth and boosts the power of the holder’s Ground-type moves."
+    ]
+  },
+  "icicle_plate": {
+    "showdown_id": "icicleplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "ice",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of ice and boosts the power of the holder’s Ice-type moves."
+    ]
+  },
+  "toxic_plate": {
+    "showdown_id": "toxicplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "poison",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of poison and boosts the power of the holder’s Poison-type moves."
+    ]
+  },
+  "mind_plate": {
+    "showdown_id": "mindplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "psychic",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of psychic energy and boosts the power of the holder’s Psychic-type moves."
+    ]
+  },
+  "stone_plate": {
+    "showdown_id": "stoneplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "rock",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of rock and boosts the power of the holder’s Rock-type moves."
+    ]
+  },
+  "iron_plate": {
+    "showdown_id": "ironplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "steel",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of steel and boosts the power of the holder’s Steel-type moves."
+    ]
+  },
+  "splash_plate": {
+    "showdown_id": "splashplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "water",
+    "lore": [
+      "<gray>An item to be held by a Pokémon.",
+      "<gray>This stone tablet is imbued with the essence of water and boosts the power of the holder’s Water-type moves."
+    ]
+  },
+  "legend_plate": {
+    "showdown_id": "legendplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "normal",
+    "lore": [
+      "<gray>A stone tablet imbued with the essence of all creation.",
+      "<gray>When used on a certain Pokémon, it allows that Pokémon to gain the power of every type there is."
+    ]
+  },
+  "blank_plate": {
+    "showdown_id": "blankplate",
+    "species": ["arceus"],
+    "feature_name": "multitype",
+    "default_value": "normal",
+    "alternate_value": "normal",
+    "lore": [
+      "<gray>A stone tablet imbued with the essence of normalcy.",
+      "<gray>When used on a certain Pokémon, it allows that Pokémon to gain the power of the Normal type."
+    ]
+  }
+}

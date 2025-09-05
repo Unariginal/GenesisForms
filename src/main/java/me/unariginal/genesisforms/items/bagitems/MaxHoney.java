@@ -16,20 +16,16 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
-import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.polymer.BagItems;
-import me.unariginal.genesisforms.utils.TextUtils;
+import me.unariginal.genesisforms.items.ConsumablePolymerItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -39,9 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MaxHoney extends SimplePolymerItem implements HealingSource {
-    PolymerModelData modelData;
-    BagItem bagItem = new BagItem() {
+public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
+    private final BagItem bagItem = new BagItem() {
         @Override
         public @NotNull String getItemName() {
             return "max_honey";
@@ -63,22 +58,8 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
         }
     };
 
-    public MaxHoney(Settings settings, Item polymerItem) {
-        super(settings, polymerItem);
-        this.modelData = BagItems.maxHoneyModelData;
-    }
-
-    @Override
-    public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player){
-        return this.modelData.value();
-    }
-
-    @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        super.appendTooltip(stack, context, tooltip, type);
-        for (String line : GenesisForms.INSTANCE.getItemSettings().item_lore.get("max_honey")) {
-            tooltip.add(TextUtils.deserialize(line));
-        }
+    public MaxHoney(Settings settings, Item polymerItem, PolymerModelData modelData, List<String> lore, boolean consumable) {
+        super(settings, polymerItem, modelData, "max_honey", lore, consumable);
     }
 
     @Override
@@ -104,9 +85,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                                      player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);
                                      actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
                                      Identifier stackName = Registries.ITEM.getId(stack.getItem());
-                                     if (GenesisForms.INSTANCE.getItemSettings().consumableBagItems.contains("max_honey")) {
-                                         stack.decrementUnlessCreative(1, player);
-                                     }
+                                     if (consumable) stack.decrementUnlessCreative(1, player);
                                      CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
                                  }
                                  return Unit.INSTANCE;
@@ -134,9 +113,7 @@ public class MaxHoney extends SimplePolymerItem implements HealingSource {
                          });
                          pokemon.setCurrentHealth(amount.get());
                          Identifier stackName = Registries.ITEM.getId(stack.getItem());
-                         if (GenesisForms.INSTANCE.getItemSettings().consumableBagItems.contains("max_honey")) {
-                             stack.decrementUnlessCreative(1, player);
-                         }
+                         if (consumable) stack.decrementUnlessCreative(1, player);
                          CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
                      }
                      return Unit.INSTANCE;

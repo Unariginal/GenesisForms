@@ -13,9 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Adapted from Mega Showdown @ yajatkaul
- */
 @Mixin(value = EndInstruction.class, remap = false)
 public class EndInstructionMixin {
     @Inject(method = "invoke", at = @At("HEAD"), remap = false)

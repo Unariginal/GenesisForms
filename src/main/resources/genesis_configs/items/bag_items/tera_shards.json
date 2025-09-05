@@ -1,0 +1,135 @@
+{
+  "dark_tera_shard": {
+    "tera_type": "dark",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "ghost_tera_shard": {
+    "tera_type": "ghost",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "grass_tera_shard": {
+    "tera_type": "grass",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "ground_tera_shard": {
+    "tera_type": "ground",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "poison_tera_shard": {
+    "tera_type": "poison",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "rock_tera_shard": {
+    "tera_type": "rock",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "steel_tera_shard": {
+    "tera_type": "steel",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "ice_tera_shard": {
+    "tera_type": "ice",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "fire_tera_shard": {
+    "tera_type": "fire",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "dragon_tera_shard": {
+    "tera_type": "dragon",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "fighting_tera_shard": {
+    "tera_type": "fighting",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "flying_tera_shard": {
+    "tera_type": "flying",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "fairy_tera_shard": {
+    "tera_type": "fairy",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "bug_tera_shard": {
+    "tera_type": "bug",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "psychic_tera_shard": {
+    "tera_type": "psychic",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "normal_tera_shard": {
+    "tera_type": "normal",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "electric_tera_shard": {
+    "tera_type": "electric",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "water_tera_shard": {
+    "tera_type": "water",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  },
+  "stellar_tera_shard": {
+    "tera_type": "stellar",
+    "max_stack_size": 50,
+    "lore": [
+      "<gray>On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters."
+    ]
+  }
+}

@@ -6,13 +6,21 @@ import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.DataKeys;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.*;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PokemonUtils {
+    public static boolean playerOwnsPokemon(PlayerEntity player, Pokemon pokemon) {
+        ServerPlayerEntity ownerPlayer = pokemon.getOwnerPlayer();
+        if (ownerPlayer == null) return false;
+        return ownerPlayer.getUuid().equals(player.getUuid());
+    }
+
     public static NbtCompound saveToNBT(PokemonProperties properties) {
         NbtCompound nbt = new NbtCompound();
         nbt.putString(DataKeys.POKEMON_PROPERTIES_ORIGINAL_TEXT, properties.getOriginalString());

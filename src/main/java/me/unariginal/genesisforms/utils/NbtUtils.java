@@ -1,14 +1,9 @@
 package me.unariginal.genesisforms.utils;
 
-import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static net.minecraft.component.DataComponentTypes.*;
 
@@ -31,24 +26,6 @@ public class NbtUtils {
             newNbt.put(namespace, modNbt);
             return NbtComponent.of(newNbt);
         });
-    }
-
-    public static String getItemName(@NotNull ItemStack itemStack) {
-        return itemStack.getName().getString();
-    }
-
-    public static List<String> getItemLore(@NotNull ItemStack itemStack) {
-        List<String> lore = new ArrayList<>();
-        if (itemStack.getComponents().contains(LORE)) {
-            LoreComponent loreComponent = itemStack.getComponents().get(LORE);
-            if (loreComponent != null) {
-                List<Text> lore_text = loreComponent.lines();
-                for (Text text : lore_text) {
-                    lore.add(text.getString());
-                }
-            }
-        }
-        return lore;
     }
 
     @NotNull

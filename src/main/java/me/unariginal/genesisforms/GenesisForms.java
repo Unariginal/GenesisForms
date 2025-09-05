@@ -7,28 +7,33 @@ import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.AnimationConfig;
+import me.unariginal.genesisforms.config.BattleFormChangeConfig;
 import me.unariginal.genesisforms.config.Config;
-import me.unariginal.genesisforms.config.ItemConfigs;
 import me.unariginal.genesisforms.config.MessagesConfig;
-import me.unariginal.genesisforms.data.DataComponents;
+import me.unariginal.genesisforms.config.items.MiscItemsConfig;
+import me.unariginal.genesisforms.config.items.accessories.AccessoriesConfig;
+import me.unariginal.genesisforms.config.items.bagitems.MaxItemsConfig;
+import me.unariginal.genesisforms.config.items.bagitems.TeraShardsConfig;
+import me.unariginal.genesisforms.config.items.helditems.HeldBattleItemsConfig;
+import me.unariginal.genesisforms.config.items.helditems.HeldFormItemsConfig;
+import me.unariginal.genesisforms.config.items.helditems.MegastonesConfig;
+import me.unariginal.genesisforms.config.items.helditems.ZCrystalsConfig;
+import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
+import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
+import me.unariginal.genesisforms.config.items.keyitems.PossessionItemsConfig;
 import me.unariginal.genesisforms.handlers.*;
-import me.unariginal.genesisforms.items.bagitems.terashards.TeraShardBagItems;
-import me.unariginal.genesisforms.items.helditems.HeldItems;
-import me.unariginal.genesisforms.items.helditems.megastones.MegaStoneHeldItems;
-import me.unariginal.genesisforms.items.helditems.zcrystals.ZCrystalItems;
-import me.unariginal.genesisforms.items.keyitems.FusionItems;
-import me.unariginal.genesisforms.items.keyitems.KeyFormItems;
-import me.unariginal.genesisforms.items.keyitems.PossessionBlockItems;
-import me.unariginal.genesisforms.polymer.BagItems;
-import me.unariginal.genesisforms.polymer.KeyItems;
+import me.unariginal.genesisforms.items.helditems.HeldBattleItem;
+import me.unariginal.genesisforms.polymer.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
-import net.minecraft.component.ComponentMap;
+import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 
 public class GenesisForms implements ModInitializer {
@@ -41,21 +46,37 @@ public class GenesisForms implements ModInitializer {
     private FabricServerAudiences audiences;
 
     private Config config = new Config();
-    private ItemConfigs itemSettings = new ItemConfigs();
     private AnimationConfig animationConfig = new AnimationConfig();
     private MessagesConfig messagesConfig = new MessagesConfig();
 
-    private GenesisCommands commands;
+    private final Map<UUID, UUID> playersWithMega = new HashMap<>();
+    private final Map<UUID, String> teraPokemonEntities = new HashMap<>();
 
-    private final Map<UUID, Pokemon> players_with_mega = new HashMap<>();
-    private final List<UUID> mega_evolved_this_battle = new ArrayList<>();
-    private final Map<UUID, String> tera_pokemon_entities = new HashMap<>();
+    public static Identifier id(String path) {
+        return new Identifier(MOD_ID, path);
+    }
 
     @Override
     public void onInitialize() {
         INSTANCE = this;
 
-        commands = new GenesisCommands();
+        new GenesisCommands();
+
+        try {
+            AccessoriesConfig.load();
+            KeyFormItemsConfig.load();
+            HeldFormItemsConfig.load();
+            HeldBattleItemsConfig.load();
+            MegastonesConfig.load();
+            ZCrystalsConfig.load();
+            TeraShardsConfig.load();
+            FusionItemsConfig.load();
+            PossessionItemsConfig.load();
+            MaxItemsConfig.load();
+            MiscItemsConfig.load();
+        } catch (IOException e) {
+            logError("[GenesisForms] " + e.getMessage());
+        }
 
         PolymerResourcePackUtils.markAsRequired();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
@@ -65,86 +86,66 @@ public class GenesisForms implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             this.server = server;
             this.audiences = FabricServerAudiences.of(server);
+            reload();
 
             registerEvents();
         });
     }
 
+    public void reload() {
+        this.config = new Config();
+        this.animationConfig = new AnimationConfig();
+        this.messagesConfig = new MessagesConfig();
+        try {
+            BattleFormChangeConfig.load();
+        } catch (IOException e) {
+            logError(e.getMessage());
+        }
+    }
+
     private void registerItems() {
-        KeyFormItems.getInstance().loadKeyItemIds();
-        KeyFormItems.getInstance().fillPolymerModelData();
-        KeyFormItems.getInstance().fillPolymerItems();
-
-        FusionItems.getInstance().loadFusionItemIds();
-        FusionItems.getInstance().fillPolymerModelData();
-        FusionItems.getInstance().fillPolymerItems();
-
-        PossessionBlockItems.getInstance().loadPossessionItemIds();
-        PossessionBlockItems.getInstance().fillPolymerModelData();
-        PossessionBlockItems.getInstance().fillPolymerItems();
-
-        KeyItems.requestModel();
-        KeyItems.registerItems();
-        KeyItems.registerItemGroup();
-
-        BagItems.requestModel();
-        BagItems.registerItems();
-        BagItems.registerItemGroup();
-
-        HeldItems.getInstance().register();
-
-        MegaStoneHeldItems.getInstance().loadMegaStoneIds();
-        MegaStoneHeldItems.getInstance().fillPolymerModelData();
-        MegaStoneHeldItems.getInstance().fillPolymerItems();
-        MegaStoneHeldItems.getInstance().registerItemGroup();
-
-        TeraShardBagItems.getInstance().loadTeraShardIds();
-        TeraShardBagItems.getInstance().fillPolymerModelData();
-        TeraShardBagItems.getInstance().fillPolymerItems();
-        TeraShardBagItems.getInstance().registerItemGroup();
-
-        ZCrystalItems.getInstance().register();
+        KeyItemsGroup.registerItemGroup();
+        HeldItemsGroup.registerItemGroup();
+        BagItemsGroup.registerItemGroup();
+        MegastonesGroup.registerItemGroup();
+        TeraShardsGroup.registerItemGroup();
+        ZCrystalsGroup.registerItemGroup();
     }
 
     private void registerEvents() {
-        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, HeldItemHandler::heldItemChange);
+        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::heldItemChange);
+        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonReleasedEvent);
+        CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonGainedEvent);
 
-        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, MegaEvolutionHandler::megaEvent);
-        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::pokemon_released);
-        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, MegaEvolutionHandler::handleMegaRayquaza);
-
+        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, CobblemonEventHandler::formChangeEvent);
+        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, CobblemonEventHandler::megaEvolveEvent);
+        // TODO
         CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, TeraHandler::teraEvent);
-        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, TeraHandler::revertTera);
-        CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, TeraHandler::setProperTeraTypes);
-
         CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
+        UltraBurstHandler.register();
+        DynamaxHandler.register();
 
-        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, FormHandler::formChanges);
+        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, CobblemonEventHandler::battleStartEvent);
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, CobblemonEventHandler::battleFaintEvent);
+        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, CobblemonEventHandler::battleEndEvent);
+        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, CobblemonEventHandler::battleFledEvent);
 
-        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, BattleHandler::battleStarted);
-        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, BattleHandler::battleFaint);
-        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, BattleHandler::battleEnded);
-        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, BattleHandler::battleFled);
-        CobblemonEvents.POKEMON_FAINTED.subscribe(Priority.NORMAL, BattleHandler::pokemonFaint);
+        // Prevent trading mega pokemon, without stopping other mods from doing their own tradeable changes
+        CobblemonEvents.TRADE_EVENT_PRE.subscribe(Priority.NORMAL, CobblemonEventHandler::tradeEvent);
 
+        // Macho brace
         CobblemonEvents.EV_GAINED_EVENT_PRE.subscribe(Priority.NORMAL, event -> {
             Pokemon pokemon = event.getPokemon();
-            ComponentMap components = pokemon.heldItem().getComponents();
+            Item helditem = pokemon.heldItem().getItem();
             if (event.getSource().isBattle()) {
-                if (components.contains(DataComponents.HELD_ITEM)) {
-                    String heldItemComponent = components.get(DataComponents.HELD_ITEM);
-                    if (heldItemComponent != null && !heldItemComponent.isEmpty()) {
-                        if (heldItemComponent.equalsIgnoreCase("macho_brace") || heldItemComponent.equalsIgnoreCase("machobrace")) {
-                            event.setAmount(event.getAmount() * 2);
-                        }
+                if (helditem instanceof HeldBattleItem heldBattleItem) {
+                    if (heldBattleItem.getShowdownID().equalsIgnoreCase("machobrace")) {
+                        event.setAmount(event.getAmount() * 2);
                     }
                 }
             }
             return Unit.INSTANCE;
         });
-
-        DynamaxHandler.register();
-        UltraBurstHandler.register();
     }
 
     public void logError(String message) {
@@ -165,23 +166,8 @@ public class GenesisForms implements ModInitializer {
         return audiences;
     }
 
-    public GenesisCommands getGenesisCommands() {
-        return commands;
-    }
-
-    public void reload() {
-        this.config = new Config();
-        this.itemSettings = new ItemConfigs();
-        this.animationConfig = new AnimationConfig();
-        this.messagesConfig = new MessagesConfig();
-    }
-
     public Config getConfig() {
         return config;
-    }
-
-    public ItemConfigs getItemSettings() {
-        return itemSettings;
     }
 
     public AnimationConfig getAnimationConfig() {
@@ -192,15 +178,11 @@ public class GenesisForms implements ModInitializer {
         return messagesConfig;
     }
 
-    public Map<UUID, Pokemon> getPlayersWithMega() {
-        return players_with_mega;
-    }
-
-    public List<UUID> getMegaEvolvedThisBattle() {
-        return mega_evolved_this_battle;
+    public Map<UUID, UUID> getPlayersWithMega() {
+        return playersWithMega;
     }
 
     public Map<UUID, String> getTeraPokemonEntities() {
-        return tera_pokemon_entities;
+        return teraPokemonEntities;
     }
 }

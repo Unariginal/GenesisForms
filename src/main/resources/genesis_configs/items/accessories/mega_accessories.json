@@ -1,0 +1,28 @@
+{
+  "mega_cuff": {
+    "lore": [
+      "<gray>This cuff contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."
+    ]
+  },
+  "mega_charm": {
+    "lore": [
+      "<gray>This charm contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."
+    ]
+  },
+  "mega_ring": {
+    "lore": [
+      "<gray>This ring contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."
+    ]
+  },
+  "mega_bracelet": {
+    "lore": [
+      "<gray>This bracelet contains an unknown power that somehow enables a Pokémon carrying a Mega Stone to Mega Evolve in battle."
+    ]
+  },
+  "key_stone": {
+    "lore": [
+      "<gray>A stone filled with an unexplained power.",
+      "<gray>It makes Pokémon that battle with a Mega Stone Mega Evolve."
+    ]
+  }
+}

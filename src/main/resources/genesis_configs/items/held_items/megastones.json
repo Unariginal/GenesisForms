@@ -1,0 +1,472 @@
+{
+  "abomasite": {
+    "showdown_id": "abomasite",
+    "species": "abomasnow",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Abomasnow hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "absolite": {
+    "showdown_id": "absolite",
+    "species": "absol",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Absol hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "aerodactylite": {
+    "showdown_id": "aerodactylite",
+    "species": "aerodactyl",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Aerodactyl hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "aggronite": {
+    "showdown_id": "aggronite",
+    "species": "aggron",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Aggron hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "alakazite": {
+    "showdown_id": "alakazite",
+    "species": "alakazam",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Alakazam hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "altarianite": {
+    "showdown_id": "altarianite",
+    "species": "altaria",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Altaria hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "ampharosite": {
+    "showdown_id": "ampharosite",
+    "species": "ampharos",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Ampharos hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "audinite": {
+    "showdown_id": "audinite",
+    "species": "audino",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Audino hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "banettite": {
+    "showdown_id": "banettite",
+    "species": "banette",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Banette hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "beedrillite": {
+    "showdown_id": "beedrillite",
+    "species": "beedrill",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Beedrill hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "blastoisinite": {
+    "showdown_id": "blastoisinite",
+    "species": "blastoise",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Blastoise hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "blazikenite": {
+    "showdown_id": "blazikenite",
+    "species": "blaziken",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Blaziken hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "cameruptite": {
+    "showdown_id": "cameruptite",
+    "species": "camerupt",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Camerupt hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "charizardite-x": {
+    "showdown_id": "charizarditex",
+    "species": "charizard",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega_x",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Charizard hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "charizardite-y": {
+    "showdown_id": "charizarditey",
+    "species": "charizard",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega_y",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Charizard hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "diancite": {
+    "showdown_id": "diancite",
+    "species": "diancie",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Diancie hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "galladite": {
+    "showdown_id": "galladite",
+    "species": "gallade",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Gallade hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "garchompite": {
+    "showdown_id": "garchompite",
+    "species": "garchomp",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Garchomp hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "gardevoirite": {
+    "showdown_id": "gardevoirite",
+    "species": "gardevoir",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Gardevoir hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "gengarite": {
+    "showdown_id": "gengarite",
+    "species": "gengar",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Gengar hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "glalitite": {
+    "showdown_id": "glalitite",
+    "species": "glalie",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Glalie hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "gyaradosite": {
+    "showdown_id": "gyaradosite",
+    "species": "gyarados",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Gyarados hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "heracronite": {
+    "showdown_id": "heracronite",
+    "species": "heracross",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Heracross hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "houndoominite": {
+    "showdown_id": "houndoominite",
+    "species": "houndoom",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Houndoom hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "kangaskhanite": {
+    "showdown_id": "kangaskhanite",
+    "species": "kangaskhan",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Kangaskhan hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "latiasite": {
+    "showdown_id": "latiasite",
+    "species": "latias",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Latias hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "latiosite": {
+    "showdown_id": "latiosite",
+    "species": "latios",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Latios hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "lopunnite": {
+    "showdown_id": "lopunnite",
+    "species": "lopunny",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Lopunny hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "lucarionite": {
+    "showdown_id": "lucarionite",
+    "species": "lucario",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Lucario hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "manectite": {
+    "showdown_id": "manectite",
+    "species": "manectric",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Manectric hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "mawilite": {
+    "showdown_id": "mawilite",
+    "species": "mawile",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Mawile hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "medichamite": {
+    "showdown_id": "medichamite",
+    "species": "medicham",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Medicham hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "metagrossite": {
+    "showdown_id": "metagrossite",
+    "species": "metagross",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Metagross hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "mewtwonite-x": {
+    "showdown_id": "mewtwonitex",
+    "species": "mewtwo",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega_x",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Mewtwo hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "mewtwonite-y": {
+    "showdown_id": "mewtwonitey",
+    "species": "mewtwo",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega_y",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Mewtwo hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "pidgeotite": {
+    "showdown_id": "pidgeotite",
+    "species": "pidgeot",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Pidgeot hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "pinsirite": {
+    "showdown_id": "pinsirite",
+    "species": "pinsir",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Pinsir hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "sablenite": {
+    "showdown_id": "sablenite",
+    "species": "sableye",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Sableye hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "salamencite": {
+    "showdown_id": "salamencite",
+    "species": "salamence",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Salamence hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "sceptilite": {
+    "showdown_id": "sceptilite",
+    "species": "sceptile",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Sceptile hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "scizorite": {
+    "showdown_id": "scizorite",
+    "species": "scizor",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Scizor hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "sharpedonite": {
+    "showdown_id": "sharpedonite",
+    "species": "sharpedo",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Sharpedo hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "slowbronite": {
+    "showdown_id": "slowbronite",
+    "species": "slowbro",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Slowbro hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "steelixite": {
+    "showdown_id": "steelixite",
+    "species": "steelix",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Steelix hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "swampertite": {
+    "showdown_id": "swampertite",
+    "species": "swampert",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Swampert hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "tyranitarite": {
+    "showdown_id": "tyranitarite",
+    "species": "tyranitar",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Tyranitar hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  },
+  "venusaurite": {
+    "showdown_id": "venusaurite",
+    "species": "venusaur",
+    "feature_name": "mega_evolution",
+    "feature_value": "mega",
+    "lore": [
+      "<gray>One of a variety of mysterious Mega Stones.",
+      "<gray>Have Venusaur hold it, and this stone will enable it to Mega Evolve during battle."
+    ]
+  }
+}

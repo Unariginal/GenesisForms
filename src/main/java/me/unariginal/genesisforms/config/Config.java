@@ -10,8 +10,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Adjust to new config layout
 public class Config {
     public boolean debug = false;
+
+    public List<String> disabledItems = new ArrayList<>();
+    public boolean enableMegaEvolution = true;
+    public boolean enableTera = true;
+    public boolean enableZCrystals = true;
+    public boolean enableDynamax = true;
+    public boolean enableGigantamax = true;
+    public boolean enableFusions = true;
+    public boolean allowMegaOutsideBattles = true;
+    public boolean fixOgerponTeraType = true;
+    public boolean fixTerapagosTeraType = true;
+    public int teraShardsRequired = 50;
+    public boolean consumeTeraShards = true;
 
     public boolean useHotbarInventory = true;
     public boolean useMainInventory = true;
@@ -19,30 +33,7 @@ public class Config {
     public boolean useOffHandInventory = true;
     public boolean useArmorInventory = false;
     public List<Integer> specificSlots = new ArrayList<>();
-    public List<String> disabledItems = new ArrayList<>();
 
-    public boolean enableMegaEvolution = true;
-    public boolean allowMegaOutsideBattles = true;
-    public String megaFeatureName = "mega_evolution";
-    public String megaFeatureValue = "mega";
-    public String megaXFeatureName = "mega_evolution";
-    public String megaXFeatureValue = "mega_x";
-    public String megaYFeatureName = "mega_evolution";
-    public String megaYFeatureValue = "mega_y";
-    public record CustomMega(String baseSpecies, String megastoneID, String megaForm) {}
-    public List<CustomMega> customMegaList = new ArrayList<>();
-
-    public boolean enableZCrystals = true;
-
-    public boolean enableTera = true;
-    public int teraShardsRequired = 50;
-    public boolean fixOgerponTeraType = true;
-    public boolean fixTerapagosTeraType = true;
-
-    public boolean enableDynamax = true;
-    public boolean enableGigantamax = true;
-
-    public boolean enableFusions = true;
 
     public Config() {
         try {
@@ -134,16 +125,16 @@ public class Config {
             String defaultFeatureName = defaultFormObject.get("feature_name").getAsString();
             String defaultFeatureValue = defaultFormObject.get("feature_value").getAsString();
 
-            Map<String, BattleFormChanges.BattleForm> battleFormMap = new HashMap<>();
+            Map<String, BattleFormChangeConfig.BattleForm> battleFormMap = new HashMap<>();
             for (String formName : formsObject.keySet()) {
                 JsonObject formObject = formsObject.get(formName).getAsJsonObject();
                 if (!(formObject.has("feature_name") && formObject.has("feature_value"))) continue;
                 String featureName = formObject.get("feature_name").getAsString();
                 String featureValue = formObject.get("feature_value").getAsString();
-                battleFormMap.put(formName, new BattleFormChanges.BattleForm(featureName, featureValue));
+                battleFormMap.put(formName, new BattleFormChangeConfig.BattleForm(featureName, featureValue));
             }
 
-            BattleFormChanges.battleForms.put(battleFormKey, new BattleFormChanges.BattleFormInformation(species, new BattleFormChanges.BattleForm(defaultFeatureName, defaultFeatureValue), battleFormMap));
+            BattleFormChangeConfig.battleForms.put(battleFormKey, new BattleFormChangeConfig.BattleFormInformation(species, new BattleFormChangeConfig.BattleForm(defaultFeatureName, defaultFeatureValue), battleFormMap));
         }
         generalSettings.add("custom_battle_forms", customBattleForms);
 
@@ -160,49 +151,6 @@ public class Config {
         if (megaSettings.has("allow_mega_outside_battles"))
             allowMegaOutsideBattles = megaSettings.get("allow_mega_outside_battles").getAsBoolean();
         megaSettings.addProperty("allow_mega_outside_battles", allowMegaOutsideBattles);
-
-        if (megaSettings.has("mega_feature_name"))
-            megaFeatureName = megaSettings.get("mega_feature_name").getAsString();
-        megaSettings.addProperty("mega_feature_name", megaFeatureName);
-
-        if (megaSettings.has("mega_feature_value"))
-            megaFeatureValue = megaSettings.get("mega_feature_value").getAsString();
-        megaSettings.addProperty("mega_feature_value", megaFeatureValue);
-
-        if (megaSettings.has("mega_x_feature_name"))
-            megaXFeatureName = megaSettings.get("mega_x_feature_name").getAsString();
-        megaSettings.addProperty("mega_x_feature_name", megaXFeatureName);
-
-        if (megaSettings.has("mega_x_feature_value"))
-            megaXFeatureValue = megaSettings.get("mega_x_feature_value").getAsString();
-        megaSettings.addProperty("mega_x_feature_value", megaXFeatureValue);
-
-        if (megaSettings.has("mega_y_feature_name"))
-            megaYFeatureName = megaSettings.get("mega_y_feature_name").getAsString();
-        megaSettings.addProperty("mega_y_feature_name", megaYFeatureName);
-
-        if (megaSettings.has("mega_y_feature_value"))
-            megaYFeatureValue = megaSettings.get("mega_y_feature_value").getAsString();
-        megaSettings.addProperty("mega_y_feature_value", megaYFeatureValue);
-
-        JsonArray customMegaList = new JsonArray();
-        if (megaSettings.get("custom_megas") != null) {
-            this.customMegaList.clear();
-            for (JsonElement element : megaSettings.get("custom_megas").getAsJsonArray()) {
-                JsonObject customMega = element.getAsJsonObject();
-                if (customMega.has("base_species") && customMega.has("megastone_id") && customMega.has("mega_form")) {
-                    this.customMegaList.add(new CustomMega(customMega.get("base_species").getAsString(), customMega.get("megastone_id").getAsString(), customMega.get("mega_form").getAsString()));
-                }
-            }
-        }
-        for (CustomMega customMega : this.customMegaList) {
-            JsonObject customMegaObject = new JsonObject();
-            customMegaObject.addProperty("base_species", customMega.baseSpecies);
-            customMegaObject.addProperty("megastone_id", customMega.megastoneID);
-            customMegaObject.addProperty("mega_form", customMega.megaForm);
-            customMegaList.add(customMegaObject);
-        }
-        megaSettings.add("custom_megas", customMegaList);
 
         newRoot.add("mega_settings", megaSettings);
 

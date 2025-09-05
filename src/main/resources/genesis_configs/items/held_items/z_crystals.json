@@ -1,0 +1,539 @@
+{
+  "typed": {
+    "buginium-z": {
+      "showdown_id": "buginiumz",
+      "type": "bug",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "bug"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Bug-type moves to Z-Moves."
+      ]
+    },
+    "darkinium-z": {
+      "showdown_id": "darkiniumz",
+      "type": "dark",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "dark"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Dark-type moves to Z-Moves."
+      ]
+    },
+    "dragonium-z": {
+      "showdown_id": "dragoniumz",
+      "type": "dragon",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "dragon"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Dragon-type moves to Z-Moves."
+      ]
+    },
+    "electrium-z": {
+      "showdown_id": "electriumz",
+      "type": "electric",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "electric"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Electric-type moves to Z-Moves."
+      ]
+    },
+    "fairium-z": {
+      "showdown_id": "fairiumz",
+      "type": "fairy",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "fairy"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Fairy-type moves to Z-Moves."
+      ]
+    },
+    "fightinium-z": {
+      "showdown_id": "fightiniumz",
+      "type": "fighting",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "fighting"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Fighting-type moves to Z-Moves."
+      ]
+    },
+    "firium-z": {
+      "showdown_id": "firiumz",
+      "type": "fire",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "fire"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Fire-type moves to Z-Moves."
+      ]
+    },
+    "flyinium-z": {
+      "showdown_id": "flyiniumz",
+      "type": "flying",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "flying"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Flying-type moves to Z-Moves."
+      ]
+    },
+    "ghostium-z": {
+      "showdown_id": "ghostiumz",
+      "type": "ghost",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "ghost"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Ghost-type moves to Z-Moves."
+      ]
+    },
+    "grassium-z": {
+      "showdown_id": "grassiumz",
+      "type": "grass",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "grass"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Grass-type moves to Z-Moves."
+      ]
+    },
+    "groundium-z": {
+      "showdown_id": "groundiumz",
+      "type": "ground",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "ground"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Ground-type moves to Z-Moves."
+      ]
+    },
+    "icium-z": {
+      "showdown_id": "iciumz",
+      "type": "ice",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "ice"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Ice-type moves to Z-Moves."
+      ]
+    },
+    "normalium-z": {
+      "showdown_id": "normaliumz",
+      "type": "normal",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "normal"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Normal-type moves to Z-Moves."
+      ]
+    },
+    "poisonium-z": {
+      "showdown_id": "poisoniumz",
+      "type": "poison",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "poison"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Poison-type moves to Z-Moves."
+      ]
+    },
+    "psychium-z": {
+      "showdown_id": "psychiumz",
+      "type": "psychic",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "psychic"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Psychic-type moves to Z-Moves."
+      ]
+    },
+    "rockium-z": {
+      "showdown_id": "rockiumz",
+      "type": "rock",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "rock"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Rock-type moves to Z-Moves."
+      ]
+    },
+    "steelium-z": {
+      "showdown_id": "steeliumz",
+      "type": "steel",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "steel"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Steel-type moves to Z-Moves."
+      ]
+    },
+    "waterium-z": {
+      "showdown_id": "wateriumz",
+      "type": "water",
+      "form_changes": [
+        {
+          "species": ["arceus"],
+          "feature_name": "multitype",
+          "default_value": "normal",
+          "alternate_value": "water"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Water-type moves to Z-Moves."
+      ]
+    }
+  },
+  "species": {
+    "aloraichium-z": {
+      "showdown_id": "aloraichiumz",
+      "species": [
+        {
+          "species": "raichu",
+          "aspect": "alolan"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Alolan Raichu's Thunderbolt to a Z-Move."
+      ]
+    },
+    "decidium-z": {
+      "showdown_id": "decidiumz",
+      "species": [
+        {
+          "species": "decidueye",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Decidueye's Spirit Shackle to a Z-Move."
+      ]
+    },
+    "eevium-z": {
+      "showdown_id": "eeviumz",
+      "species": [
+        {
+          "species": "eevee",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Eevee's Last Resort to a Z-Move."
+      ]
+    },
+    "incinium-z": {
+      "showdown_id": "inciniumz",
+      "species": [
+        {
+          "species": "incineroar",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Incineroar's Darkest Lariat to a Z-Move."
+      ]
+    },
+    "kommonium-z": {
+      "showdown_id": "kommoniumz",
+      "species": [
+        {
+          "species": "kommoo",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Kommo-o's Clanging Scales to a Z-Move."
+      ]
+    },
+    "lunalium-z": {
+      "showdown_id": "lunaliumz",
+      "species": [
+        {
+          "species": "lunala",
+          "aspect": ""
+        },
+        {
+          "species": "necrozma",
+          "aspect": "dawn"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Lunala's Moongeist Beam to a Z-Move."
+      ]
+    },
+    "solganium-z": {
+      "showdown_id": "solganiumz",
+      "species": [
+        {
+          "species": "solgaleo",
+          "aspect": ""
+        },
+        {
+          "species": "necrozma",
+          "aspect": "dusk"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Solgaleo's Sunsteel Strike to a Z-Move."
+      ]
+    },
+    "lycanium-z": {
+      "showdown_id": "lycaniumz",
+      "species": [
+        {
+          "species": "lycanroc",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Lycanroc's Stone Edge to a Z-Move."
+      ]
+    },
+    "marshadium-z": {
+      "showdown_id": "marshadiumz",
+      "species": [
+        {
+          "species": "marshadow",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Marshadow's Spectral Thief to a Z-Move."
+      ]
+    },
+    "mewnium-z": {
+      "showdown_id": "mewniumz",
+      "species": [
+        {
+          "species": "mew",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Mew's Psychic to a Z-Move."
+      ]
+    },
+    "mimikium-z": {
+      "showdown_id": "mimikiumz",
+      "species": [
+        {
+          "species": "mimikyu",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Mimikyu's Play Rough to a Z-Move."
+      ]
+    },
+    "pikanium-z": {
+      "showdown_id": "pikaniumz",
+      "species": [
+        {
+          "species": "pikachu",
+          "aspect": "normal"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Pikachu's Volt Tackle to a Z-Move."
+      ]
+    },
+    "pikashunium-z": {
+      "showdown_id": "pikashuniumz",
+      "species": [
+        {
+          "species": "pikachu",
+          "aspect": "partner"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Thunderbolt to a Z-Move when used by a Pikachu wearing a cap."
+      ]
+    },
+    "primarium-z": {
+      "showdown_id": "primariumz",
+      "species": [
+        {
+          "species": "primarina",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Primarina's Sparkling Aria to a Z-Move."
+      ]
+    },
+    "snorlium-z": {
+      "showdown_id": "snorliumz",
+      "species": [
+        {
+          "species": "snorlax",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Snorlax's Giga Impact to a Z-Move."
+      ]
+    },
+    "tapunium-z": {
+      "showdown_id": "tapuniumz",
+      "species": [
+        {
+          "species": "tapukoko",
+          "aspect": ""
+        },
+        {
+          "species": "tapulele",
+          "aspect": ""
+        },
+        {
+          "species": "tapubulu",
+          "aspect": ""
+        },
+        {
+          "species": "tapufini",
+          "aspect": ""
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades the tapu's Nature's Madness to a Z-Move."
+      ]
+    },
+    "ultranecrozium-z": {
+      "showdown_id": "ultranecroziumz",
+      "species": [
+        {
+          "species": "necrozma",
+          "aspect": "dawn"
+        },
+        {
+          "species": "necrozma",
+          "aspect": "dusk"
+        }
+      ],
+      "lore": [
+        "<gray>This is a crystallized form of Z-Power.",
+        "<gray>It upgrades Necrozma's Photon Geyser to a Z-Move."
+      ]
+    }
+  }
+}

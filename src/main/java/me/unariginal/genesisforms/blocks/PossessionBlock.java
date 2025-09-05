@@ -23,19 +23,21 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-
 public class PossessionBlock extends Block implements FactoryBlock {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     private final Block base;
+    private final boolean placeable;
 
-    public PossessionBlock(AbstractBlock.Settings settings) {
+    public PossessionBlock(AbstractBlock.Settings settings, boolean placeable) {
         super(settings);
+        this.placeable = placeable;
         this.setDefaultState(this.getDefaultState());
-        base = Blocks.ORANGE_TERRACOTTA;
+        this.base = Blocks.ORANGE_TERRACOTTA;
     }
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        if (!placeable) return false;
         return super.canPlaceAt(state, world, pos);
     }
 

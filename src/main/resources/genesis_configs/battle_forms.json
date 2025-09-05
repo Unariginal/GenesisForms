@@ -1,0 +1,209 @@
+{
+  "aegislash_stance": {
+    "species": "aegislash",
+    "default_form": {
+      "feature_name": "stance_forme",
+      "feature_value": "shield"
+    },
+    "forms": {
+      "blade": {
+        "feature_name": "stance_forme",
+        "feature_value": "blade"
+      }
+    }
+  },
+  "minior_shield": {
+    "species": "minior",
+    "default_form": {
+      "feature_name": "meteor_shield",
+      "feature_value": "core"
+    },
+    "forms": {
+      "meteor": {
+        "feature_name": "meteor_shield",
+        "feature_value": "meteor"
+      }
+    }
+  },
+  "castform_forecast": {
+    "species": "castform",
+    "default_form": {
+      "feature_name": "forecast_form",
+      "feature_value": "normal"
+    },
+    "forms": {
+      "sunny": {
+        "feature_name": "forecast_form",
+        "feature_value": "sunny"
+      },
+      "rainy": {
+        "feature_name": "forecast_form",
+        "feature_value": "rainy"
+      },
+      "snowy": {
+        "feature_name": "forecast_form",
+        "feature_value": "snowy"
+      }
+    }
+  },
+  "wishiwashi_schooling": {
+    "species": "wishiwashi",
+    "default_form": {
+      "feature_name": "schooling_form",
+      "feature_value": "solo"
+    },
+    "forms": {
+      "school": {
+        "feature_name": "schooling_form",
+        "feature_value": "school"
+      }
+    }
+  },
+  "mimikyu_disguise": {
+    "species": "mimikyu",
+    "default_form": {
+      "feature_name": "disguise_form",
+      "feature_value": "disguised"
+    },
+    "forms": {
+      "busted": {
+        "feature_name": "disguise_form",
+        "feature_value": "busted"
+      }
+    }
+  },
+  "greninja_ash": {
+    "species": "greninja",
+    "default_form": {
+      "feature_name": "battle_bond",
+      "feature_value": "bond"
+    },
+    "forms": {
+      "ash": {
+        "feature_name": "battle_bond",
+        "feature_value": "ash"
+      }
+    }
+  },
+  "cherrim_blossom": {
+    "species": "cherrim",
+    "default_form": {
+      "feature_name": "blossom_form",
+      "feature_value": "overcast"
+    },
+    "forms": {
+      "sunshine": {
+        "feature_name": "blossom_form",
+        "feature_value": "sunshine"
+      }
+    }
+  },
+  "morpeko_hunger": {
+    "species": "morpeko",
+    "default_form": {
+      "feature_name": "hunger_mode",
+      "feature_value": "full_belly"
+    },
+    "forms": {
+      "hangry": {
+        "feature_name": "hunger_mode",
+        "feature_value": "hangry"
+      }
+    }
+  },
+  "palafin_dolphin": {
+    "species": "palafin",
+    "default_form": {
+      "feature_name": "dolphin_form",
+      "feature_value": "zero"
+    },
+    "forms": {
+      "hero": {
+        "feature_name": "dolphin_form",
+        "feature_value": "hero"
+      }
+    }
+  },
+  "eiscue_head": {
+    "species": "eiscue",
+    "default_form": {
+      "feature_name": "penguin_head",
+      "feature_value": "ice_face"
+    },
+    "forms": {
+      "noice": {
+        "feature_name": "penguin_head",
+        "feature_value": "noice"
+      }
+    }
+  },
+  "cramorant_missile": {
+    "species": "cramorant",
+    "default_form": {
+      "feature_name": "missile_form",
+      "feature_value": "none"
+    },
+    "forms": {
+      "gulping": {
+        "feature_name": "missile_form",
+        "feature_value": "gulping"
+      },
+      "gorging": {
+        "feature_name": "missile_form",
+        "feature_value": "gorging"
+      }
+    }
+  },
+  "darmanitan_blazing": {
+    "species": "darmanitan",
+    "default_form": {
+      "feature_name": "blazing_mode",
+      "feature_value": "standard"
+    },
+    "forms": {
+      "zen": {
+        "feature_name": "blazing_mode",
+        "feature_value": "zen"
+      }
+    }
+  },
+  "xerneas_life": {
+    "species": "xerneas",
+    "default_form": {
+      "feature_name": "life_mode",
+      "feature_value": "neutral"
+    },
+    "forms": {
+      "active": {
+        "feature_name": "life_mode",
+        "feature_value": "active"
+      }
+    }
+  },
+  "terapagos_tera": {
+    "species": "terapagos",
+    "default_form": {
+      "feature_name": "tera_form",
+      "feature_value": "normal"
+    },
+    "forms": {
+      "terastal": {
+        "feature_name": "tera_form",
+        "feature_value": "terastal"
+      }
+    }
+  },
+  "meloetta_song": {
+    "species": "meloetta",
+    "default_form": {
+      "feature_name": "song_forme",
+      "feature_value": "aria"
+    },
+    "forms": {
+      "pirouette": {
+        "feature_name": "song_forme",
+        "feature_value": "pirouette"
+      }
+    }
+  }
+}

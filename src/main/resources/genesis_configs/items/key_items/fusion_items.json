@@ -1,0 +1,84 @@
+{
+  "dna_splicers": {
+    "consumable": false,
+    "fusions": [
+      {
+        "core_pokemon": "kyurem",
+        "fuel_pokemon": [
+          {
+            "species": "reshiram",
+            "result_feature_name": "absofusion",
+            "result_feature_value": "white"
+          },
+          {
+            "species": "zekrom",
+            "result_feature_name": "absofusion",
+            "result_feature_value": "black"
+          }
+        ]
+      }
+    ],
+    "lore": [
+      "<gray>A splicer that fuses Kyurem and a certain Pokémon.",
+      "<gray>They are said to have originally been one."
+    ]
+  },
+  "reins_of_unity": {
+    "consumable": false,
+    "fusions": [
+      {
+        "core_pokemon": "calyrex",
+        "fuel_pokemon": [
+          {
+            "species": "glastrier",
+            "result_feature_name": "king_steed",
+            "result_feature_value": "ice"
+          },
+          {
+            "species": "spectrier",
+            "result_feature_name": "king_steed",
+            "result_feature_value": "shadow"
+          }
+        ]
+      }
+    ],
+    "lore": [
+      "<gray>Reins that people presented to the king.",
+      "<gray>They enhance Calyrex’s power over bountiful harvests and unite Calyrex with its beloved steed."
+    ]
+  },
+  "n_lunarizer": {
+    "consumable": false,
+    "fusions": [
+      {
+        "core_pokemon": "necrozma",
+        "fuel_pokemon": [
+          {
+            "species": "lunala",
+            "result_feature_name": "prism_fusion",
+            "result_feature_value": "dawn"
+          }
+        ]
+      }
+    ],
+    "lore": ["<gray>A machine to fuse Necrozma, which needs light, and Lunala."]
+  },
+  "n_solarizer": {
+    "consumable": false,
+    "fusions": [
+      {
+        "core_pokemon": "necrozma",
+        "fuel_pokemon": [
+          {
+            "species": "solgaleo",
+            "result_feature_name": "prism_fusion",
+            "result_feature_value": "dusk"
+          }
+        ]
+      }
+    ],
+    "lore": [
+      "<gray>A machine to fuse Necrozma, which needs light, and Solgaleo."
+    ]
+  }
+}

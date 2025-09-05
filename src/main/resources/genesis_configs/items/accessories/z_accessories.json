@@ -1,0 +1,14 @@
+{
+  "z_ring": {
+    "lore": [
+      "<gray>A mysterious ring that enables Pokémon to use Z-Power.",
+      "<gray>It requires both the willpower and the physical power of the Trainer wearing it."
+    ]
+  },
+  "z_power_ring": {
+    "lore": [
+      "<gray>A mysterious ring that enables Pokémon to use Z-Power.",
+      "<gray>It requires both the willpower and the physical power of the Trainer wearing it."
+    ]
+  }
+}
