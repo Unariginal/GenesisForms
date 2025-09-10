@@ -6,17 +6,13 @@ import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import me.unariginal.genesisforms.events.UltraBurstEvent;
-import net.fabricmc.fabric.api.event.Event;
 
-/**
- * Adapted from GMG/Mega Showdown @ yajatkaul
- */
 public class UltraBurstHandler {
     public static void register () {
-        UltraBurstEvent.ULTRA_BURST.register(Event.DEFAULT_PHASE, UltraBurstHandler::onUltra);
+        UltraBurstEvent.ULTRA_BURST.register(UltraBurstHandler::onUltra);
     }
 
-    private static void onUltra (PokemonBattle battle, BattlePokemon battlePokemon) {
+    private static void onUltra(PokemonBattle battle, BattlePokemon battlePokemon) {
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
 
         if (pokemon.getSpecies().getName().equals("Necrozma")) {

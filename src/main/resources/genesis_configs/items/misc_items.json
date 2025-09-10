@@ -9,16 +9,18 @@
       "<gray>You can also use it to change Zygarde's forms."
     ]
   },
-  "wishing_star": {
-    "lore": [
-      "<gray>A stone found in the Galar region with a mysterious power.",
-      "<gray>It's said that your dreams come true if you find one."
-    ]
-  },
-  "sparkling_stone": {
-    "lore": [
-      "<gray>A stone entrusted to you by a Pokémon that has been venerated as a guardian deity in the Alola region.",
-      "<gray>There is said to be some secret in how it sparkles."
-    ]
+  "featureless": {
+    "wishing_star": {
+      "lore": [
+        "<gray>A stone found in the Galar region with a mysterious power.",
+        "<gray>It's said that your dreams come true if you find one."
+      ]
+    },
+    "sparkling_stone": {
+      "lore": [
+        "<gray>A stone entrusted to you by a Pokémon that has been venerated as a guardian deity in the Alola region.",
+        "<gray>There is said to be some secret in how it sparkles."
+      ]
+    }
   }
 }

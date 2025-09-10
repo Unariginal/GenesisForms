@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.interpreter.instructions.StartInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import me.unariginal.genesisforms.events.DynamaxEvent;
+import me.unariginal.genesisforms.events.DynamaxStartEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,7 +30,7 @@ public class StartInstructionMixin {
 
         if (containsDynamax) {
             BattlePokemon pokemon =  message.battlePokemon(0, battle);
-            DynamaxEvent.EVENT.invoker().onDynamax(battle, pokemon, containsGmax);
+            DynamaxStartEvent.EVENT.invoker().onDynamaxStart(battle, pokemon, containsGmax);
         }
     }
 }

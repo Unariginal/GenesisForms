@@ -4,6 +4,7 @@ import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.blocks.PossessionBlock;
+import me.unariginal.genesisforms.config.items.MiscItemsConfig;
 import me.unariginal.genesisforms.config.items.accessories.AccessoriesConfig;
 import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
@@ -18,7 +19,6 @@ import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -50,30 +50,8 @@ public class KeyItemsGroup {
     public static LinkedHashMap<String, PossessionBlock> possessionBlocks = new LinkedHashMap<>();
     public static LinkedHashMap<String, PossessionItem> possessionItems = new LinkedHashMap<>();
 
-    // TODO: Register the misc items through the config
-    public static BasePolymerItem SPARKLING_STONE = registerItem("sparkling_stone", baseVanillaItem, List.of(
-            "<gray>A stone entrusted to you by a Pokémon that has been venerated as a guardian deity in the Alola region.",
-            "<gray>There is said to be some secret in how it sparkles."
-    ));
-    public static BasePolymerItem WISHING_STAR = registerItem("wishing_star", baseVanillaItem, List.of(
-            "<gray>A stone found in the Galar region with a mysterious power.",
-            "<gray>It's said that your dreams come true if you find one."
-    ));
-
-    public static ZygardeCube ZYGARDE_CUBE = Registry.register(
-            Registries.ITEM,
-            GenesisForms.id("zygarde_cube"),
-            new ZygardeCube(
-                    itemSettings,
-                    baseVanillaItem,
-                    PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/zygarde_cube")),
-                    "zygarde_cube",
-                    List.of(
-                            "<gray>An item in which Zygarde Cores and Cells are gathered.",
-                            "<gray>You can also use it to change Zygarde's forms."
-                    )
-            )
-    );
+    public static LinkedHashMap<String, BasePolymerItem> featurelessItems = new LinkedHashMap<>();
+    public static ZygardeCube zygardeCube = null;
 
     public static void registerItemGroup() {
         for (Map.Entry<String, AccessoriesConfig.AccessoryData> accessoryDataEntry : AccessoriesConfig.megaAccessories.entrySet()) {
@@ -118,6 +96,27 @@ public class KeyItemsGroup {
             allKeyItems.put(possessionItemDataEntry.getKey(), possessionItems.get(possessionItemDataEntry.getKey()).getDefaultStack());
         }
 
+        for (Map.Entry<String, MiscItemsConfig.MiscItem> miscItemDataEntry : MiscItemsConfig.miscItemData.featureless.entrySet()) {
+            featurelessItems.put(miscItemDataEntry.getKey(), registerItem(miscItemDataEntry.getKey(), baseVanillaItem, miscItemDataEntry.getValue().lore));
+            allKeyItems.put(miscItemDataEntry.getKey(), featurelessItems.get(miscItemDataEntry.getKey()).getDefaultStack());
+        }
+
+        if (MiscItemsConfig.miscItemData.zygardeCube != null) {
+            zygardeCube = Registry.register(
+                    Registries.ITEM,
+                    GenesisForms.id("zygarde_cube"),
+                    new ZygardeCube(
+                            itemSettings,
+                            baseVanillaItem,
+                            PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/zygarde_cube")),
+                            "zygarde_cube",
+                            MiscItemsConfig.miscItemData.zygardeCube.lore
+                    )
+            );
+
+            allKeyItems.put("zygarde_cube", zygardeCube.getDefaultStack());
+        }
+
         final ItemGroup KEY_ITEMS = FabricItemGroup.builder()
                 .icon(megaAccessories.firstEntry().getValue()::getDefaultStack)
                 .displayName(Text.literal("Key Items"))
@@ -150,9 +149,11 @@ public class KeyItemsGroup {
                         entries.add(possessionItem);
                     }
 
-                    entries.add(SPARKLING_STONE);
-                    entries.add(WISHING_STAR);
-                    entries.add(ZYGARDE_CUBE);
+                    for (BasePolymerItem featurelessItem : featurelessItems.values()) {
+                        entries.add(featurelessItem);
+                    }
+
+                    if (zygardeCube != null) entries.add(zygardeCube);
                 })
                 .build();
 
