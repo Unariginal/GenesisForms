@@ -8,8 +8,11 @@ import com.cobblemon.mod.common.api.events.battles.BattleStartedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.battles.instruction.FormeChangeEvent;
 import com.cobblemon.mod.common.api.events.battles.instruction.MegaEvolutionEvent;
+import com.cobblemon.mod.common.api.events.battles.instruction.TerastallizationEvent;
+import com.cobblemon.mod.common.api.events.battles.instruction.ZMoveUsedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.HeldItemEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonGainedEvent;
+import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
 import com.cobblemon.mod.common.api.events.pokemon.TradeEvent;
 import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
@@ -17,13 +20,16 @@ import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.player.GeneralPlayerData;
+import com.cobblemon.mod.common.api.types.tera.TeraType;
 import com.cobblemon.mod.common.api.types.tera.TeraTypes;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.BattleFormChangeConfig;
+import me.unariginal.genesisforms.config.EventsConfig;
 import me.unariginal.genesisforms.items.helditems.HeldFormItem;
 import me.unariginal.genesisforms.items.helditems.Megastone;
 import me.unariginal.genesisforms.items.helditems.ZCrystal;
@@ -31,7 +37,6 @@ import me.unariginal.genesisforms.items.keyitems.accessories.DynamaxAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.MegaAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
-import me.unariginal.genesisforms.utils.ParticleUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -177,10 +182,17 @@ public class CobblemonEventHandler {
         // Reverting megas
         Item heldItem = pokemon.heldItem().getItem();
         if (heldItem instanceof Megastone megastone) {
-            revertMega(pokemon, megastone.getMegastoneData().featureName);
+            if (revertMega(pokemon, megastone.getMegastoneData().featureName)) {
+                EventsConfig.gimmickEvents.megaEvolution.revertEvent(megastone.getItemID(), pokemon, pokemon.getEntity());
+            }
         } else {
-            // This is just rayquaza
-            revertMega(pokemon, "mega_evolution");
+            if (revertMega(pokemon, "mega_evolution")) {
+                EventsConfig.gimmickEvents.megaEvolution.revertEvent("rayquaza", pokemon, pokemon.getEntity());
+            }
+
+            if (heldItem instanceof ZCrystal zcrystal) {
+                EventsConfig.gimmickEvents.zPower.revertEvent(zcrystal.getItemID(), pokemon, pokemon.getEntity());
+            }
         }
 
         // Reverting ultra fusion
@@ -232,8 +244,25 @@ public class CobblemonEventHandler {
                 new FlagSpeciesFeature("embody_aspect", false).apply(pokemon);
         }
 
+        // Reverting event features
+        if (pokemon.getPersistentData().contains("tera_type")) {
+            String teraType = pokemon.getPersistentData().getString("tera_type");
+            pokemon.getPersistentData().remove("tera_type");
+
+            EventsConfig.gimmickEvents.terastallization.revertEvent(teraType, pokemon, pokemon.getEntity());
+        }
+
         pokemon.updateAspects();
         pokemon.updateForm();
+    }
+
+    public static Unit pokemonSentEvent(PokemonSentEvent.Post event) {
+        if (event.getPokemon().getPersistentData().contains("glow_id") && event.getPokemon().getPersistentData().contains("glow_color")) {
+            String glowID = event.getPokemon().getPersistentData().getString("glow_id");
+            String glowColor = event.getPokemon().getPersistentData().getString("glow_color");
+            GlowHandler.applyGlowing(glowID, glowColor, event.getPokemon(), event.getPokemonEntity());
+        }
+        return Unit.INSTANCE;
     }
 
     public static Unit heldItemChange(HeldItemEvent.Post event) {
@@ -363,12 +392,15 @@ public class CobblemonEventHandler {
         boolean canMegaEvolve = false;
         String featureName;
         String featureValue;
+        String eventID = "global";
 
         if (heldItem instanceof Megastone megastone) {
             if (megastone.getSpecies().equals(pokemon.getSpecies())) {
                 canMegaEvolve = true;
                 featureName = megastone.getMegastoneData().featureName;
                 featureValue = megastone.getMegastoneData().featureValue;
+                eventID = megastone.getItemID();
+
             } else {
                 featureName = "mega_evolution";
                 featureValue = "mega";
@@ -379,14 +411,17 @@ public class CobblemonEventHandler {
             if (pokemon.getSpecies().getName().equalsIgnoreCase("rayquaza")) {
                 if (pokemon.getMoveSet().getMoves().stream().anyMatch(move -> move.getTemplate().getName().equalsIgnoreCase("dragonascent"))) {
                     canMegaEvolve = true;
+                    eventID = "rayquaza";
                 }
             }
         }
 
+        EventsConfig.AnimationData megaAnimation = EventsConfig.gimmickEvents.megaEvolution.getAnimation(eventID);
+
         if (canMegaEvolve) {
-            if (pokemon.getEntity() != null) {
-                ParticleUtils.spawnParticle(GenesisForms.INSTANCE.getAnimationConfig().megaIdentifier, pokemon.getEntity().getPos().add(0, pokemon.getEntity().getBoundingBox().getLengthY() / 2, 0), pokemon.getEntity().getWorld().getRegistryKey());
-                pokemon.getEntity().after(GenesisForms.INSTANCE.getAnimationConfig().megaSeconds, () -> {
+            EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
+            if (pokemon.getEntity() != null && megaAnimation != null) {
+                pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
                     if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
                         new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
                     } else {
@@ -411,11 +446,10 @@ public class CobblemonEventHandler {
                 }
                 pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
             }
-
         }
     }
 
-    public static void revertMega(Pokemon pokemon, String featureName) {
+    public static boolean revertMega(Pokemon pokemon, String featureName) {
         boolean wasMega = pokemon.getFeatures().removeIf(features -> features.getName().equalsIgnoreCase(featureName));
 
         if (wasMega && !pokemon.getPersistentData().contains("genesis_untradeable") && !pokemon.getTradeable()) pokemon.setTradeable(true);
@@ -425,6 +459,8 @@ public class CobblemonEventHandler {
 
         pokemon.updateAspects();
         pokemon.updateForm();
+
+        return wasMega;
     }
 
     public static Unit pokemonReleasedEvent(ReleasePokemonEvent.Post event) {
@@ -462,6 +498,39 @@ public class CobblemonEventHandler {
                 }
             }
         }
+        return Unit.INSTANCE;
+    }
+
+    public static Unit terastallizationEvent(TerastallizationEvent event) {
+        BattlePokemon battlePokemon = event.getPokemon();
+        Pokemon pokemon = battlePokemon.getEffectedPokemon();
+        PokemonEntity pokemonEntity = battlePokemon.getEntity();
+        TeraType teraType = event.getTeraType();
+
+        pokemon.getPersistentData().putString("tera_type", teraType.showdownId());
+
+        if (pokemon.getSpecies().getName().equalsIgnoreCase("Terapagos")) {
+            new StringSpeciesFeature("tera_form", "stellar").apply(pokemon);
+        }
+        if (pokemon.getSpecies().getName().equalsIgnoreCase("Ogerpon")) {
+            new FlagSpeciesFeature("embody_aspect", true).apply(pokemon);
+        }
+
+        if (pokemonEntity != null) {
+            EventsConfig.gimmickEvents.terastallization.runEvent(teraType.showdownId(), pokemon, pokemonEntity);
+        }
+        return Unit.INSTANCE;
+    }
+
+    public static Unit zPowerEvent(ZMoveUsedEvent event) {
+        Pokemon pokemon = event.getPokemon().getEffectedPokemon();
+        PokemonEntity pokemonEntity = event.getPokemon().getEntity();
+        Item heldItem = pokemon.heldItem().getItem();
+
+        if (heldItem instanceof ZCrystal zCrystal) {
+            EventsConfig.gimmickEvents.zPower.runEvent(zCrystal.getItemID(), pokemon, pokemonEntity);
+        }
+
         return Unit.INSTANCE;
     }
 }

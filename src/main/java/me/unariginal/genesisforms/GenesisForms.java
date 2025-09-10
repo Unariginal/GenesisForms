@@ -6,9 +6,9 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
-import me.unariginal.genesisforms.config.AnimationConfig;
 import me.unariginal.genesisforms.config.BattleFormChangeConfig;
 import me.unariginal.genesisforms.config.Config;
+import me.unariginal.genesisforms.config.EventsConfig;
 import me.unariginal.genesisforms.config.MessagesConfig;
 import me.unariginal.genesisforms.config.items.MiscItemsConfig;
 import me.unariginal.genesisforms.config.items.accessories.AccessoriesConfig;
@@ -26,6 +26,7 @@ import me.unariginal.genesisforms.items.helditems.HeldBattleItem;
 import me.unariginal.genesisforms.polymer.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
@@ -46,11 +47,9 @@ public class GenesisForms implements ModInitializer {
     private FabricServerAudiences audiences;
 
     private Config config = new Config();
-    private AnimationConfig animationConfig = new AnimationConfig();
     private MessagesConfig messagesConfig = new MessagesConfig();
 
     private final Map<UUID, UUID> playersWithMega = new HashMap<>();
-    private final Map<UUID, String> teraPokemonEntities = new HashMap<>();
 
     public static Identifier id(String path) {
         return new Identifier(MOD_ID, path);
@@ -94,9 +93,9 @@ public class GenesisForms implements ModInitializer {
 
     public void reload() {
         this.config = new Config();
-        this.animationConfig = new AnimationConfig();
         this.messagesConfig = new MessagesConfig();
         try {
+            EventsConfig.load();
             BattleFormChangeConfig.load();
         } catch (IOException e) {
             logError(e.getMessage());
@@ -116,12 +115,12 @@ public class GenesisForms implements ModInitializer {
         CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::heldItemChange);
         CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonReleasedEvent);
         CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonGainedEvent);
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonSentEvent);
 
         CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, CobblemonEventHandler::formChangeEvent);
         CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, CobblemonEventHandler::megaEvolveEvent);
-        // TODO
-        CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, TeraHandler::teraEvent);
-        CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, ZPowerHandler::playAnimation);
+        CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, CobblemonEventHandler::terastallizationEvent);
+        CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, CobblemonEventHandler::zPowerEvent);
         UltraBurstHandler.register();
         DynamaxHandler.register();
 
@@ -146,6 +145,8 @@ public class GenesisForms implements ModInitializer {
             }
             return Unit.INSTANCE;
         });
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> ScaleHandler.updateScales());
     }
 
     public void logError(String message) {
@@ -170,19 +171,11 @@ public class GenesisForms implements ModInitializer {
         return config;
     }
 
-    public AnimationConfig getAnimationConfig() {
-        return animationConfig;
-    }
-
     public MessagesConfig getMessagesConfig() {
         return messagesConfig;
     }
 
     public Map<UUID, UUID> getPlayersWithMega() {
         return playersWithMega;
-    }
-
-    public Map<UUID, String> getTeraPokemonEntities() {
-        return teraPokemonEntities;
     }
 }

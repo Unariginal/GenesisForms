@@ -1,0 +1,57 @@
+{
+  "mega_evolution": {
+    "animations": {
+      "global": {
+        "identifier": "cobblemon:mega_evolution",
+        "form_delay_seconds": 4.9
+      }
+    },
+    "glow": {},
+    "features": {},
+    "scale": {}
+  },
+  "terastallization": {
+    "animations": {},
+    "glow": {
+      "global": "white",
+      "bug": "green",
+      "dark": "black",
+      "ghost": "dark_purple",
+      "grass": "dark_green",
+      "ground": "gold",
+      "poison": "dark_purple",
+      "rock": "yellow",
+      "steel": "gray",
+      "ice": "aqua",
+      "fire": "red",
+      "dragon": "dark_blue",
+      "fighting": "gold",
+      "flying": "aqua",
+      "fairy": "light_purple",
+      "psychic": "light_purple",
+      "normal": "white",
+      "electric": "yellow",
+      "water": "blue",
+      "stellar": "white"
+    },
+    "features": {},
+    "scale": {}
+  },
+  "z_power": {
+    "animations": {},
+    "glow": {},
+    "features": {},
+    "scale": {}
+  },
+  "dynamax": {
+    "animations": {},
+    "glow": {},
+    "features": {},
+    "scale": {
+      "global": {
+        "scale": 4.0,
+        "scaling_ticks": 60
+      }
+    }
+  }
+}

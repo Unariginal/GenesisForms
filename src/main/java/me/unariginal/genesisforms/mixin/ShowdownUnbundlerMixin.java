@@ -23,16 +23,18 @@ public class ShowdownUnbundlerMixin {
     private void replaceScripts(CallbackInfo info) {
         if(!loaded) {
             loaded = true;
-            Path showdown_sim = Path.of("./showdown/sim");
-            Path showdown_data = Path.of("./showdown/data");
+            Path showdownDirectory = Path.of("./showdown");
+            Path simDirectory = Path.of("./showdown/sim");
+            Path dataDirectory = Path.of("./showdown/data");
 
             try {
-                Files.createDirectories(showdown_sim);
-                Files.createDirectories(showdown_data);
+                Files.createDirectories(simDirectory);
+                Files.createDirectories(dataDirectory);
 
-                replaceFile("/showdown_scripts/battle-action.js", showdown_sim.resolve("battle-actions.js"));
-                replaceFile("/showdown_scripts/conditions.js", showdown_data.resolve("conditions.js")); // ?
-                replaceFile("/showdown_scripts/side.js", showdown_sim.resolve("side.js"));
+                replaceFile("/showdown_scripts/index.js", showdownDirectory.resolve("index.js"));
+                replaceFile("/showdown_scripts/battle-action.js", simDirectory.resolve("battle-actions.js"));
+                replaceFile("/showdown_scripts/conditions.js", dataDirectory.resolve("conditions.js"));
+                replaceFile("/showdown_scripts/side.js", simDirectory.resolve("side.js"));
                 GenesisForms.LOGGER.info("[Genesis] Showdown files loaded!");
             } catch (IOException e) {
                 GenesisForms.LOGGER.error("[Genesis] Showdown files failed to load!");

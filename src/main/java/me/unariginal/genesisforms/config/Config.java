@@ -6,9 +6,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 // TODO: Adjust to new config layout
 public class Config {
@@ -111,33 +109,6 @@ public class Config {
         }
         generalSettings.add("disabled_items", disabledItems);
 
-        JsonObject customBattleForms = new JsonObject();
-        if (generalSettings.has("custom_battle_forms"))
-            customBattleForms = generalSettings.get("custom_battle_forms").getAsJsonObject();
-        for (String battleFormKey : customBattleForms.keySet()) {
-            JsonObject battleFormObject = customBattleForms.get(battleFormKey).getAsJsonObject();
-            if (!(battleFormObject.has("species") && battleFormObject.has("default_form") && battleFormObject.has("forms"))) continue;
-            String species = battleFormObject.get("species").getAsString();
-            JsonObject defaultFormObject = battleFormObject.get("default_form").getAsJsonObject();
-            JsonObject formsObject = defaultFormObject.get("forms").getAsJsonObject();
-
-            if (!(defaultFormObject.has("feature_name") && defaultFormObject.has("feature_value"))) continue;
-            String defaultFeatureName = defaultFormObject.get("feature_name").getAsString();
-            String defaultFeatureValue = defaultFormObject.get("feature_value").getAsString();
-
-            Map<String, BattleFormChangeConfig.BattleForm> battleFormMap = new HashMap<>();
-            for (String formName : formsObject.keySet()) {
-                JsonObject formObject = formsObject.get(formName).getAsJsonObject();
-                if (!(formObject.has("feature_name") && formObject.has("feature_value"))) continue;
-                String featureName = formObject.get("feature_name").getAsString();
-                String featureValue = formObject.get("feature_value").getAsString();
-                battleFormMap.put(formName, new BattleFormChangeConfig.BattleForm(featureName, featureValue));
-            }
-
-            BattleFormChangeConfig.battleForms.put(battleFormKey, new BattleFormChangeConfig.BattleFormInformation(species, new BattleFormChangeConfig.BattleForm(defaultFeatureName, defaultFeatureValue), battleFormMap));
-        }
-        generalSettings.add("custom_battle_forms", customBattleForms);
-
         newRoot.add("general_settings", generalSettings);
 
         JsonObject megaSettings = new JsonObject();
@@ -218,7 +189,7 @@ public class Config {
         configFile.delete();
         configFile.createNewFile();
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         Writer writer = new FileWriter(configFile);
         gson.toJson(newRoot, writer);
         writer.close();

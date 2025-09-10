@@ -66,6 +66,50 @@ class BattleActions {
             Ground: "Tectonic Rage",
             Fairy: "Twinkle Tackle"
         };
+        this.GIGANTAMAX_MOVES = {
+            venusaur: "gmaxvinelash",
+            charizard: "gmaxwildfire",
+            blastoise: "gmaxcannonade",
+            butterfree: "gmaxbefuddle",
+            pikachu: "gmaxvoltcrash",
+            meowth: "gmaxgoldrush",
+            machamp: "gmaxchistrike",
+            gengar: "gmaxterror",
+            kingler: "gmaxfoamburst",
+            lapras: "gmaxresonance",
+            eevee: "gmaxcuddle",
+            snorlax: "gmaxreplenish",
+            garbodor: "gmaxmalodor",
+            melmetal: "gmaxmeltdown",
+            copperajah: "gmaxsteelsurge",
+            duraludon: "gmaxdepletion",
+            corviknight: "gmaxwindrage",
+            orbeetle: "gmaxgravitas",
+            toxtricity: "gmaxstunshock",
+            toxtricitylowkey: "gmaxstunshock",
+            centiskorch: "gmaxcentiferno",
+            hatterene: "gmaxsmite",
+            grimmsnarl: "gmaxsnooze",
+            alcremie: "gmaxfinale",
+            alcremierubycream: "gmaxfinale",
+            alcremiematchacream: "gmaxfinale",
+            alcremiemintcream: "gmaxfinale",
+            alcremielemoncream: "gmaxfinale",
+            alcremiesaltedcream: "gmaxfinale",
+            alcremierubyswirl: "gmaxfinale",
+            alcremiecaramelswirl: "gmaxfinale",
+            alcremierainbowswirl: "gmaxfinale",
+            drednaw: "gmaxstonesurge",
+            coalossal: "gmaxvolcalith",
+            flapple: "gmaxtartness",
+            appletun: "gmaxsweetness",
+            sandaconda: "gmaxsandblast",
+            inteleon: "gmaxhydrosnipe",
+            cinderace: "gmaxfireball",
+            rillaboom: "gmaxdrumsolo",
+            urshifu: "gmaxoneblow",
+            urshifurapidstrike: "gmaxrapidflow"
+        }
         this.battle = battle;
         this.dex = battle.dex;
         if (this.dex.data.Scripts.actions)
@@ -1336,54 +1380,10 @@ class BattleActions {
             return move;
         // Assign the Gigantamax move based on species
         let GigantamaxMove = null;
-        const GIGANTAMAX_MOVES = {
-            venusaur: "gmaxvinelash",//Works
-            charizard: "gmaxwildfire",//Works
-            blastoise: "gmaxcannonade",//Works
-            butterfree: "gmaxbefuddle",//Works
-            pikachu: "gmaxvoltcrash",//Works
-            meowth: "gmaxgoldrush",//Works
-            machamp: "gmaxchistrike",//Works
-            gengar: "gmaxterror",//Works
-            kingler: "gmaxfoamburst",//Works
-            lapras: "gmaxresonance",//Works
-            eevee: "gmaxcuddle",//Works
-            snorlax: "gmaxreplenish",//Works
-            garbodor: "gmaxmalodor",//Works
-            melmetal: "gmaxmeltdown",//Works
-            copperajah: "gmaxsteelsurge",//Works
-            duraludon: "gmaxdepletion",//Works
-            corviknight: "gmaxwindrage",//Works
-            orbeetle: "gmaxgravitas",//Works
-            toxtricity: "gmaxstunshock",//Works
-            toxtricitylowkey: "gmaxstunshock",//Works
-            centiskorch: "gmaxcentiferno",//Works
-            hatterene: "gmaxsmite",//Works
-            grimmsnarl: "gmaxsnooze",//Works
-            alcremie: "gmaxfinale",//Works
-            alcremierubycream: "gmaxfinale",//Works
-            alcremiematchacream: "gmaxfinale",//Works
-            alcremiemintcream: "gmaxfinale",//Works
-            alcremielemoncream: "gmaxfinale",//Works
-            alcremiesaltedcream: "gmaxfinale",//Works
-            alcremierubyswirl: "gmaxfinale",//Works
-            alcremiecaramelswirl: "gmaxfinale",//Works
-            alcremierainbowswirl: "gmaxfinale",//Works
-            drednaw: "gmaxstonesurge",//Works
-            coalossal: "gmaxvolcalith",//Works
-            flapple: "gmaxtartness",//Works
-            appletun: "gmaxsweetness",//Works
-            sandaconda: "gmaxsandblast",//Works
-            inteleon: "gmaxhydrosnipe",//Works
-            cinderace: "gmaxfireball",//Works
-            rillaboom: "gmaxdrumsolo",//Works
-            urshifu: "gmaxoneblow",//Works
-            urshifurapidstrike: "gmaxrapidflow",//Works
-        };
 
         const speciesName = this.dex.toID(pokemon.species?.name);
-        if (speciesName && pokemon.gigantamax && GIGANTAMAX_MOVES[speciesName]) {
-            GigantamaxMove = GIGANTAMAX_MOVES[speciesName];
+        if (speciesName && pokemon.gigantamax && this.GIGANTAMAX_MOVES[speciesName]) {
+            GigantamaxMove = this.GIGANTAMAX_MOVES[speciesName];
         }
 
         if (GigantamaxMove && move.category !== "Status") {
@@ -1403,54 +1403,10 @@ class BattleActions {
 
         // Assign the Gigantamax move based on species
         let GigantamaxMove = null;
-        const GIGANTAMAX_MOVES = {
-            venusaur: "gmaxvinelash",//Works
-            charizard: "gmaxwildfire",//Works
-            blastoise: "gmaxcannonade",//Works
-            butterfree: "gmaxbefuddle",//Works
-            pikachu: "gmaxvoltcrash",//Works
-            meowth: "gmaxgoldrush",//Works
-            machamp: "gmaxchistrike",//Works
-            gengar: "gmaxterror",//Works
-            kingler: "gmaxfoamburst",//Works
-            lapras: "gmaxresonance",//Works
-            eevee: "gmaxcuddle",//Works
-            snorlax: "gmaxreplenish",//Works
-            garbodor: "gmaxmalodor",//Works
-            melmetal: "gmaxmeltdown",//Works
-            copperajah: "gmaxsteelsurge",//Works
-            duraludon: "gmaxdepletion",//Works
-            corviknight: "gmaxwindrage",//Works
-            orbeetle: "gmaxgravitas",//Works
-            toxtricity: "gmaxstunshock",//Works
-            toxtricitylowkey: "gmaxstunshock",//Works
-            centiskorch: "gmaxcentiferno",//Works
-            hatterene: "gmaxsmite",//Works
-            grimmsnarl: "gmaxsnooze",//Works
-            alcremie: "gmaxfinale",//Works
-            alcremierubycream: "gmaxfinale",//Works
-            alcremiematchacream: "gmaxfinale",//Works
-            alcremiemintcream: "gmaxfinale",//Works
-            alcremielemoncream: "gmaxfinale",//Works
-            alcremiesaltedcream: "gmaxfinale",//Works
-            alcremierubyswirl: "gmaxfinale",//Works
-            alcremiecaramelswirl: "gmaxfinale",//Works
-            alcremierainbowswirl: "gmaxfinale",//Works
-            drednaw: "gmaxstonesurge",//Works
-            coalossal: "gmaxvolcalith",//Works
-            flapple: "gmaxtartness",//Works
-            appletun: "gmaxsweetness",//Works
-            sandaconda: "gmaxsandblast",//Works
-            inteleon: "gmaxhydrosnipe",//Works
-            cinderace: "gmaxfireball",//Works
-            rillaboom: "gmaxdrumsolo",//Works
-            urshifu: "gmaxoneblow",//Works
-            urshifurapidstrike: "gmaxrapidflow",//Works
-        };
 
         const speciesName = this.dex.toID(pokemon.species?.name);
-        if (speciesName && pokemon.gigantamax && GIGANTAMAX_MOVES[speciesName]) {
-            GigantamaxMove = GIGANTAMAX_MOVES[speciesName];
+        if (speciesName && pokemon.gigantamax && this.GIGANTAMAX_MOVES[speciesName]) {
+            GigantamaxMove = this.GIGANTAMAX_MOVES[speciesName];
         }
 
         let maxMove = this.dex.getActiveMove(this.MAX_MOVES[move.category === "Status" ? move.category : move.type]);

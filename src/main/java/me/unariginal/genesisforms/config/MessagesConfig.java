@@ -103,7 +103,7 @@ public class MessagesConfig {
         messagesFile.delete();
         messagesFile.createNewFile();
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         Writer writer = new FileWriter(messagesFile);
         gson.toJson(newRoot, writer);
         writer.close();
