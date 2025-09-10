@@ -20,6 +20,8 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class TeraAccessory extends BasePolymerItem {
+    public boolean requiresCharge = true;
+
     public TeraAccessory(Settings settings, Item polymerItem, PolymerModelData modelData, String itemID, List<String> lore) {
         super(settings, polymerItem, modelData, itemID, lore);
     }

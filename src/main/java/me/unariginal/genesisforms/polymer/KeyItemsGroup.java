@@ -33,7 +33,6 @@ import net.minecraft.util.Rarity;
 import java.util.*;
 
 public class KeyItemsGroup {
-    private static final Item.Settings itemSettings = new Item.Settings().maxCount(1).rarity(Rarity.EPIC);
     private static final Item baseVanillaItem = Items.DIAMOND;
 
     public static LinkedHashMap<String, ItemStack> allKeyItems = new LinkedHashMap<>();
@@ -106,7 +105,7 @@ public class KeyItemsGroup {
                     Registries.ITEM,
                     GenesisForms.id("zygarde_cube"),
                     new ZygardeCube(
-                            itemSettings,
+                            new Item.Settings().maxCount(1).rarity(Rarity.EPIC),
                             baseVanillaItem,
                             PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/zygarde_cube")),
                             "zygarde_cube",
@@ -165,7 +164,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new MegaAccessory(
-                        itemSettings,
+                        new Item.Settings().maxCount(1).rarity(Rarity.EPIC),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseItem, GenesisForms.id("item/" + id)),
                         id,
@@ -179,7 +178,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new ZAccessory(
-                        itemSettings,
+                        new Item.Settings().maxCount(1).rarity(Rarity.EPIC),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseItem, GenesisForms.id("item/" + id)),
                         id,
@@ -193,7 +192,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new TeraAccessory(
-                        itemSettings,
+                        new Item.Settings().maxCount(1).rarity(Rarity.EPIC).maxDamage(100),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseItem, GenesisForms.id("item/" + id)),
                         id,
@@ -207,7 +206,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new DynamaxAccessory(
-                        itemSettings,
+                        new Item.Settings().maxCount(1).rarity(Rarity.EPIC),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseItem, GenesisForms.id("item/" + id)),
                         id,
@@ -221,7 +220,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new FormCycleItem(
-                        itemSettings.maxCount(maxStackSize),
+                        new Item.Settings().rarity(Rarity.EPIC).maxCount(maxStackSize),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseItem, GenesisForms.id("item/" + id)),
                         id,
@@ -237,7 +236,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new FusionItem(
-                        itemSettings,
+                        new Item.Settings().maxCount(1).rarity(Rarity.EPIC),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseItem, GenesisForms.id("item/" + id)),
                         id,
@@ -249,7 +248,14 @@ public class KeyItemsGroup {
     }
 
     public static PossessionBlock registerPossessionBlock(String id, PossessionItemsConfig.PossessionItemData possessionItemData) {
-        return Registry.register(Registries.BLOCK, GenesisForms.id(id), new PossessionBlock(AbstractBlock.Settings.create().solid().mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.0F, 0.0F).nonOpaque(), possessionItemData.placeable));
+        return Registry.register(
+                Registries.BLOCK,
+                GenesisForms.id(id),
+                new PossessionBlock(
+                        AbstractBlock.Settings.create().solid().mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.0F, 0.0F).nonOpaque(),
+                        possessionItemData.placeable
+                )
+        );
     }
 
     public static PossessionItem registerPossessionItem(String id, Item baseItem, List<String> lore, PossessionItemsConfig.PossessionItemData possessionItemData) {
@@ -272,7 +278,7 @@ public class KeyItemsGroup {
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new BasePolymerItem(
-                        itemSettings,
+                        new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + id)),
                         id,

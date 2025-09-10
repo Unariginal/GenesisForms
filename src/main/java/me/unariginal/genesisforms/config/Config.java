@@ -24,6 +24,7 @@ public class Config {
     public boolean fixTerapagosTeraType = true;
     public int teraShardsRequired = 50;
     public boolean consumeTeraShards = true;
+    public boolean requireOrbRecharge = true;
 
     public boolean useHotbarInventory = true;
     public boolean useMainInventory = true;
@@ -148,6 +149,14 @@ public class Config {
         if (teraShardsRequired > 64) teraShardsRequired = 64;
         if (teraShardsRequired < 1) teraShardsRequired = 1;
         teraSettings.addProperty("tera_shards_required", teraShardsRequired);
+
+        if (teraSettings.has("consume_tera_shards"))
+            consumeTeraShards = teraSettings.get("consume_tera_shards").getAsBoolean();
+        teraSettings.addProperty("consume_tera_shards", consumeTeraShards);
+
+        if (teraSettings.has("require_orb_recharge"))
+            requireOrbRecharge = teraSettings.get("require_orb_recharge").getAsBoolean();
+        teraSettings.addProperty("require_orb_recharge", requireOrbRecharge);
 
         if (teraSettings.has("fix_ogerpon_tera_type"))
             fixOgerponTeraType = teraSettings.get("fix_ogerpon_tera_type").getAsBoolean();

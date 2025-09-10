@@ -55,35 +55,7 @@ public class CobblemonEventHandler {
                 revertForm(pokemon, false);
             }
 
-            List<ItemStack> inventory = new ArrayList<>();
-            for (ItemStack itemStack : player.getInventory().main) {
-                if ((GenesisForms.INSTANCE.getConfig().useMainInventory &&
-                        (GenesisForms.INSTANCE.getConfig().useHotbarInventory ||
-                        !PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack)))) ||
-                        GenesisForms.INSTANCE.getConfig().useHotbarInventory &&
-                        PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack))) {
-                    inventory.add(itemStack);
-                }
-            }
-            if (GenesisForms.INSTANCE.getConfig().useMainHandInventory && !inventory.contains(player.getMainHandStack())) {
-                inventory.add(player.getMainHandStack());
-            }
-            if (GenesisForms.INSTANCE.getConfig().useOffHandInventory && !inventory.contains(player.getOffHandStack())) {
-                inventory.add(player.getOffHandStack());
-            }
-            if (GenesisForms.INSTANCE.getConfig().useArmorInventory) {
-                for (ItemStack itemStack : player.getArmorItems()) {
-                    if (!inventory.contains(itemStack)) {
-                        inventory.add(itemStack);
-                    }
-                }
-            }
-            for (int slot : GenesisForms.INSTANCE.getConfig().specificSlots) {
-                ItemStack stack = player.getInventory().getStack(slot);
-                if (!inventory.contains(stack)) {
-                    inventory.add(stack);
-                }
-            }
+            List<ItemStack> inventory = getValidKeyItemSlots(player);
 
             boolean hasMega = false;
             boolean hasTera = false;
@@ -93,7 +65,9 @@ public class CobblemonEventHandler {
                 if (itemStack.getItem() instanceof MegaAccessory && GenesisForms.INSTANCE.getConfig().enableMegaEvolution) {
                     hasMega = true;
                 } else if (itemStack.getItem() instanceof TeraAccessory && GenesisForms.INSTANCE.getConfig().enableTera) {
-                    hasTera = true;
+                    if (itemStack.getDamage() != itemStack.getMaxDamage()) {
+                        hasTera = true;
+                    }
                 } else if (itemStack.getItem() instanceof ZAccessory && GenesisForms.INSTANCE.getConfig().enableZCrystals) {
                     hasZ = true;
                 } else if (itemStack.getItem() instanceof DynamaxAccessory && GenesisForms.INSTANCE.getConfig().enableDynamax) {
@@ -115,6 +89,41 @@ public class CobblemonEventHandler {
         }
 
         return Unit.INSTANCE;
+    }
+
+    public static List<ItemStack> getValidKeyItemSlots(ServerPlayerEntity player) {
+        List<ItemStack> inventory = new ArrayList<>();
+
+        for (ItemStack itemStack : player.getInventory().main) {
+            if ((GenesisForms.INSTANCE.getConfig().useMainInventory &&
+                    (GenesisForms.INSTANCE.getConfig().useHotbarInventory ||
+                            !PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack)))) ||
+                    GenesisForms.INSTANCE.getConfig().useHotbarInventory &&
+                            PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack))) {
+                inventory.add(itemStack);
+            }
+        }
+        if (GenesisForms.INSTANCE.getConfig().useMainHandInventory && !inventory.contains(player.getMainHandStack())) {
+            inventory.add(player.getMainHandStack());
+        }
+        if (GenesisForms.INSTANCE.getConfig().useOffHandInventory && !inventory.contains(player.getOffHandStack())) {
+            inventory.add(player.getOffHandStack());
+        }
+        if (GenesisForms.INSTANCE.getConfig().useArmorInventory) {
+            for (ItemStack itemStack : player.getArmorItems()) {
+                if (!inventory.contains(itemStack)) {
+                    inventory.add(itemStack);
+                }
+            }
+        }
+        for (int slot : GenesisForms.INSTANCE.getConfig().specificSlots) {
+            ItemStack stack = player.getInventory().getStack(slot);
+            if (!inventory.contains(stack)) {
+                inventory.add(stack);
+            }
+        }
+
+        return inventory;
     }
 
     public static Unit battleEndEvent(BattleVictoryEvent event) {
@@ -519,6 +528,17 @@ public class CobblemonEventHandler {
         if (pokemonEntity != null) {
             EventsConfig.gimmickEvents.terastallization.runEvent(teraType.showdownId(), pokemon, pokemonEntity);
         }
+
+        if (pokemon.isPlayerOwned() && pokemon.getOwnerPlayer() != null) {
+            for (ItemStack stack : getValidKeyItemSlots(pokemon.getOwnerPlayer())) {
+                if (stack.getItem() instanceof TeraAccessory teraAccessory) {
+                    if (teraAccessory.requiresCharge && GenesisForms.INSTANCE.getConfig().requireOrbRecharge) {
+                        stack.setDamage(stack.getMaxDamage());
+                    }
+                }
+            }
+        }
+
         return Unit.INSTANCE;
     }
 

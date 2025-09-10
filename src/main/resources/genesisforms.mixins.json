@@ -6,6 +6,7 @@
   "mixins": [
     "EndInstructionAccessor",
     "EndInstructionMixin",
+    "PartyHealedMixin",
     "ShowdownActionRequestMixin",
     "ShowdownInterpreterMixin",
     "ShowdownSpeciesMixin",
