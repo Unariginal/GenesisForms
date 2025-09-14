@@ -44,7 +44,7 @@ public class TeraShardsGroup {
     }
 
     public static TeraShard registerTeraShardItem(String itemID, TeraShardsConfig.TeraShardData teraShardData) {
-        TeraType teraType = TeraTypes.getByName(teraShardData.teraType);
+        TeraType teraType = TeraTypes.get(teraShardData.teraType.toLowerCase());
         if (teraType == null) teraType = TeraTypes.getNORMAL();
 
         return Registry.register(Registries.ITEM, GenesisForms.id(itemID),
