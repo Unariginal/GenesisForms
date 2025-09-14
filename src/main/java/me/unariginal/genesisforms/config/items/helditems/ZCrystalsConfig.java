@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
-import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.data.FormSetting;
 import me.unariginal.genesisforms.utils.ConfigUtils;
 import net.fabricmc.loader.api.FabricLoader;
@@ -79,8 +78,5 @@ public class ZCrystalsConfig {
         if (zCrystalConfigFile.exists()) json = JsonParser.parseReader(new FileReader(zCrystalConfigFile)).toString();
 
         zCrystalData = gson.fromJson(json, ZCrystalData.class);
-
-        GenesisForms.LOGGER.info("Loaded ZCrystalData.. Here's the map!");
-        GenesisForms.LOGGER.info(zCrystalData.typedZCrystalMap.toString());
     }
 }

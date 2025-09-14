@@ -253,7 +253,8 @@ public class KeyItemsGroup {
                 GenesisForms.id(id),
                 new PossessionBlock(
                         AbstractBlock.Settings.create().solid().mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.0F, 0.0F).nonOpaque(),
-                        possessionItemData.placeable
+                        possessionItemData.placeable,
+                        new FormSetting(possessionItemData.species, possessionItemData.featureName, possessionItemData.featureValue, null)
                 )
         );
     }

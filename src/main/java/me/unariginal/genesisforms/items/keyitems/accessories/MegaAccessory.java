@@ -40,6 +40,7 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
 
     @Override
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
+        if (!canUseOnPokemon(itemStack, pokemon)) return TypedActionResult.fail(itemStack);
         if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(itemID) ||
                 !(GenesisForms.INSTANCE.getConfig().enableMegaEvolution && GenesisForms.INSTANCE.getConfig().allowMegaOutsideBattles)
         ) return TypedActionResult.fail(itemStack);
@@ -62,5 +63,14 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
         pokemon.updateForm();
 
         return TypedActionResult.success(itemStack);
+    }
+
+    @Override
+    public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
+        Item helditem = pokemon.heldItem().getItem();
+        if (helditem instanceof Megastone megastone) {
+            return megastone.getSpecies().equals(pokemon.getSpecies());
+        }
+        return false;
     }
 }

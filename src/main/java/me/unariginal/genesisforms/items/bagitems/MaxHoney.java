@@ -96,13 +96,13 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
                      }
                  }
              } else {
-                 List<Pokemon> pokemon_party = new ArrayList<>();
+                 List<Pokemon> nonNullParty = new ArrayList<>();
                  for (Pokemon pokemon : Cobblemon.INSTANCE.getStorage().getParty(player)) {
                      if (pokemon != null) {
-                         pokemon_party.add(pokemon);
+                         nonNullParty.add(pokemon);
                      }
                  }
-                 PartySelectCallbacks.INSTANCE.createFromPokemon(player, pokemon_party, Pokemon::isFainted, pokemon -> {
+                 PartySelectCallbacks.INSTANCE.createFromPokemon(player, nonNullParty, Pokemon::isFainted, pokemon -> {
                      PokemonBattle playerBattle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
                      if (pokemon.isFainted() && playerBattle == null) {
                          AtomicInteger amount = new AtomicInteger(pokemon.getMaxHealth());

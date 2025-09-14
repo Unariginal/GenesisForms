@@ -1,6 +1,7 @@
 package me.unariginal.genesisforms.items.keyitems;
 
 import com.cobblemon.mod.common.api.item.PokemonSelectingItem;
+import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -58,12 +59,24 @@ public class PossessionItem extends BasePolymerBlockItem implements PokemonSelec
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
         if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(itemID)) return TypedActionResult.fail(itemStack);
         boolean alreadyInForm = true;
-        if (formSetting.defaultValue != null) {
-            if (pokemon.getAspects().stream().noneMatch(aspect -> aspect.startsWith(formSetting.defaultValue))) {
-                alreadyInForm = false;
+        if (pokemon.getFeatures().stream().noneMatch(speciesFeature -> {
+            if (speciesFeature.getName().equalsIgnoreCase(formSetting.featureName)) {
+                if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
+                    return stringSpeciesFeature.getValue().equalsIgnoreCase(formSetting.defaultValue);
+                } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
+                    return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(formSetting.defaultValue);
+                }
+            }
+            return false;
+        })) {
+            alreadyInForm = false;
+            if (formSetting.defaultValue.equalsIgnoreCase("true") || formSetting.defaultValue.equalsIgnoreCase("false")) {
+                new FlagSpeciesFeature(formSetting.featureName, Boolean.getBoolean(formSetting.defaultValue)).apply(pokemon);
+            } else {
                 new StringSpeciesFeature(formSetting.featureName, formSetting.defaultValue).apply(pokemon);
             }
         } else {
+            // This is rotom light bulb (default) form
             if (pokemon.getFeatures().stream().anyMatch(feature -> feature.getName().equalsIgnoreCase(formSetting.featureName))) {
                 alreadyInForm = false;
                 pokemon.getFeatures().removeIf(feature -> feature.getName().equalsIgnoreCase(formSetting.featureName));

@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 import me.unariginal.genesisforms.utils.ConfigUtils;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -20,7 +21,9 @@ public class PossessionItemsConfig {
     public static class PossessionItemData {
         public boolean placeable;
         public List<String> species;
+        @SerializedName(value = "feature_name", alternate = "featureName")
         public String featureName;
+        @SerializedName(value = "feature_value", alternate = "featureValue")
         public String featureValue;
         public List<String> lore;
 
