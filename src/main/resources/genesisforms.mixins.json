@@ -4,14 +4,12 @@
   "package": "me.unariginal.genesisforms.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "EndInstructionAccessor",
     "EndInstructionMixin",
     "PartyHealedMixin",
     "ShowdownActionRequestMixin",
     "ShowdownInterpreterMixin",
     "ShowdownSpeciesMixin",
     "ShowdownUnbundlerMixin",
-    "StartInstructionAccessor",
     "StartInstructionMixin",
     "StopBattleMixin"
   ],
