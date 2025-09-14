@@ -34,8 +34,6 @@ public class MessagesConfig {
         messages.put("reset_data_command", "%prefix% <green>Reset %player%'s Internal Form Data!");
         messages.put("give_command_received", "%prefix% <green>Received %item%!");
         messages.put("give_command_feedback", "%prefix% <green>Gave %item% to %player%!");
-        messages.put("convert_command_hand", "%prefix% <green>Converted %original_item% to %new_item%!");
-        messages.put("convert_command_inventory", "%prefix% <green>Converted %count% items!");
         messages.put("cube_mode_feedback", "<gray>Cube Mode: <green>%cube_mode%");
         messages.put("gmax_factor_applied", "<green>%pokemon% can now Gigantamax!");
         messages.put("gmax_factor_removed", "<red>%pokemon% can no longer Gigantamax!");

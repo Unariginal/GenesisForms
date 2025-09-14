@@ -3,7 +3,6 @@ package me.unariginal.genesisforms.utils;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import me.unariginal.genesisforms.GenesisForms;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -26,12 +25,10 @@ public class TextUtils {
         return text;
     }
 
-    public static String parse(String text, ServerPlayerEntity player, ItemStack originalItem, ItemStack additionalItem, int count) {
+    public static String parse(String text, ServerPlayerEntity player, String itemName, int count) {
         text = parse(text, player);
         text = text
-                .replaceAll("%original_item%", originalItem != null ? originalItem.getItem().getName().getString() : "")
-                .replaceAll("%new_item%", additionalItem != null ? additionalItem.getItem().getName().getString() : "")
-                .replaceAll("%item%", originalItem != null ? originalItem.getTranslationKey() : "")
+                .replaceAll("%item%", Text.translatable("item.genesisforms." + itemName).getString())
                 .replaceAll("%count%", String.valueOf(count));
         return text;
     }
