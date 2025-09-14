@@ -10,6 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -55,5 +56,13 @@ public class MegastonesConfig {
 
         Type mapType = new TypeToken<LinkedHashMap<String, MegastoneData>>() {}.getType();
         megastoneMap = gson.fromJson(json, mapType);
+    }
+
+    public static List<MegastoneData> getMegastoneBySpecies(String species) {
+        List<MegastoneData> megastoneData = new ArrayList<>();
+        for (MegastoneData data : megastoneMap.values()) {
+            if (data.species.equalsIgnoreCase(species)) megastoneData.add(data);
+        }
+        return megastoneData;
     }
 }

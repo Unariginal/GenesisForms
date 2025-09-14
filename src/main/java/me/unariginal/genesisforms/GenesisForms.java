@@ -1,7 +1,13 @@
 package me.unariginal.genesisforms;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.api.storage.pc.PCStore;
+import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
@@ -30,6 +36,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,6 +154,88 @@ public class GenesisForms implements ModInitializer {
         });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> ScaleHandler.updateScales());
+
+        // Remove the player from the map even if they do have a mega, so we can properly detect their mega pokemon even if the server doesn't restart in between log-ins
+        PlatformEvents.SERVER_PLAYER_LOGOUT.subscribe(Priority.NORMAL, event -> {
+           playersWithMega.remove(event.getPlayer().getUuid());
+           return Unit.INSTANCE;
+        });
+
+        // I hope I learn how to do things more efficiently
+        PlatformEvents.SERVER_PLAYER_LOGIN.subscribe(Priority.NORMAL, event -> {
+            ServerPlayerEntity player = event.getPlayer();
+            PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
+            PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
+
+            List<Pokemon> megaPokemonInParty = playerPartyStore.toGappyList().stream().filter(pokemon -> {
+                if (pokemon == null) return false;
+                List<MegastonesConfig.MegastoneData> megastoneData = MegastonesConfig.getMegastoneBySpecies(pokemon.getSpecies().getName());
+                if (megastoneData.isEmpty()) return false;
+                for (MegastonesConfig.MegastoneData data : megastoneData) {
+                    if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
+                        if (speciesFeature.getName().equalsIgnoreCase(data.featureName)) {
+                            if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
+                                return stringSpeciesFeature.getValue().equalsIgnoreCase(data.featureValue);
+                            } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
+                                return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(data.featureValue);
+                            }
+                        }
+                        return false;
+                    })) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }).toList();
+
+            // If this whole event does it's job, this should only ever have 1 pokemon in the list. But just in case I do this extra stuff
+            for (Pokemon pokemon : megaPokemonInParty) {
+                if (pokemon == null) continue;
+                if (playersWithMega.containsKey(player.getUuid())) {
+                    CobblemonEventHandler.revertForm(pokemon, false);
+                } else {
+                    playersWithMega.put(player.getUuid(), pokemon.getUuid());
+                }
+            }
+
+            // Do it with the PC too though
+            List<Pokemon> megaPokemonInPC = new ArrayList<>();
+            pcStore.getBoxes().forEach(pcBox -> pcBox.getNonEmptySlots().values().forEach(pokemon -> {
+                if (pokemon != null) {
+                    if (!megaPokemonInPC.contains(pokemon)) {
+                        List<MegastonesConfig.MegastoneData> megastoneData = MegastonesConfig.getMegastoneBySpecies(pokemon.getSpecies().getName());
+                        if (!megastoneData.isEmpty()) {
+                            for (MegastonesConfig.MegastoneData data : megastoneData) {
+                                if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
+                                    if (speciesFeature.getName().equalsIgnoreCase(data.featureName)) {
+                                        if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
+                                            return stringSpeciesFeature.getValue().equalsIgnoreCase(data.featureValue);
+                                        } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
+                                            return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(data.featureValue);
+                                        }
+                                    }
+                                    return false;
+                                })) {
+                                    megaPokemonInPC.add(pokemon);
+                                }
+                            }
+                        }
+                    }
+                }
+            }));
+
+            for (Pokemon pokemon : megaPokemonInPC) {
+                if (pokemon == null) continue;
+                if (playersWithMega.containsKey(player.getUuid())) {
+                    CobblemonEventHandler.revertForm(pokemon, false);
+                } else {
+                    playersWithMega.put(player.getUuid(), pokemon.getUuid());
+                }
+            }
+
+            return Unit.INSTANCE;
+        });
     }
 
     public void logError(String message) {

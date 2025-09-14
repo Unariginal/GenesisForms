@@ -431,6 +431,8 @@ public class CobblemonEventHandler {
             EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
             if (pokemon.getEntity() != null && megaAnimation != null) {
                 pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
+                    if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) return Unit.INSTANCE;
+
                     if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
                         new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
                     } else {
@@ -444,6 +446,8 @@ public class CobblemonEventHandler {
                     return Unit.INSTANCE;
                 });
             } else {
+                if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) return;
+
                 if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
                     new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
                 } else {
