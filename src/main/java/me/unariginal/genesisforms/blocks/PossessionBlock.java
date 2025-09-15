@@ -17,6 +17,7 @@ import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import kotlin.Unit;
 import me.unariginal.genesisforms.data.FormSetting;
+import me.unariginal.genesisforms.polymer.KeyItemsGroup;
 import me.unariginal.genesisforms.utils.PokemonUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -24,6 +25,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -94,6 +97,20 @@ public class PossessionBlock extends Block implements FactoryBlock {
 
                     pokemon.updateAspects();
                     pokemon.updateForm();
+
+                    NbtCompound data = pokemon.getPersistentData();
+                    ItemStack returnItem = ItemStack.EMPTY;
+                    if (data.contains("possession_item")) {
+                        String possessionItem = data.getString("possession_item");
+                        data.remove("possession_item");
+                        pokemon.setPersistentData$common(data);
+
+                        if (KeyItemsGroup.possessionItems.containsKey(possessionItem)) {
+                            returnItem = KeyItemsGroup.possessionItems.get(possessionItem).getDefaultStack();
+                        }
+                    }
+
+                    serverPlayer.getInventory().offerOrDrop(returnItem);
 
                     return Unit.INSTANCE;
                 });
