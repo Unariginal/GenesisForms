@@ -6,8 +6,6 @@ import java.io.*;
 
 public class ConfigUtils {
     public static void create(File file, String path) throws IOException {
-
-
         file.createNewFile();
 
         InputStream stream = GenesisForms.class.getResourceAsStream(path);
