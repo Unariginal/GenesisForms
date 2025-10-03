@@ -2,6 +2,7 @@ package me.unariginal.genesisforms.items.keyitems.accessories;
 
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.item.PokemonSelectingItem;
+import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -81,6 +82,12 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
         Item helditem = pokemon.heldItem().getItem();
         if (helditem instanceof Megastone megastone) {
             return megastone.getSpecies().equals(pokemon.getSpecies());
+        } else if (pokemon.getSpecies().getName().equalsIgnoreCase("rayquaza")) {
+            for (Move move : pokemon.getMoveSet()) {
+                if (move.getTemplate().getName().equalsIgnoreCase("dragonascent")) {
+                    return true;
+                }
+            }
         }
         return false;
     }
