@@ -28,13 +28,11 @@ import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.PossessionItemsConfig;
 import me.unariginal.genesisforms.handlers.*;
-import me.unariginal.genesisforms.items.helditems.HeldBattleItem;
 import me.unariginal.genesisforms.polymer.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
-import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
@@ -136,22 +134,19 @@ public class GenesisForms implements ModInitializer {
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, CobblemonEventHandler::battleEndEvent);
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, CobblemonEventHandler::battleFledEvent);
 
-        // Prevent trading mega pokemon, without stopping other mods from doing their own tradeable changes
-        CobblemonEvents.TRADE_EVENT_PRE.subscribe(Priority.NORMAL, CobblemonEventHandler::tradeEvent);
-
-        // Macho brace
-        CobblemonEvents.EV_GAINED_EVENT_PRE.subscribe(Priority.NORMAL, event -> {
-            Pokemon pokemon = event.getPokemon();
-            Item helditem = pokemon.heldItem().getItem();
-            if (event.getSource().isBattle()) {
-                if (helditem instanceof HeldBattleItem heldBattleItem) {
-                    if (heldBattleItem.getShowdownID().equalsIgnoreCase("machobrace")) {
-                        event.setAmount(event.getAmount() * 2);
-                    }
-                }
-            }
-            return Unit.INSTANCE;
-        });
+        // Macho brace (1.7 impl)
+//        CobblemonEvents.EV_GAINED_EVENT_PRE.subscribe(Priority.NORMAL, event -> {
+//            Pokemon pokemon = event.getPokemon();
+//            Item helditem = pokemon.heldItem().getItem();
+//            if (event.getSource().isBattle()) {
+//                if (helditem instanceof HeldBattleItem heldBattleItem) {
+//                    if (heldBattleItem.getShowdownID().equalsIgnoreCase("machobrace")) {
+//                        event.setAmount(event.getAmount() * 2);
+//                    }
+//                }
+//            }
+//            return Unit.INSTANCE;
+//        });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> ScaleHandler.updateScales());
 

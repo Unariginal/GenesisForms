@@ -1,5 +1,6 @@
 package me.unariginal.genesisforms.items.keyitems.accessories;
 
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.item.PokemonSelectingItem;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.item.battle.BagItem;

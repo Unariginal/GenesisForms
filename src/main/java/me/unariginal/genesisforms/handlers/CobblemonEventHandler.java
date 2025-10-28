@@ -7,7 +7,7 @@ import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
-import com.cobblemon.mod.common.api.events.battles.BattleStartedEvent;
+import com.cobblemon.mod.common.api.events.battles.BattleStartedPreEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.events.battles.instruction.FormeChangeEvent;
 import com.cobblemon.mod.common.api.events.battles.instruction.MegaEvolutionEvent;
@@ -15,8 +15,7 @@ import com.cobblemon.mod.common.api.events.battles.instruction.TerastallizationE
 import com.cobblemon.mod.common.api.events.battles.instruction.ZMoveUsedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.HeldItemEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonGainedEvent;
-import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
-import com.cobblemon.mod.common.api.events.pokemon.TradeEvent;
+import com.cobblemon.mod.common.api.events.pokemon.PokemonSentPostEvent;
 import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
@@ -40,6 +39,8 @@ import me.unariginal.genesisforms.items.keyitems.accessories.DynamaxAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.MegaAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CobblemonEventHandler {
-    public static Unit battleStartEvent(BattleStartedEvent.Pre event) {
+    public static Unit battleStartEvent(BattleStartedPreEvent event) {
         PokemonBattle battle = event.getBattle();
         for (ServerPlayerEntity player : battle.getPlayers()) {
             PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
@@ -207,8 +208,17 @@ public class CobblemonEventHandler {
             }
         }
 
-        // Reverting ultra fusion
-        pokemon.getFeatures().removeIf(speciesFeature -> speciesFeature.getName().equalsIgnoreCase("dynamax_form"));
+        // Reverting ultra fusion & dmax
+        if (pokemon.getFeatures().removeIf(speciesFeature -> speciesFeature.getName().equalsIgnoreCase("dynamax_form"))) {
+            PokemonEntity pokemonEntity = pokemon.getEntity();
+            if (pokemonEntity != null) {
+                EntityAttributeInstance scaleAttribute = pokemonEntity.getAttributeInstance(EntityAttributes.GENERIC_SCALE);
+                if (scaleAttribute != null) {
+                    scaleAttribute.setBaseValue(1.0f);
+                }
+            }
+        }
+
         boolean ultra = pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
             if (speciesFeature.getName().equalsIgnoreCase("prism_fusion")) {
                 if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
@@ -275,7 +285,7 @@ public class CobblemonEventHandler {
         }
     }
 
-    public static Unit pokemonSentEvent(PokemonSentEvent.Post event) {
+    public static Unit pokemonSentEvent(PokemonSentPostEvent event) {
         if (event.getPokemon().getPersistentData().contains("glow_id") && event.getPokemon().getPersistentData().contains("glow_color")) {
             String glowID = event.getPokemon().getPersistentData().getString("glow_id");
             String glowColor = event.getPokemon().getPersistentData().getString("glow_color");
