@@ -1,7 +1,7 @@
+
 package me.unariginal.genesisforms.items.keyitems;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.item.PokemonSelectingItem;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.PokemonPropertyExtractor;
@@ -9,7 +9,6 @@ import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
-import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
@@ -43,7 +42,7 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
     }
 
     @Override
-    public boolean canUseOnPokemon(@NotNull Pokemon pokemon) {
+    public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
         for (FusionItemsConfig.FusionData fusionData : fusions) {
             if (pokemon.getSpecies().getName().equalsIgnoreCase(fusionData.corePokemon)) return true;
         }
@@ -60,7 +59,7 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
 
     @Override
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
-        if (!this.canUseOnPokemon(pokemon)) return TypedActionResult.fail(itemStack);
+        if (!this.canUseOnPokemon(itemStack, pokemon)) return TypedActionResult.fail(itemStack);
         if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(itemID) || !GenesisForms.INSTANCE.getConfig().enableFusions) return TypedActionResult.fail(itemStack);
 
         PlayerPartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(serverPlayerEntity);
@@ -136,35 +135,5 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
         }
 
         return TypedActionResult.success(itemStack);
-    }
-
-    @Override
-    public @NotNull TypedActionResult<ItemStack> use(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack) {
-        return PokemonSelectingItem.DefaultImpls.use(this, serverPlayerEntity, itemStack);
-    }
-
-    @Override
-    public void applyToBattlePokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull BattlePokemon battlePokemon) {
-
-    }
-
-    @Override
-    public boolean canUseOnBattlePokemon(@NotNull BattlePokemon battlePokemon) {
-        return false;
-    }
-
-    @Override
-    public @NotNull TypedActionResult<ItemStack> interactWithSpecificBattle(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull BattlePokemon battlePokemon) {
-        return TypedActionResult.fail(itemStack);
-    }
-
-    @Override
-    public @NotNull TypedActionResult<ItemStack> interactGeneral(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack) {
-        return PokemonSelectingItem.DefaultImpls.interactGeneral(this, serverPlayerEntity, itemStack);
-    }
-
-    @Override
-    public @NotNull TypedActionResult<ItemStack> interactGeneralBattle(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull BattleActor battleActor) {
-        return TypedActionResult.fail(itemStack);
     }
 }

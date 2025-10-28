@@ -33,28 +33,4 @@ public abstract class StopBattleMixin {
             }
         }
     }
-
-    // 1.6.1 Macho Brace Impl
-    @Inject(method = "end", at = @At("HEAD"))
-    private void calculateMachoBrace(CallbackInfo ci) {
-        for (BattleActor actor : this.getActors()) {
-            List<BattlePokemon> faintedPokemons = actor.getPokemonList().stream().filter(pkmn -> pkmn.getHealth() <= 0).toList();
-            for (BattleActor opponent : actor.getSide().getOppositeSide().getActors()) {
-                List<BattlePokemon> opponentNonFaintedPokemons = opponent.getPokemonList().stream().filter(pkmn -> pkmn.getHealth() > 0).toList();
-                for (BattlePokemon faintedPokemon : faintedPokemons) {
-                    for (BattlePokemon opponentPokemon : opponentNonFaintedPokemons) {
-                        Pokemon pokemon = opponentPokemon.getEffectedPokemon();
-                        Item helditem = pokemon.heldItem().getItem();
-                        if (helditem instanceof HeldBattleItem heldBattleItem) {
-                            if (heldBattleItem.getShowdownID().equalsIgnoreCase("machobrace")) {
-                                Cobblemon.INSTANCE.getEvYieldCalculator().calculate(opponentPokemon, faintedPokemon).forEach((stat, amount) -> {
-                                    pokemon.getEvs().add(stat, amount);
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

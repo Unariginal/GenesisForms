@@ -1,3 +1,4 @@
+
 package me.unariginal.genesisforms.items.bagitems;
 
 import com.cobblemon.mod.common.Cobblemon;
@@ -38,11 +39,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
     private final BagItem bagItem = new BagItem() {
         @Override
-        public boolean canStillUse(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull PokemonBattle pokemonBattle, @NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack itemStack) {
-            return false;
-        }
-
-        @Override
         public @NotNull String getItemName() {
             return "max_honey";
         }
@@ -53,7 +49,7 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
         }
 
         @Override
-        public boolean canUse(@NotNull PokemonBattle battle, BattlePokemon target) {
+        public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle battle, BattlePokemon target) {
             return target.getHealth() <= 0;
         }
 
@@ -73,57 +69,57 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
         ServerPlayerEntity player = GenesisForms.INSTANCE.getServer().getPlayerManager().getPlayer(user.getUuid());
         ItemStack stack = user.getStackInHand(hand);
         if (player != null) {
-             PokemonBattle battle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
-             if (battle != null) {
-                 BattleActor actor = battle.getActor(player);
-                 if (actor != null) {
-                     List<BattlePokemon> battlePokemonList = actor.getPokemonList();
-                     if (!actor.canFitForcedAction()) {
-                         player.sendMessageToClient(LocalizationUtilsKt.battleLang("bagitem.cannot").styled(style -> style.withColor(Formatting.RED)), true);
-                         return TypedActionResult.consume(stack);
-                     } else {
-                         try {
-                             int turn = battle.getTurn();
-                             PartySelectCallbacks.INSTANCE.createBattleSelect(player, battlePokemonList, (battlePokemon) -> bagItem.canUse(battle, battlePokemon), (battlePokemon) ->
-                             {
-                                 if (actor.canFitForcedAction() && battlePokemon.getHealth() <= 0 && battle.getTurn() == turn) {
-                                     player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);
-                                     actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
-                                     Identifier stackName = Registries.ITEM.getId(stack.getItem());
-                                     if (consumable) stack.decrementUnlessCreative(1, player);
-                                     CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
-                                 }
-                                 return Unit.INSTANCE;
-                             });
-                         } catch (NoSuchMethodError e) {
-                             GenesisForms.INSTANCE.logError("[Genesis] Suppressing NoSuchMethodError (You're running the 1.6.1 version on the 1.7 snapshot! " + e.getMessage());
-                         }
-                     }
-                 }
-             } else {
-                 List<Pokemon> nonNullParty = new ArrayList<>();
-                 for (Pokemon pokemon : Cobblemon.INSTANCE.getStorage().getParty(player)) {
-                     if (pokemon != null) {
-                         nonNullParty.add(pokemon);
-                     }
-                 }
-                 PartySelectCallbacks.INSTANCE.createFromPokemon(player, nonNullParty, Pokemon::isFainted, pokemon -> {
-                     PokemonBattle playerBattle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
-                     if (pokemon.isFainted() && playerBattle == null) {
-                         AtomicInteger amount = new AtomicInteger(pokemon.getMaxHealth());
-                         CobblemonEvents.POKEMON_HEALED.postThen(new PokemonHealedEvent(pokemon, amount.get(), this), event -> Unit.INSTANCE, event ->
-                         {
-                             amount.set(event.getAmount());
-                             return Unit.INSTANCE;
-                         });
-                         pokemon.setCurrentHealth(amount.get());
-                         Identifier stackName = Registries.ITEM.getId(stack.getItem());
-                         if (consumable) stack.decrementUnlessCreative(1, player);
-                         CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
-                     }
-                     return Unit.INSTANCE;
-                 });
-             }
+            PokemonBattle battle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
+            if (battle != null) {
+                BattleActor actor = battle.getActor(player);
+                if (actor != null) {
+                    List<BattlePokemon> battlePokemonList = actor.getPokemonList();
+                    if (!actor.canFitForcedAction()) {
+                        player.sendMessageToClient(LocalizationUtilsKt.battleLang("bagitem.cannot").styled(style -> style.withColor(Formatting.RED)), true);
+                        return TypedActionResult.consume(stack);
+                    } else {
+                        try {
+                            int turn = battle.getTurn();
+                            PartySelectCallbacks.INSTANCE.createBattleSelect(player, battlePokemonList, (battlePokemon) -> bagItem.canUse(stack, battle, battlePokemon), (battlePokemon) ->
+                            {
+                                if (actor.canFitForcedAction() && battlePokemon.getHealth() <= 0 && battle.getTurn() == turn) {
+                                    player.playSound(CobblemonSounds.ITEM_USE, 1F, 1F);
+                                    actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
+                                    Identifier stackName = Registries.ITEM.getId(stack.getItem());
+                                    if (consumable) stack.decrementUnlessCreative(1, player);
+                                    CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
+                                }
+                                return Unit.INSTANCE;
+                            });
+                        } catch (NoSuchMethodError e) {
+                            GenesisForms.INSTANCE.logError("[Genesis] Suppressing NoSuchMethodError (You're running the 1.6.1 version on the 1.7 snapshot! " + e.getMessage());
+                        }
+                    }
+                }
+            } else {
+                List<Pokemon> nonNullParty = new ArrayList<>();
+                for (Pokemon pokemon : Cobblemon.INSTANCE.getStorage().getParty(player)) {
+                    if (pokemon != null) {
+                        nonNullParty.add(pokemon);
+                    }
+                }
+                PartySelectCallbacks.INSTANCE.createFromPokemon(player, nonNullParty, Pokemon::isFainted, pokemon -> {
+                    PokemonBattle playerBattle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
+                    if (pokemon.isFainted() && playerBattle == null) {
+                        AtomicInteger amount = new AtomicInteger(pokemon.getMaxHealth());
+                        CobblemonEvents.POKEMON_HEALED.postThen(new PokemonHealedEvent(pokemon, amount.get(), this), event -> Unit.INSTANCE, event ->
+                        {
+                            amount.set(event.getAmount());
+                            return Unit.INSTANCE;
+                        });
+                        pokemon.setCurrentHealth(amount.get());
+                        Identifier stackName = Registries.ITEM.getId(stack.getItem());
+                        if (consumable) stack.decrementUnlessCreative(1, player);
+                        CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
+                    }
+                    return Unit.INSTANCE;
+                });
+            }
         }
 
         return TypedActionResult.success(stack);
