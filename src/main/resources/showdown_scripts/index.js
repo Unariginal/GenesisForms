@@ -13,6 +13,12 @@ defined and configured, See ShowdownService.kt on the  main Cobblemon repo .
 -----------------------------------------------------------------------------------------------------------------*/
 
 // eslint-disable-next-line strict
+
+/**
+ * GenesisForms Note:
+ * This file has been modified, this comment is here to prevent modification again, please remove this comment if you need Genesis to remodify the file
+ * */
+
 const BS = require('./sim/battle-stream');
 const Cobblemon = require('./sim/cobblemon/cobblemon').Cobblemon
 const Dex = require('./sim/dex').Dex;

@@ -1,8 +1,10 @@
 package me.unariginal.genesisforms.polymer;
 
+import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.blocks.MegaCrystalBlock;
 import me.unariginal.genesisforms.blocks.PossessionBlock;
 import me.unariginal.genesisforms.config.items.MiscItemsConfig;
 import me.unariginal.genesisforms.config.items.accessories.AccessoriesConfig;
@@ -11,6 +13,7 @@ import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.PossessionItemsConfig;
 import me.unariginal.genesisforms.data.CycledFormSetting;
 import me.unariginal.genesisforms.data.FormSetting;
+import me.unariginal.genesisforms.items.BasePolymerBlockItem;
 import me.unariginal.genesisforms.items.BasePolymerItem;
 import me.unariginal.genesisforms.items.keyitems.*;
 import me.unariginal.genesisforms.items.keyitems.accessories.DynamaxAccessory;
@@ -19,13 +22,16 @@ import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
@@ -51,6 +57,9 @@ public class KeyItemsGroup {
 
     public static LinkedHashMap<String, BasePolymerItem> featurelessItems = new LinkedHashMap<>();
     public static ZygardeCube zygardeCube = null;
+
+    public static MegaCrystalBlock MEGA_CRYSTAL_BLOCK = null;
+    public static BasePolymerBlockItem MEGA_CRYSTAL_ITEM = null;
 
     public static void registerItemGroup() {
         for (Map.Entry<String, AccessoriesConfig.AccessoryData> accessoryDataEntry : AccessoriesConfig.megaAccessories.entrySet()) {
@@ -96,9 +105,13 @@ public class KeyItemsGroup {
         }
 
         for (Map.Entry<String, MiscItemsConfig.MiscItem> miscItemDataEntry : MiscItemsConfig.miscItemData.featureless.entrySet()) {
-            featurelessItems.put(miscItemDataEntry.getKey(), registerItem(miscItemDataEntry.getKey(), baseVanillaItem, miscItemDataEntry.getValue().lore));
+            featurelessItems.put(miscItemDataEntry.getKey(), registerItem(miscItemDataEntry.getKey(), baseVanillaItem, miscItemDataEntry.getValue().maxCount, miscItemDataEntry.getValue().lore));
             allKeyItems.put(miscItemDataEntry.getKey(), featurelessItems.get(miscItemDataEntry.getKey()).getDefaultStack());
         }
+
+        MEGA_CRYSTAL_BLOCK = Registry.register(Registries.BLOCK, GenesisForms.id("mega_crystal"), new MegaCrystalBlock(0.5f, 0.5f, AbstractBlock.Settings.copy(Blocks.AMETHYST_CLUSTER).nonOpaque().mapColor(MapColor.PALE_PURPLE).breakInstantly().sounds(BlockSoundGroup.AMETHYST_CLUSTER).postProcess(Blocks::always).pistonBehavior(PistonBehavior.NORMAL).luminance(value -> 6), BlockModelType.FULL_BLOCK, "block/mega_crystal"));
+        MEGA_CRYSTAL_ITEM = Registry.register(Registries.ITEM, GenesisForms.id("mega_crystal"), new BasePolymerBlockItem(MEGA_CRYSTAL_BLOCK, new Item.Settings().maxCount(64).rarity(Rarity.UNCOMMON), PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("block/mega_crystal")), "mega_crystal", List.of()));
+        allKeyItems.put("mega_crystal", MEGA_CRYSTAL_ITEM.getDefaultStack());
 
         if (MiscItemsConfig.miscItemData.zygardeCube != null) {
             zygardeCube = Registry.register(
@@ -151,6 +164,8 @@ public class KeyItemsGroup {
                     for (BasePolymerItem featurelessItem : featurelessItems.values()) {
                         entries.add(featurelessItem);
                     }
+
+                    if (MEGA_CRYSTAL_ITEM != null && MEGA_CRYSTAL_BLOCK != null) entries.add(MEGA_CRYSTAL_ITEM);
 
                     if (zygardeCube != null) entries.add(zygardeCube);
                 })
@@ -274,12 +289,12 @@ public class KeyItemsGroup {
         );
     }
 
-    public static BasePolymerItem registerItem(String id, Item baseItem, List<String> lore) {
+    public static BasePolymerItem registerItem(String id, Item baseItem, int maxCount, List<String> lore) {
         return Registry.register(
                 Registries.ITEM,
                 GenesisForms.id(id),
                 new BasePolymerItem(
-                        new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON),
+                        new Item.Settings().maxCount(maxCount).rarity(Rarity.UNCOMMON),
                         baseItem,
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + id)),
                         id,
