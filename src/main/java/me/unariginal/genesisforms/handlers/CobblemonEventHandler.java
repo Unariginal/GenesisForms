@@ -1,6 +1,9 @@
 package me.unariginal.genesisforms.handlers;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.abilities.Abilities;
+import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
@@ -231,6 +234,7 @@ public class CobblemonEventHandler {
         }
 
         // Revert zygarde complete form
+        boolean wasComplete = false;
         if (pokemon.getSpecies().getName().equalsIgnoreCase("zygarde")) {
             if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
                 if (speciesFeature.getName().equalsIgnoreCase("percent_cells") && speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
@@ -243,6 +247,7 @@ public class CobblemonEventHandler {
                 } else {
                     new StringSpeciesFeature("percent_cells", "50").apply(pokemon);
                 }
+                wasComplete = true;
             }
         }
 
@@ -273,6 +278,11 @@ public class CobblemonEventHandler {
 
         pokemon.updateAspects();
         pokemon.updateForm();
+
+        if (wasComplete) {
+            AbilityTemplate powerconstruct = Abilities.INSTANCE.get("powerconstruct");
+            pokemon.setAbility$common(powerconstruct.create(false, Priority.LOW));
+        }
     }
 
     public static Unit pokemonSentEvent(PokemonSentPostEvent event) {
@@ -452,8 +462,7 @@ public class CobblemonEventHandler {
                     if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
                         GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
                     }
-                    pokemon.setTradeable(false);
-                    pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
+
                     return Unit.INSTANCE;
                 });
             } else {
@@ -468,9 +477,9 @@ public class CobblemonEventHandler {
                 if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
                     GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
                 }
-                pokemon.setTradeable(false);
-                pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
             }
+            if (GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(false);
+            pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
         }
     }
 
@@ -478,6 +487,7 @@ public class CobblemonEventHandler {
         boolean wasMega = pokemon.getFeatures().removeIf(features -> features.getName().equalsIgnoreCase(featureName));
 
         if (wasMega && !pokemon.getPersistentData().contains("genesis_untradeable") && !pokemon.getTradeable()) pokemon.setTradeable(true);
+        if (wasMega && GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(true);
 
         pokemon.getPersistentData().remove("genesis_untradeable");
         if (pokemon.getOwnerUUID() != null) GenesisForms.INSTANCE.getPlayersWithMega().remove(pokemon.getOwnerUUID());
@@ -496,6 +506,15 @@ public class CobblemonEventHandler {
                 GenesisForms.INSTANCE.getPlayersWithMega().remove(player.getUuid());
             }
         }
+        return Unit.INSTANCE;
+    }
+
+    public static Unit tradeEvent(TradeEvent.Pre event) {
+        if (event.getTradeParticipant1Pokemon().getPersistentData().contains("genesis_untradeable")) {
+            event.cancel();
+            return Unit.INSTANCE;
+        }
+        if (event.getTradeParticipant2Pokemon().getPersistentData().contains("genesis_untradeable")) event.cancel();
         return Unit.INSTANCE;
     }
 

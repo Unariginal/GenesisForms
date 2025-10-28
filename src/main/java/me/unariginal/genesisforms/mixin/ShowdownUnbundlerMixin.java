@@ -49,6 +49,10 @@ public class ShowdownUnbundlerMixin {
                 GenesisForms.LOGGER.error("[Genesis] Resource {} not found!", resourcePath);
                 return;
             }
+            if (Files.readAllLines(targetPath).stream().anyMatch(line -> line.contains("GenesisForms"))) {
+                GenesisForms.LOGGER.info("[Genesis] Resource {} has already been modified, skipping.", resourcePath);
+                return;
+            }
             Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
             GenesisForms.LOGGER.info("[Genesis] Loaded showdown override file: {}", targetPath);
         } catch (IOException e) {

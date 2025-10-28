@@ -1,3 +1,8 @@
+/**
+* GenesisForms Note:
+* This file has been modified, this comment is here to prevent modification again, please remove this comment if you need Genesis to remodify the file
+* */
+
 "use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -1717,6 +1722,12 @@ class BattleActions {
         if ((this.battle.gen <= 7 || this.battle.ruleTable.has("+pokemontag:past")) && megaForme?.requiredMove && pokemon.baseMoves.includes((0, import_dex.toID)(megaForme.requiredMove)) && !item.zMove) {
             return megaForme.name;
         }
+
+        // Temporary hardcode until cobblemon adds it officially
+        if ((species.baseSpecies === "Floette" || species.baseSpecies === "Zygarde") && item.megaEvolves === species.name) {
+            return item.megaStone;
+        }
+
         if (item.megaEvolves === species.baseSpecies && item.megaStone !== species.name) {
             return item.megaStone;
         }

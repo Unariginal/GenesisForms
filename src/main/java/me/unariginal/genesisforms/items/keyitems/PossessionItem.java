@@ -63,23 +63,21 @@ public class PossessionItem extends BasePolymerBlockItem implements PokemonSelec
         if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(itemID)) return TypedActionResult.fail(itemStack);
 
         boolean alreadyInForm = true;
-        if (formSetting.defaultValue != null) {
-            if (pokemon.getFeatures().stream().noneMatch(speciesFeature -> {
-                if (speciesFeature.getName().equalsIgnoreCase(formSetting.featureName)) {
-                    if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
-                        return stringSpeciesFeature.getValue().equalsIgnoreCase(formSetting.defaultValue);
-                    } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
-                        return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(formSetting.defaultValue);
-                    }
+        if (pokemon.getFeatures().stream().noneMatch(speciesFeature -> {
+            if (speciesFeature.getName().equalsIgnoreCase(formSetting.featureName)) {
+                if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
+                    return stringSpeciesFeature.getValue().equalsIgnoreCase(formSetting.defaultValue);
+                } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
+                    return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(formSetting.defaultValue);
                 }
-                return false;
-            })) {
-                alreadyInForm = false;
-                if (formSetting.defaultValue.equalsIgnoreCase("true") || formSetting.defaultValue.equalsIgnoreCase("false")) {
-                    new FlagSpeciesFeature(formSetting.featureName, Boolean.getBoolean(formSetting.defaultValue)).apply(pokemon);
-                } else {
-                    new StringSpeciesFeature(formSetting.featureName, formSetting.defaultValue).apply(pokemon);
-                }
+            }
+            return false;
+        })) {
+            alreadyInForm = false;
+            if (formSetting.defaultValue.equalsIgnoreCase("true") || formSetting.defaultValue.equalsIgnoreCase("false")) {
+                new FlagSpeciesFeature(formSetting.featureName, Boolean.getBoolean(formSetting.defaultValue)).apply(pokemon);
+            } else {
+                new StringSpeciesFeature(formSetting.featureName, formSetting.defaultValue).apply(pokemon);
             }
         } else {
             // This is rotom light bulb (default) form

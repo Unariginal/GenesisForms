@@ -11,15 +11,24 @@
   },
   "featureless": {
     "wishing_star": {
+      "max_count": 1,
       "lore": [
         "<gray>A stone found in the Galar region with a mysterious power.",
         "<gray>It's said that your dreams come true if you find one."
       ]
     },
     "sparkling_stone": {
+      "max_count": 1,
       "lore": [
         "<gray>A stone entrusted to you by a Pokémon that has been venerated as a guardian deity in the Alola region.",
         "<gray>There is said to be some secret in how it sparkles."
+      ]
+    },
+    "mega_shard": {
+      "max_count": 64,
+      "lore": [
+        "<gray>A mysterious shard that can be found after smashing Mega Crystals using Pokémon moves.",
+        "<gray>It seems that some people collect these shards."
       ]
     }
   }

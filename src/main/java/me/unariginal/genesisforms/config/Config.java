@@ -14,6 +14,7 @@ public class Config {
 
     public List<String> disabledItems = new ArrayList<>();
     public boolean enableMegaEvolution = true;
+    public boolean useTradeableProperty = false;
     public boolean enableTera = true;
     public boolean enableZCrystals = true;
     public boolean enableDynamax = true;
@@ -32,7 +33,6 @@ public class Config {
     public boolean useOffHandInventory = true;
     public boolean useArmorInventory = false;
     public List<Integer> specificSlots = new ArrayList<>();
-
 
     public Config() {
         try {
@@ -136,7 +136,11 @@ public class Config {
             allowMegaOutsideBattles = megaSettings.get("allow_mega_outside_battles").getAsBoolean();
         newMegaSettings.addProperty("allow_mega_outside_battles", allowMegaOutsideBattles);
 
-        newRoot.add("mega_settings", newMegaSettings);
+        if (megaSettings.has("use_tradeable_property"))
+            useTradeableProperty = megaSettings.get("use_tradeable_property").getAsBoolean();
+        megaSettings.addProperty("use_tradeable_property", useTradeableProperty);
+
+        newRoot.add("mega_settings", megaSettings);
 
         JsonObject zPowerSettings = new JsonObject();
         JsonObject newZPowerSettings = new JsonObject();
