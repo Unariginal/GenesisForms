@@ -14,7 +14,7 @@ public class Config {
 
     public List<String> disabledItems = new ArrayList<>();
     public boolean enableMegaEvolution = true;
-    public boolean useTradeableProperty = false;
+    public boolean alwaysModifyTradeableProperty = false;
     public boolean enableTera = true;
     public boolean enableZCrystals = true;
     public boolean enableDynamax = true;
@@ -136,9 +136,9 @@ public class Config {
             allowMegaOutsideBattles = megaSettings.get("allow_mega_outside_battles").getAsBoolean();
         newMegaSettings.addProperty("allow_mega_outside_battles", allowMegaOutsideBattles);
 
-        if (megaSettings.has("use_tradeable_property"))
-            useTradeableProperty = megaSettings.get("use_tradeable_property").getAsBoolean();
-        megaSettings.addProperty("use_tradeable_property", useTradeableProperty);
+        if (megaSettings.has("always_modify_tradeable_property"))
+            alwaysModifyTradeableProperty = megaSettings.get("always_modify_tradeable_property").getAsBoolean();
+        newMegaSettings.addProperty("always_modify_tradeable_property", alwaysModifyTradeableProperty);
 
         newRoot.add("mega_settings", megaSettings);
 

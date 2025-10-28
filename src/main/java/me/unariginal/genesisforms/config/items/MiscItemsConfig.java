@@ -84,6 +84,13 @@ public class MiscItemsConfig {
             if (item.maxCount == null) item.maxCount = 1;
             if (item.lore == null) item.lore = new ArrayList<String>();
         });
+        if (!miscItemData.featureless.containsKey("mega_shard")) {
+            miscItemData.featureless.put("mega_shard", new MiscItem(
+                    64,
+                    List.of("<gray>A mysterious shard that can be found after smashing Mega Crystals using Pokémon moves.",
+                            "<gray>It seems that some people collect these shards.")
+            ));
+        }
         save();
     }
 

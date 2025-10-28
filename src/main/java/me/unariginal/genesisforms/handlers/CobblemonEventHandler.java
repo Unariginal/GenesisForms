@@ -478,19 +478,23 @@ public class CobblemonEventHandler {
                     GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
                 }
             }
-            if (GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(false);
-            pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
+            if (pokemon.getTradeable() || GenesisForms.INSTANCE.getConfig().alwaysModifyTradeableProperty) {
+                pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
+                pokemon.setTradeable(false);
+            }
         }
     }
 
     public static boolean revertMega(Pokemon pokemon, String featureName) {
         boolean wasMega = pokemon.getFeatures().removeIf(features -> features.getName().equalsIgnoreCase(featureName));
 
-        if (wasMega && !pokemon.getPersistentData().contains("genesis_untradeable") && !pokemon.getTradeable()) pokemon.setTradeable(true);
-        if (wasMega && GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(true);
+        // This causes an issue if the tradeable property is disabled while in mega form.. But 1.7 fixes this with the magical trading.pre event
+        if (wasMega && (pokemon.getPersistentData().contains("genesis_untradeable") || GenesisForms.INSTANCE.getConfig().alwaysModifyTradeableProperty)) {
+            pokemon.setTradeable(true);
+            pokemon.getPersistentData().remove("genesis_untradeable");
+        }
 
-        pokemon.getPersistentData().remove("genesis_untradeable");
-        if (pokemon.getOwnerUUID() != null) GenesisForms.INSTANCE.getPlayersWithMega().remove(pokemon.getOwnerUUID());
+        if (wasMega && pokemon.getOwnerUUID() != null) GenesisForms.INSTANCE.getPlayersWithMega().remove(pokemon.getOwnerUUID());
 
         pokemon.updateAspects();
         pokemon.updateForm();
@@ -506,15 +510,6 @@ public class CobblemonEventHandler {
                 GenesisForms.INSTANCE.getPlayersWithMega().remove(player.getUuid());
             }
         }
-        return Unit.INSTANCE;
-    }
-
-    public static Unit tradeEvent(TradeEvent.Pre event) {
-        if (event.getTradeParticipant1Pokemon().getPersistentData().contains("genesis_untradeable")) {
-            event.cancel();
-            return Unit.INSTANCE;
-        }
-        if (event.getTradeParticipant2Pokemon().getPersistentData().contains("genesis_untradeable")) event.cancel();
         return Unit.INSTANCE;
     }
 
