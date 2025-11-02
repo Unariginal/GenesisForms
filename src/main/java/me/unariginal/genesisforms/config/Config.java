@@ -57,6 +57,11 @@ public class Config {
             oldItemSettings.renameTo(FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/old_item_settings.json").toFile());
         }
 
+        File oldMegastoneConfig = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/held_items/megastones.json").toFile();
+        if (oldMegastoneConfig.exists()) {
+            oldMegastoneConfig.renameTo(FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/held_items/old_megastones.json").toFile());
+        }
+
         File configFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/config.json").toFile();
         JsonObject newRoot = new JsonObject();
         JsonObject root = new JsonObject();
@@ -138,9 +143,9 @@ public class Config {
 
         if (megaSettings.has("use_tradeable_property"))
             useTradeableProperty = megaSettings.get("use_tradeable_property").getAsBoolean();
-        megaSettings.addProperty("use_tradeable_property", useTradeableProperty);
+        newMegaSettings.addProperty("use_tradeable_property", useTradeableProperty);
 
-        newRoot.add("mega_settings", megaSettings);
+        newRoot.add("mega_settings", newMegaSettings);
 
         JsonObject zPowerSettings = new JsonObject();
         JsonObject newZPowerSettings = new JsonObject();

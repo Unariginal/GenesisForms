@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import me.unariginal.genesisforms.GenesisForms;
+import me.unariginal.genesisforms.config.MegaEvolutionConfig;
 import me.unariginal.genesisforms.handlers.CobblemonEventHandler;
 import me.unariginal.genesisforms.items.BasePolymerItem;
 import me.unariginal.genesisforms.items.helditems.Megastone;
@@ -71,11 +72,13 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
     public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
         Item helditem = pokemon.heldItem().getItem();
         if (helditem instanceof Megastone megastone) {
-            return megastone.getSpecies().equals(pokemon.getSpecies());
-        } else if (pokemon.getSpecies().getName().equalsIgnoreCase("rayquaza")) {
-            for (Move move : pokemon.getMoveSet()) {
-                if (move.getTemplate().getName().equalsIgnoreCase("dragonascent")) {
-                    return true;
+            MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = megastone.getMegastoneData();
+            return megaEvolutionData.canMegaEvolve(pokemon);
+        } else {
+            for (String itemlessMega : MegaEvolutionConfig.itemlessMegas) {
+                MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = MegaEvolutionConfig.megaEvolutionMap.get(itemlessMega);
+                if (megaEvolutionData != null) {
+                    return megaEvolutionData.canMegaEvolve(pokemon);
                 }
             }
         }
