@@ -32,6 +32,7 @@ import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.BattleFormChangeConfig;
 import me.unariginal.genesisforms.config.EventsConfig;
+import me.unariginal.genesisforms.config.MegaEvolutionConfig;
 import me.unariginal.genesisforms.items.helditems.HeldFormItem;
 import me.unariginal.genesisforms.items.helditems.Megastone;
 import me.unariginal.genesisforms.items.helditems.ZCrystal;
@@ -199,8 +200,15 @@ public class CobblemonEventHandler {
                 EventsConfig.gimmickEvents.megaEvolution.revertEvent(megastone.getItemID(), pokemon, pokemon.getEntity());
             }
         } else {
-            if (revertMega(pokemon, "mega_evolution")) {
-                EventsConfig.gimmickEvents.megaEvolution.revertEvent("rayquaza", pokemon, pokemon.getEntity());
+            for (String itemlessMega : MegaEvolutionConfig.itemlessMegas) {
+                MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = MegaEvolutionConfig.megaEvolutionMap.get(itemlessMega);
+                if (megaEvolutionData != null) {
+                    if (megaEvolutionData.canMegaEvolve(pokemon)) {
+                        if (revertMega(pokemon, megaEvolutionData.featureName)) {
+                            EventsConfig.gimmickEvents.megaEvolution.revertEvent(itemlessMega, pokemon, pokemon.getEntity());
+                        }
+                    }
+                }
             }
 
             if (heldItem instanceof ZCrystal zcrystal) {
@@ -281,7 +289,7 @@ public class CobblemonEventHandler {
 
         if (wasComplete) {
             AbilityTemplate powerconstruct = Abilities.INSTANCE.get("powerconstruct");
-            pokemon.setAbility$common(powerconstruct.create(false, Priority.LOW));
+            if (powerconstruct != null) pokemon.setAbility$common(powerconstruct.create(false, Priority.LOW));
         }
     }
 
@@ -419,28 +427,27 @@ public class CobblemonEventHandler {
     public static void megaEvolveLogic(Pokemon pokemon) {
         Item heldItem = pokemon.heldItem().getItem();
         boolean canMegaEvolve = false;
-        String featureName;
-        String featureValue;
+        String featureName = "mega_evolution";
+        String featureValue = "mega";
         String eventID = "global";
 
         if (heldItem instanceof Megastone megastone) {
-            if (megastone.getSpecies().equals(pokemon.getSpecies())) {
+            if (megastone.getMegastoneData().canMegaEvolve(pokemon)) {
                 canMegaEvolve = true;
                 featureName = megastone.getMegastoneData().featureName;
                 featureValue = megastone.getMegastoneData().featureValue;
                 eventID = megastone.getItemID();
-
-            } else {
-                featureName = "mega_evolution";
-                featureValue = "mega";
             }
         } else {
-            featureName = "mega_evolution";
-            featureValue = "mega";
-            if (pokemon.getSpecies().getName().equalsIgnoreCase("rayquaza")) {
-                if (pokemon.getMoveSet().getMoves().stream().anyMatch(move -> move.getTemplate().getName().equalsIgnoreCase("dragonascent"))) {
-                    canMegaEvolve = true;
-                    eventID = "rayquaza";
+            for (String itemlessMega : MegaEvolutionConfig.itemlessMegas) {
+                MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = MegaEvolutionConfig.megaEvolutionMap.get(itemlessMega);
+                if (megaEvolutionData != null) {
+                    if (megaEvolutionData.canMegaEvolve(pokemon)) {
+                        canMegaEvolve = true;
+                        featureName = megaEvolutionData.featureName;
+                        featureValue = megaEvolutionData.featureValue;
+                        eventID = itemlessMega;
+                    }
                 }
             }
         }
@@ -450,13 +457,15 @@ public class CobblemonEventHandler {
         if (canMegaEvolve) {
             EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
             if (pokemon.getEntity() != null && megaAnimation != null) {
+                String finalFeatureValue = featureValue;
+                String finalFeatureName = featureName;
                 pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
                     if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) return Unit.INSTANCE;
 
-                    if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
+                    if (finalFeatureValue.equalsIgnoreCase("true") || finalFeatureValue.equalsIgnoreCase("false")) {
+                        new FlagSpeciesFeature(finalFeatureName, Boolean.getBoolean(finalFeatureValue)).apply(pokemon);
                     } else {
-                        new StringSpeciesFeature(featureName, featureValue).apply(pokemon);
+                        new StringSpeciesFeature(finalFeatureName, finalFeatureValue).apply(pokemon);
                     }
 
                     if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {

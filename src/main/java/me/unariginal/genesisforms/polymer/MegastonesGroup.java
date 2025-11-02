@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.pokemon.helditem.CobblemonHeldItemManager;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import me.unariginal.genesisforms.GenesisForms;
-import me.unariginal.genesisforms.config.items.helditems.MegastonesConfig;
+import me.unariginal.genesisforms.config.MegaEvolutionConfig;
 import me.unariginal.genesisforms.items.helditems.Megastone;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.item.Item;
@@ -25,8 +25,9 @@ public class MegastonesGroup {
     public static LinkedHashMap<String, Megastone> megastones = new LinkedHashMap<>();
 
     public static void registerItemGroup() {
-        for (Map.Entry<String, MegastonesConfig.MegastoneData> megastoneData : MegastonesConfig.megastoneMap.entrySet()) {
-            megastones.put(megastoneData.getKey(), registerMegastoneItem(megastoneData.getKey(), megastoneData.getValue()));
+        for (Map.Entry<String, MegaEvolutionConfig.MegaEvolutionData> megastoneData : MegaEvolutionConfig.megaEvolutionMap.entrySet()) {
+            if (megastoneData.getValue().hasItem)
+                megastones.put(megastoneData.getKey(), registerMegastoneItem(megastoneData.getKey(), megastoneData.getValue()));
         }
 
         final ItemGroup ITEM_GROUP = FabricItemGroup.builder()
@@ -46,14 +47,14 @@ public class MegastonesGroup {
         }
     }
 
-    public static Megastone registerMegastoneItem(String itemID, MegastonesConfig.MegastoneData megastoneData) {
+    public static Megastone registerMegastoneItem(String itemID, MegaEvolutionConfig.MegaEvolutionData megastoneData) {
         return Registry.register(Registries.ITEM, GenesisForms.id(itemID),
                 new Megastone(
                         itemSettings,
                         baseVanillaItem,
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + itemID)),
                         itemID,
-                        megastoneData.lore,
+                        megastoneData.itemInformation.lore,
                         megastoneData
                 )
         );

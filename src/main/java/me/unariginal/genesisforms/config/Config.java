@@ -14,7 +14,7 @@ public class Config {
 
     public List<String> disabledItems = new ArrayList<>();
     public boolean enableMegaEvolution = true;
-    public boolean alwaysModifyTradeableProperty = false;
+    public boolean alwaysModifyTradeableProperty = true;
     public boolean enableTera = true;
     public boolean enableZCrystals = true;
     public boolean enableDynamax = true;
@@ -55,6 +55,11 @@ public class Config {
         File oldItemSettings = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/item_settings.json").toFile();
         if (oldItemSettings.exists()) {
             oldItemSettings.renameTo(FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/old_item_settings.json").toFile());
+        }
+
+        File oldMegastoneConfig = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/held_items/megastones.json").toFile();
+        if (oldMegastoneConfig.exists()) {
+            oldMegastoneConfig.renameTo(FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/held_items/old_megastones.json").toFile());
         }
 
         File configFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/config.json").toFile();
@@ -140,7 +145,7 @@ public class Config {
             alwaysModifyTradeableProperty = megaSettings.get("always_modify_tradeable_property").getAsBoolean();
         newMegaSettings.addProperty("always_modify_tradeable_property", alwaysModifyTradeableProperty);
 
-        newRoot.add("mega_settings", megaSettings);
+        newRoot.add("mega_settings", newMegaSettings);
 
         JsonObject zPowerSettings = new JsonObject();
         JsonObject newZPowerSettings = new JsonObject();

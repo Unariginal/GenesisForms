@@ -12,17 +12,13 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
-import me.unariginal.genesisforms.config.BattleFormChangeConfig;
-import me.unariginal.genesisforms.config.Config;
-import me.unariginal.genesisforms.config.EventsConfig;
-import me.unariginal.genesisforms.config.MessagesConfig;
+import me.unariginal.genesisforms.config.*;
 import me.unariginal.genesisforms.config.items.MiscItemsConfig;
 import me.unariginal.genesisforms.config.items.accessories.AccessoriesConfig;
 import me.unariginal.genesisforms.config.items.bagitems.MaxItemsConfig;
 import me.unariginal.genesisforms.config.items.bagitems.TeraShardsConfig;
 import me.unariginal.genesisforms.config.items.helditems.HeldBattleItemsConfig;
 import me.unariginal.genesisforms.config.items.helditems.HeldFormItemsConfig;
-import me.unariginal.genesisforms.config.items.helditems.MegastonesConfig;
 import me.unariginal.genesisforms.config.items.helditems.ZCrystalsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
@@ -71,7 +67,7 @@ public class GenesisForms implements ModInitializer {
             KeyFormItemsConfig.load();
             HeldFormItemsConfig.load();
             HeldBattleItemsConfig.load();
-            MegastonesConfig.load();
+            MegaEvolutionConfig.load();
             ZCrystalsConfig.load();
             TeraShardsConfig.load();
             FusionItemsConfig.load();
@@ -164,21 +160,19 @@ public class GenesisForms implements ModInitializer {
 
             List<Pokemon> megaPokemonInParty = playerPartyStore.toGappyList().stream().filter(pokemon -> {
                 if (pokemon == null) return false;
-                List<MegastonesConfig.MegastoneData> megastoneData = MegastonesConfig.getMegastoneBySpecies(pokemon.getSpecies().getName());
-                if (megastoneData.isEmpty()) return false;
-                for (MegastonesConfig.MegastoneData data : megastoneData) {
-                    if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
-                        if (speciesFeature.getName().equalsIgnoreCase(data.featureName)) {
-                            if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
-                                return stringSpeciesFeature.getValue().equalsIgnoreCase(data.featureValue);
-                            } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
-                                return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(data.featureValue);
-                            }
+                MegaEvolutionConfig.MegaEvolutionData megastoneData = MegaEvolutionConfig.getMegaEvolution(pokemon);
+                if (megastoneData == null) return false;
+                if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
+                    if (speciesFeature.getName().equalsIgnoreCase(megastoneData.featureName)) {
+                        if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
+                            return stringSpeciesFeature.getValue().equalsIgnoreCase(megastoneData.featureValue);
+                        } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
+                            return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(megastoneData.featureValue);
                         }
-                        return false;
-                    })) {
-                        return true;
                     }
+                    return false;
+                })) {
+                    return true;
                 }
 
                 return false;
@@ -199,21 +193,19 @@ public class GenesisForms implements ModInitializer {
             pcStore.getBoxes().forEach(pcBox -> pcBox.getNonEmptySlots().values().forEach(pokemon -> {
                 if (pokemon != null) {
                     if (!megaPokemonInPC.contains(pokemon)) {
-                        List<MegastonesConfig.MegastoneData> megastoneData = MegastonesConfig.getMegastoneBySpecies(pokemon.getSpecies().getName());
-                        if (!megastoneData.isEmpty()) {
-                            for (MegastonesConfig.MegastoneData data : megastoneData) {
-                                if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
-                                    if (speciesFeature.getName().equalsIgnoreCase(data.featureName)) {
-                                        if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
-                                            return stringSpeciesFeature.getValue().equalsIgnoreCase(data.featureValue);
-                                        } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
-                                            return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(data.featureValue);
-                                        }
+                        MegaEvolutionConfig.MegaEvolutionData megastoneData = MegaEvolutionConfig.getMegaEvolution(pokemon);
+                        if (megastoneData != null) {
+                            if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
+                                if (speciesFeature.getName().equalsIgnoreCase(megastoneData.featureName)) {
+                                    if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
+                                        return stringSpeciesFeature.getValue().equalsIgnoreCase(megastoneData.featureValue);
+                                    } else if (speciesFeature instanceof FlagSpeciesFeature flagSpeciesFeature) {
+                                        return Boolean.toString(flagSpeciesFeature.getEnabled()).equalsIgnoreCase(megastoneData.featureValue);
                                     }
-                                    return false;
-                                })) {
-                                    megaPokemonInPC.add(pokemon);
                                 }
+                                return false;
+                            })) {
+                                megaPokemonInPC.add(pokemon);
                             }
                         }
                     }
