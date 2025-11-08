@@ -11,6 +11,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.handlers.CobblemonEventHandler;
+import me.unariginal.genesisforms.items.helditems.Megastone;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.polymer.*;
 import me.unariginal.genesisforms.utils.TextUtils;
@@ -42,10 +43,11 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = MegastonesGroup.megastones.get(StringArgumentType.getString(ctx, "mega-stone")).getDefaultStack();
+                                                                            Megastone megastone = MegastonesGroup.megastones.get(StringArgumentType.getString(ctx, "mega-stone"));
+                                                                            ItemStack toGive = megastone.getDefaultStack();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, StringArgumentType.getString(ctx, "mega-stone"), 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, StringArgumentType.getString(ctx, "mega-stone"), 1)));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, megastone.getItemID(), 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, megastone.getItemID(), 1)));
                                                                             return 1;
                                                                         })
                                                         )
