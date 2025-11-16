@@ -206,6 +206,7 @@ public class GenesisCommands {
                         )
                         .then(
                                 CommandManager.literal("setOrbUsage")
+                                        .requires(Permissions.require("genesisforms.setOrbUsage", 4))
                                         .then(
                                                 CommandManager.argument("player", EntityArgumentType.player())
                                                         .then(
@@ -229,6 +230,7 @@ public class GenesisCommands {
                         )
                         .then(
                                 CommandManager.literal("rechargeOrb")
+                                        .requires(Permissions.require("genesisforms.rechargeOrb", 4))
                                         .then(
                                                 CommandManager.argument("player", EntityArgumentType.player())
                                                         .executes(ctx -> {

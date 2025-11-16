@@ -108,7 +108,7 @@ public class MaxMushrooms extends BasePolymerBlockItem implements SimpleBagItemL
                                     actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
                                     Identifier stackName = Registries.ITEM.getId(stack.getItem());
                                     if (consumable) stack.decrementUnlessCreative(1, player);
-                                    CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
+                                    CobblemonCriteria.POKEMON_INTERACT.trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
                                 }
                             }
                         } catch (NoSuchMethodError e) {

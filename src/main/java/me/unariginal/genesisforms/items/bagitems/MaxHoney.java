@@ -87,7 +87,7 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
                                     actor.forceChoose(new BagItemActionResponse(bagItem, battlePokemon, battlePokemon.getUuid().toString()));
                                     Identifier stackName = Registries.ITEM.getId(stack.getItem());
                                     if (consumable) stack.decrementUnlessCreative(1, player);
-                                    CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
+                                    CobblemonCriteria.POKEMON_INTERACT.trigger(player, new PokemonInteractContext(battlePokemon.getEffectedPokemon().getSpecies().getResourceIdentifier(), stackName));
                                 }
                                 return Unit.INSTANCE;
                             });
@@ -115,7 +115,7 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
                         pokemon.setCurrentHealth(amount.get());
                         Identifier stackName = Registries.ITEM.getId(stack.getItem());
                         if (consumable) stack.decrementUnlessCreative(1, player);
-                        CobblemonCriteria.INSTANCE.getPOKEMON_INTERACT().trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
+                        CobblemonCriteria.POKEMON_INTERACT.trigger(player, new PokemonInteractContext(pokemon.getSpecies().getResourceIdentifier(), stackName));
                     }
                     return Unit.INSTANCE;
                 });

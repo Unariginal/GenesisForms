@@ -115,28 +115,28 @@ public class GenesisForms implements ModInitializer {
     }
 
     private void registerEvents() {
-        CobblemonEvents.HELD_ITEM_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::heldItemChange);
-        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonReleasedEvent);
-        CobblemonEvents.POKEMON_GAINED.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonGainedEvent);
-        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, CobblemonEventHandler::pokemonSentEvent);
+        CobblemonEvents.HELD_ITEM_POST.subscribe(CobblemonEventHandler::heldItemChange);
+        CobblemonEvents.POKEMON_RELEASED_EVENT_POST.subscribe(CobblemonEventHandler::pokemonReleasedEvent);
+        CobblemonEvents.POKEMON_GAINED.subscribe(CobblemonEventHandler::pokemonGainedEvent);
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(CobblemonEventHandler::pokemonSentEvent);
 
-        CobblemonEvents.FORME_CHANGE.subscribe(Priority.NORMAL, CobblemonEventHandler::formChangeEvent);
-        CobblemonEvents.MEGA_EVOLUTION.subscribe(Priority.NORMAL, CobblemonEventHandler::megaEvolveEvent);
-        CobblemonEvents.TERASTALLIZATION.subscribe(Priority.NORMAL, CobblemonEventHandler::terastallizationEvent);
-        CobblemonEvents.ZPOWER_USED.subscribe(Priority.NORMAL, CobblemonEventHandler::zPowerEvent);
+        CobblemonEvents.FORME_CHANGE.subscribe(CobblemonEventHandler::formChangeEvent);
+        CobblemonEvents.MEGA_EVOLUTION.subscribe(CobblemonEventHandler::megaEvolveEvent);
+        CobblemonEvents.TERASTALLIZATION.subscribe(CobblemonEventHandler::terastallizationEvent);
+        CobblemonEvents.ZPOWER_USED.subscribe(CobblemonEventHandler::zPowerEvent);
         UltraBurstHandler.register();
         DynamaxHandler.register();
 
-        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(Priority.NORMAL, CobblemonEventHandler::battleStartEvent);
-        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, CobblemonEventHandler::battleFaintEvent);
-        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, CobblemonEventHandler::battleEndEvent);
-        CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, CobblemonEventHandler::battleFledEvent);
+        CobblemonEvents.BATTLE_STARTED_PRE.subscribe(CobblemonEventHandler::battleStartEvent);
+        CobblemonEvents.BATTLE_FAINTED.subscribe(CobblemonEventHandler::battleFaintEvent);
+        CobblemonEvents.BATTLE_VICTORY.subscribe(CobblemonEventHandler::battleEndEvent);
+        CobblemonEvents.BATTLE_FLED.subscribe(CobblemonEventHandler::battleFledEvent);
 
         // Prevent trading mega pokemon, without stopping other mods from doing their own tradeable changes
-        CobblemonEvents.TRADE_EVENT_PRE.subscribe(Priority.NORMAL, CobblemonEventHandler::tradeEvent);
+        CobblemonEvents.TRADE_EVENT_PRE.subscribe(CobblemonEventHandler::tradeEvent);
 
         // Macho brace
-        CobblemonEvents.EV_GAINED_EVENT_PRE.subscribe(Priority.NORMAL, event -> {
+        CobblemonEvents.EV_GAINED_EVENT_PRE.subscribe(event -> {
             Pokemon pokemon = event.getPokemon();
             Item helditem = pokemon.heldItem().getItem();
             if (event.getSource().isBattle()) {
@@ -146,19 +146,17 @@ public class GenesisForms implements ModInitializer {
                     }
                 }
             }
-            return Unit.INSTANCE;
         });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> ScaleHandler.updateScales());
 
         // Remove the player from the map even if they do have a mega, so we can properly detect their mega pokemon even if the server doesn't restart in between log-ins
-        PlatformEvents.SERVER_PLAYER_LOGOUT.subscribe(Priority.NORMAL, event -> {
+        PlatformEvents.SERVER_PLAYER_LOGOUT.subscribe(event -> {
             playersWithMega.remove(event.getPlayer().getUuid());
-            return Unit.INSTANCE;
         });
 
         // I hope I learn how to do things more efficiently
-        PlatformEvents.SERVER_PLAYER_LOGIN.subscribe(Priority.NORMAL, event -> {
+        PlatformEvents.SERVER_PLAYER_LOGIN.subscribe(event -> {
             ServerPlayerEntity player = event.getPlayer();
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
@@ -225,8 +223,6 @@ public class GenesisForms implements ModInitializer {
                     playersWithMega.put(player.getUuid(), pokemon.getUuid());
                 }
             }
-
-            return Unit.INSTANCE;
         });
     }
 
