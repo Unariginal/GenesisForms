@@ -1,7 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.11.2'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '2.2.0-RC'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.0'
 }
 
 version = project.mod_version
@@ -25,12 +25,11 @@ loom {
 
 repositories {
     mavenCentral()
-    maven {
-        url = "https://maven.impactdev.net/repository/development/"
-    }
-    maven {
-        url = "https://maven.nucleoid.xyz"
-    }
+    maven {url = "https://maven.impactdev.net/repository/development/"}
+    maven {url = "https://maven.nucleoid.xyz"}
+    maven { url = "https://ladysnake.jfrog.io/artifactory/mods" }
+    maven { url = "https://maven.terraformersmc.com/" }
+    maven {url = "https://maven.ladysnake.org/releases"}
 }
 
 dependencies {
@@ -53,6 +52,10 @@ dependencies {
     modImplementation include('eu.pb4:factorytools:0.3.2+1.21')
 
     modImplementation "com.cobblemon:fabric:${project.cobblemon_version}"
+
+    // Optional Dependencies!
+    modCompileOnly 'eu.pb4.polyport:trinkets:3.10.0+polymerport.2'
+    modRuntimeOnly 'eu.pb4.polyport:trinkets:3.10.0+polymerport.2'
 }
 
 processResources {

@@ -61,5 +61,20 @@
       <option name="name" value="LoomGlobalMinecraft" />
       <option name="url" value="file:/$PROJECT_DIR$/../../../../../../Gradle/gradle-8.14/bin/caches/fabric-loom/minecraftMaven/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
+      <option name="url" value="https://ladysnake.jfrog.io/artifactory/mods" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
+      <option name="url" value="https://maven.terraformersmc.com/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven5" />
+      <option name="name" value="maven5" />
+      <option name="url" value="https://maven.ladysnake.org/releases" />
+    </remote-repository>
   </component>
 </project>

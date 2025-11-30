@@ -29,6 +29,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
+import dev.emi.trinkets.api.TrinketsApi;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.BattleFormChangeConfig;
@@ -41,6 +42,7 @@ import me.unariginal.genesisforms.items.keyitems.accessories.DynamaxAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.MegaAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,6 +50,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CobblemonEventHandler {
     public static Unit battleStartEvent(BattleStartedEvent.Pre event) {
@@ -61,22 +64,62 @@ public class CobblemonEventHandler {
 
             List<ItemStack> inventory = getValidKeyItemSlots(player);
 
-            boolean hasMega = false;
-            boolean hasTera = false;
-            boolean hasZ = false;
-            boolean hasDmax = false;
+            AtomicBoolean hasMega = new AtomicBoolean(false);
+            AtomicBoolean hasTera = new AtomicBoolean(false);
+            AtomicBoolean hasZ = new AtomicBoolean(false);
+            AtomicBoolean hasDmax = new AtomicBoolean(false);
             for (ItemStack itemStack : inventory) {
                 if (itemStack.getItem() instanceof MegaAccessory && GenesisForms.INSTANCE.getConfig().enableMegaEvolution) {
-                    hasMega = true;
+                    hasMega.set(true);
                 } else if (itemStack.getItem() instanceof TeraAccessory && GenesisForms.INSTANCE.getConfig().enableTera) {
                     if (itemStack.getDamage() != itemStack.getMaxDamage()) {
-                        hasTera = true;
+                        hasTera.set(true);
                     }
                 } else if (itemStack.getItem() instanceof ZAccessory && GenesisForms.INSTANCE.getConfig().enableZCrystals) {
-                    hasZ = true;
+                    hasZ.set(true);
                 } else if (itemStack.getItem() instanceof DynamaxAccessory && GenesisForms.INSTANCE.getConfig().enableDynamax) {
-                    hasDmax = true;
+                    hasDmax.set(true);
                 }
+            }
+
+            if (FabricLoader.getInstance().isModLoaded("trinkets")) {
+                TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> {
+                    if (trinketComponent.isEquipped(item -> {
+                        if (item.getItem() instanceof MegaAccessory) {
+                            return true;
+                        }
+                        return false;
+                    }) && GenesisForms.INSTANCE.getConfig().enableMegaEvolution) {
+                        hasMega.set(true);
+                    }
+
+                    if (trinketComponent.isEquipped(item -> {
+                        if (item.getItem() instanceof TeraAccessory) {
+                            return true;
+                        }
+                        return false;
+                    }) && GenesisForms.INSTANCE.getConfig().enableTera) {
+                        hasTera.set(true);
+                    }
+
+                    if (trinketComponent.isEquipped(item -> {
+                        if (item.getItem() instanceof ZAccessory) {
+                            return true;
+                        }
+                        return false;
+                    }) && GenesisForms.INSTANCE.getConfig().enableZCrystals) {
+                        hasZ.set(true);
+                    }
+
+                    if (trinketComponent.isEquipped(item -> {
+                        if (item.getItem() instanceof DynamaxAccessory) {
+                            return true;
+                        }
+                        return false;
+                    }) && GenesisForms.INSTANCE.getConfig().enableDynamax) {
+                        hasDmax.set(true);
+                    }
+                });
             }
 
             GeneralPlayerData playerData = Cobblemon.playerDataManager.getGenericData(player);
@@ -86,10 +129,10 @@ public class CobblemonEventHandler {
                             identifier.equals(MiscUtilsKt.cobblemonResource("z_ring")) ||
                             identifier.equals(MiscUtilsKt.cobblemonResource("dynamax_band")));
 
-            if (hasMega) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("key_stone"));
-            if (hasTera) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("tera_orb"));
-            if (hasZ) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("z_ring"));
-            if (hasDmax && !hasTera) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("dynamax_band"));
+            if (hasMega.get()) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("key_stone"));
+            if (hasTera.get()) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("tera_orb"));
+            if (hasZ.get()) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("z_ring"));
+            if (hasDmax.get() && !hasTera.get()) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("dynamax_band"));
         }
 
         return Unit.INSTANCE;
