@@ -27,8 +27,51 @@ __export(items_exports, {
 module.exports = __toCommonJS(items_exports);
 const Items = {
     /*************************
-    * New Megastone Section
-    **************************/
+     * Legend Plate
+     *************************/
+    legendplate: {
+        name: "Legend Plate",
+        spritenum: 9000,
+        onTryMove(pokemon, target, move) {
+            if (!pokemon.hasItem('legendplate')) return;
+            if (move.id !== 'judgment') return;
+
+            const targetTypes = target.getTypes().length ? target.getTypes() : target.species.types;
+            const typeNames = this.dex.types.names();
+
+            let bestType = [];
+            let highestEffectiveness = -Infinity;
+
+            for (const typeName of typeNames) {
+                if (targetTypes.some(dt => !this.dex.getImmunity(typeName, dt))) continue;
+                const typeEffectiveness = targetTypes.reduce((a, dt) => {
+                    const e = this.dex.getEffectiveness(typeName, dt);
+                    return a + (e === 2 ? 4 : e === 1 ? 2 : e === -1 ? -1 : e === -2 ? -2 : 0);
+                }, 0);
+                if (typeEffectiveness > highestEffectiveness) {
+                    bestType = [typeName];
+                    highestEffectiveness = typeEffectiveness;
+                } else if (typeEffectiveness === highestEffectiveness) {
+                    bestType.push(typeName)
+                }
+            }
+
+            const finalBestType = bestType.includes('Normal') ? 'Normal' : this.sample(bestType);
+            if (pokemon.name !== 'Arceus') return;
+
+            const finalForm = `Arceus-${finalBestType}`;
+            const finalSpecies = this.dex.species.get(`arceus${finalBestType.toLowerCase()}`);
+            if (finalSpecies.exists && this.dex.species.get(finalForm).exists && pokemon.species.name !== finalForm) pokemon.formeChange(finalForm, null, true);
+            move.type = finalBestType;
+            move.ignoreAbility = true;
+        },
+        num: 9000,
+        gen: 9
+    },
+
+    /*************************
+     * New Megastone Section
+     *************************/
     barbaracite: {
         name: "Barbaracite",
         spritenum: 10000,
