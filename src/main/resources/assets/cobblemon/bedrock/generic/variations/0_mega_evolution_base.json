@@ -1,0 +1,13 @@
+{
+  "name": "cobblemon:mega_evolution",
+  "order": 0,
+  "variations": [
+    {
+      "aspects": [],
+      "poser": "cobblemon:mega_evolution",
+      "model": "cobblemon:mega_evolution.geo",
+      "texture": "cobblemon:textures/white.png",
+      "layers": []
+    }
+  ]
+}

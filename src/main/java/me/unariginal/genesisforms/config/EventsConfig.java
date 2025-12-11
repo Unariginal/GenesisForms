@@ -65,6 +65,7 @@ public class EventsConfig {
             if (pokemonEntity != null) {
                 if (animationData != null) {
                     ParticleUtils.spawnParticle(animationData.identifier, pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
+//                    ParticleUtils.megaEvolutionAnimation(pokemonEntity, "mega_evolution");
                     delay = animationData.formDelaySeconds;
                 }
             }

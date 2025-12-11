@@ -92,6 +92,24 @@ public class GenesisForms implements ModInitializer {
 
             registerEvents();
         });
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            try {
+                List<UUID> toRemove = new ArrayList<>();
+                for (UUID uuid : CobblemonEventHandler.activeMegaAnimations.keySet()) {
+                    CobblemonEventHandler.activeMegaAnimations.put(uuid, CobblemonEventHandler.activeMegaAnimations.get(uuid) - 1);
+                    if (CobblemonEventHandler.activeMegaAnimations.get(uuid) <= 0) {
+                        toRemove.add(uuid);
+                    }
+                }
+                for (UUID uuid : toRemove) {
+                    CobblemonEventHandler.activeMegaAnimations.remove(uuid);
+                }
+            } catch (ConcurrentModificationException e) {
+                // I'm sure this will probably happen because I'm modifying the key set in two locations at the same time :)
+                LOGGER.warn("[GenesisForms] ", e);
+            }
+        });
     }
 
     public void reload() {

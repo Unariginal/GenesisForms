@@ -845,8 +845,36 @@ const Pokedex = {
         evoType: "useItem",
         evoItem: "Thunder Stone",
         eggGroups: ["Field", "Fairy"],
-        otherFormes: ["Raichu-Alola"],
-        formeOrder: ["Raichu", "Raichu-Alola"]
+        otherFormes: ["Raichu-Alola", "Raichu-Mega-X", "Raichu-Mega-Y"],
+        formeOrder: ["Raichu", "Raichu-Alola", "Raichu-Mega-X", "Raichu-Mega-Y"]
+    },
+    raichumegax: {
+        num: 26,
+        name: "Raichu-Mega-X",
+        baseSpecies: "Raichu",
+        forme: "Mega-X",
+        types: ["Electric"],
+        baseStats: { hp: 60, atk: 135, def: 95, spa: 90, spd: 95, spe: 110 },
+        abilities: { 0: "Static", H: "Lightning Rod" },
+        heightm: 1.2,
+        weightkg: 38,
+        color: "Yellow",
+        eggGroups: ["Field", "Fairy"],
+        requiredItem: "Raichunite X"
+    },
+    raichumegay: {
+        num: 26,
+        name: "Raichu-Mega-Y",
+        baseSpecies: "Raichu",
+        forme: "Mega-Y",
+        types: ["Electric"],
+        baseStats: { hp: 60, atk: 100, def: 55, spa: 160, spd: 80, spe: 130 },
+        abilities: { 0: "Static", H: "Lightning Rod" },
+        heightm: 1,
+        weightkg: 26,
+        color: "Yellow",
+        eggGroups: ["Field", "Fairy"],
+        requiredItem: "Raichunite Y"
     },
     raichualola: {
         num: 26,
@@ -6653,7 +6681,23 @@ const Pokedex = {
         evoType: "levelFriendship",
         evoCondition: "at night",
         eggGroups: ["Amorphous"],
-        canHatch: true
+        canHatch: true,
+        otherFormes: ["Chimecho-Mega"],
+        formeOrder: ["Chimecho", "Chimecho-Mega"]
+    },
+    chimechomega: {
+        num: 358,
+        name: "Chimecho-Mega",
+        baseSpecies: "Chimecho",
+        forme: "Mega",
+        types: ["Psychic", "Steel"],
+        baseStats: { hp: 75, atk: 50, def: 110, spa: 135, spd: 120, spe: 65 },
+        abilities: { 0: "Levitate" },
+        heightm: 1.2,
+        weightkg: 8,
+        color: "Blue",
+        eggGroups: ["Amorphous"],
+        requiredItem: "Chimechite"
     },
     absol: {
         num: 359,
@@ -6665,8 +6709,8 @@ const Pokedex = {
         weightkg: 47,
         color: "White",
         eggGroups: ["Field"],
-        otherFormes: ["Absol-Mega"],
-        formeOrder: ["Absol", "Absol-Mega"]
+        otherFormes: ["Absol-Mega", "Absol-Mega-Z"],
+        formeOrder: ["Absol", "Absol-Mega", "Absol-Mega-Z"]
     },
     absolmega: {
         num: 359,
@@ -6681,6 +6725,20 @@ const Pokedex = {
         color: "White",
         eggGroups: ["Field"],
         requiredItem: "Absolite"
+    },
+    absolmegaz: {
+        num: 359,
+        name: "Absol-Mega-Z",
+        baseSpecies: "Absol",
+        forme: "Mega-Z",
+        types: ["Dark", "Ghost"],
+        baseStats: { hp: 65, atk: 154, def: 60, spa: 75, spd: 60, spe: 151 },
+        abilities: { 0: "Pressure", 1: "Super Luck", H: "Justified" },
+        heightm: 1.2,
+        weightkg: 49,
+        color: "White",
+        eggGroups: ["Field"],
+        requiredItem: "Absolite Z"
     },
     wynaut: {
         num: 360,
@@ -7379,7 +7437,23 @@ const Pokedex = {
         color: "Brown",
         prevo: "Staravia",
         evoLevel: 34,
-        eggGroups: ["Flying"]
+        eggGroups: ["Flying"],
+        otherFormes: ["Staraptor-Mega"],
+        formeOrder: ["Staraptor", "Staraptor-Mega"]
+    },
+    staraptormega: {
+        num: 398,
+        name: "Staraptor-Mega",
+        baseSpecies: "Staraptor",
+        forme: "Mega",
+        types: ["Fighting", "Flying"],
+        baseStats: { hp: 85, atk: 140, def: 100, spa: 60, spd: 90, spe: 110 },
+        abilities: { 0: "Intimidate", H: "Reckless" },
+        heightm: 1.9,
+        weightkg: 50,
+        color: "Brown",
+        eggGroups: ["Flying"],
+        requiredItem: "Staraptite"
     },
     bidoof: {
         num: 399,
@@ -8066,8 +8140,8 @@ const Pokedex = {
         prevo: "Gabite",
         evoLevel: 48,
         eggGroups: ["Monster", "Dragon"],
-        otherFormes: ["Garchomp-Mega"],
-        formeOrder: ["Garchomp", "Garchomp-Mega"]
+        otherFormes: ["Garchomp-Mega", "Garchomp-Mega-Z"],
+        formeOrder: ["Garchomp", "Garchomp-Mega", "Garchomp-Mega-Z"]
     },
     garchompmega: {
         num: 445,
@@ -8079,6 +8153,20 @@ const Pokedex = {
         abilities: { 0: "Sand Force" },
         heightm: 1.9,
         weightkg: 95,
+        color: "Blue",
+        eggGroups: ["Monster", "Dragon"],
+        requiredItem: "Garchompite"
+    },
+    garchompmegaz: {
+        num: 445,
+        name: "Garchomp-Mega-Z",
+        baseSpecies: "Garchomp",
+        forme: "Mega-Z",
+        types: ["Dragon"],
+        baseStats: { hp: 108, atk: 130, def: 85, spa: 141, spd: 85, spe: 151 },
+        abilities: { 0: "Sand Veil", H: "Rough Skin" },
+        heightm: 1.9,
+        weightkg: 99,
         color: "Blue",
         eggGroups: ["Monster", "Dragon"],
         requiredItem: "Garchompite"
@@ -8125,8 +8213,8 @@ const Pokedex = {
         evoType: "levelFriendship",
         evoCondition: "during the day",
         eggGroups: ["Field", "Human-Like"],
-        otherFormes: ["Lucario-Mega"],
-        formeOrder: ["Lucario", "Lucario-Mega"]
+        otherFormes: ["Lucario-Mega", "Lucario-Mega-Z"],
+        formeOrder: ["Lucario", "Lucario-Mega", "Lucario-Mega-Z"]
     },
     lucariomega: {
         num: 448,
@@ -8142,6 +8230,21 @@ const Pokedex = {
         color: "Blue",
         eggGroups: ["Field", "Human-Like"],
         requiredItem: "Lucarionite"
+    },
+    lucariomegaz: {
+        num: 448,
+        name: "Lucario-Mega-Z",
+        baseSpecies: "Lucario",
+        forme: "Mega-Z",
+        types: ["Fighting", "Steel"],
+        genderRatio: { M: 0.875, F: 0.125 },
+        baseStats: { hp: 70, atk: 100, def: 70, spa: 164, spd: 70, spe: 151 },
+        abilities: { 0: "Steadfast", 1: "Inner Focus", H: "Justified" },
+        heightm: 1.3,
+        weightkg: 49.4,
+        color: "Blue",
+        eggGroups: ["Field", "Human-Like"],
+        requiredItem: "Lucarionite Z"
     },
     hippopotas: {
         num: 449,
@@ -8806,7 +8909,24 @@ const Pokedex = {
         weightkg: 430,
         color: "Brown",
         tags: ["Sub-Legendary"],
-        eggGroups: ["Undiscovered"]
+        eggGroups: ["Undiscovered"],
+        otherFormes: ["Heatran-Mega"],
+        formeOrder: ["Heatran", "Heatran-Mega"]
+    },
+    heatranmega: {
+        num: 485,
+        name: "Heatran-Mega",
+        baseSpecies: "Heatran",
+        forme: "Mega",
+        types: ["Fire", "Steel"],
+        baseStats: { hp: 91, atk: 120, def: 106, spa: 175, spd: 141, spe: 67 },
+        abilities: { 0: "Flash Fire", H: "Flame Body" },
+        heightm: 2.8,
+        weightkg: 570,
+        color: "Brown",
+        tags: ["Sub-Legendary"],
+        eggGroups: ["Undiscovered"],
+        requiredItem: "Heatranite"
     },
     regigigas: {
         num: 486,
@@ -8903,7 +9023,23 @@ const Pokedex = {
         weightkg: 50.5,
         color: "Black",
         tags: ["Mythical"],
-        eggGroups: ["Undiscovered"]
+        eggGroups: ["Undiscovered"],
+        otherFormes: ["Darkrai-Mega"],
+        formeOrder: ["Darkrai", "Darkrai-Mega"]
+    },
+    darkraimega: {
+        num: 491,
+        name: "Darkrai-Mega",
+        types: ["Dark"],
+        gender: "N",
+        baseStats: { hp: 70, atk: 120, def: 130, spa: 165, spd: 130, spe: 85 },
+        abilities: { 0: "Bad Dreams" },
+        heightm: 3.0,
+        weightkg: 240,
+        color: "Black",
+        tags: ["Mythical"],
+        eggGroups: ["Undiscovered"],
+        requiredItem: "Darkranite"
     },
     shaymin: {
         num: 492,
@@ -11260,7 +11396,24 @@ const Pokedex = {
         color: "Green",
         prevo: "Golett",
         evoLevel: 43,
-        eggGroups: ["Mineral"]
+        eggGroups: ["Mineral"],
+        otherFormes: ["Golurk-Mega"],
+        formeOrder: ["Golurk", "Golurk-Mega"]
+    },
+    golurkmega: {
+        num: 623,
+        name: "Golurk-Mega",
+        baseSpecies: "Golurk",
+        forme: "Mega",
+        types: ["Ground", "Ghost"],
+        gender: "N",
+        baseStats: { hp: 89, atk: 159, def: 105, spa: 70, spd: 105, spe: 55 },
+        abilities: { 0: "Iron Fist", 1: "Klutz", H: "No Guard" },
+        heightm: 4,
+        weightkg: 330,
+        color: "Green",
+        eggGroups: ["Mineral"],
+        requiredItem: "Golurkite"
     },
     pawniard: {
         num: 624,
@@ -12398,8 +12551,8 @@ const Pokedex = {
         prevo: "Espurr",
         evoLevel: 25,
         eggGroups: ["Field"],
-        otherFormes: ["Meowstic-F"],
-        formeOrder: ["Meowstic", "Meowstic-F"]
+        otherFormes: ["Meowstic-F", "Meowstic-Mega"],
+        formeOrder: ["Meowstic", "Meowstic-F", "Meowstic-Mega"]
     },
     meowsticf: {
         num: 678,
@@ -12416,6 +12569,19 @@ const Pokedex = {
         prevo: "Espurr",
         evoLevel: 25,
         eggGroups: ["Field"]
+    },
+    meowsticmega: {
+        num: 678,
+        name: "Meowstic-Mega",
+        baseSpecies: "Meowstic",
+        forme: "Mega",
+        types: ["Psychic"],
+        baseStats: { hp: 74, atk: 48, def: 76, spa: 143, spd: 101, spe: 124 },
+        abilities: { 0: "Keen Eye", 1: "Infiltrator", H: "Prankster", S: "Competitive" },
+        heightm: 0.8,
+        weightkg: 10.1,
+        eggGroups: ["Field"],
+        requiredItem: "Meowsticite"
     },
     honedge: {
         num: 679,
@@ -13606,7 +13772,23 @@ const Pokedex = {
         prevo: "Crabrawler",
         evoType: "useItem",
         evoItem: "Ice Stone",
-        eggGroups: ["Water 3"]
+        eggGroups: ["Water 3"],
+        otherFormes: ["Crabominable-Mega"],
+        formeOrder: ["Crabominable", "Crabominable-Mega"]
+    },
+    crabominablemega: {
+        num: 740,
+        name: "Crabominable-Mega",
+        baseSpecies: "Crabominable",
+        forme: "Mega",
+        types: ["Fighting", "Ice"],
+        baseStats: { hp: 97, atk: 157, def: 122, spa: 62, spd: 107, spe: 33 },
+        abilities: { 0: "Hyper Cutter", 1: "Iron Fist", H: "Anger Point" },
+        heightm: 2.6,
+        weightkg: 252.8,
+        color: "White",
+        eggGroups: ["Water 3"],
+        requiredItem: "Crabominite"
     },
     oricorio: {
         num: 741,
@@ -14125,7 +14307,22 @@ const Pokedex = {
         color: "Gray",
         prevo: "Wimpod",
         evoLevel: 30,
-        eggGroups: ["Bug", "Water 3"]
+        eggGroups: ["Bug", "Water 3"],
+        otherFormes: ["Golisopod-Mega"],
+        formeOrder: ["Golisopod", "Golisopod-Mega"]
+    },
+    golisopodmega: {
+        num: 768,
+        name: "Golisopod-Mega",
+        baseSpecies: "Golisopod",
+        forme: "Mega",
+        types: ["Bug", "Steel"],
+        baseStats: { hp: 75, atk: 150, def: 175, spa: 70, spd: 120, spe: 40 },
+        abilities: { 0: "Emergency Exit" },
+        heightm: 2.3,
+        weightkg: 148,
+        eggGroups: ["Bug", "Water 3"],
+        requiredItem: "Golisopite"
     },
     sandygast: {
         num: 769,
@@ -15018,8 +15215,8 @@ const Pokedex = {
         color: "Gray",
         eggGroups: ["Undiscovered"],
         tags: ["Mythical"],
-        otherFormes: ["Magearna-Original"],
-        formeOrder: ["Magearna", "Magearna-Original"]
+        otherFormes: ["Magearna-Original", "Magearna-Mega"],
+        formeOrder: ["Magearna", "Magearna-Original", "Magearna-Mega"]
     },
     magearnaoriginal: {
         num: 801,
@@ -15034,6 +15231,22 @@ const Pokedex = {
         weightkg: 80.5,
         color: "Red",
         eggGroups: ["Undiscovered"]
+    },
+    magearnamega: {
+        num: 801,
+        name: "Magearna-Mega",
+        baseSpecies: "Magearna",
+        forme: "Mega",
+        types: ["Steel", "Fairy"],
+        gender: "N",
+        baseStats: { hp: 80, atk: 125, def: 115, spa: 170, spd: 115, spe: 95 },
+        abilities: { 0: "Soul-Heart" },
+        heightm: 1.3,
+        weightkg: 248.1,
+        color: "Gray",
+        eggGroups: ["Undiscovered"],
+        tags: ["Mythical"],
+        requiredItem: "Magearnite"
     },
     marshadow: {
         num: 802,
@@ -15115,7 +15328,25 @@ const Pokedex = {
         weightkg: 44.5,
         color: "Yellow",
         tags: ["Mythical"],
-        eggGroups: ["Undiscovered"]
+        eggGroups: ["Undiscovered"],
+        otherFormes: ["Zeraora-Mega"],
+        formeOrder: ["Zeraora", "Zeraora-Mega"]
+    },
+    zeraoramega: {
+        num: 807,
+        name: "Zeraora-Mega",
+        baseSpecies: "Zeraora",
+        forme: "Mega",
+        types: ["Electric"],
+        gender: "N",
+        baseStats: { hp: 88, atk: 157, def: 75, spa: 147, spd: 80, spe: 153 },
+        abilities: { 0: "Volt Absorb" },
+        heightm: 1.5,
+        weightkg: 44.5,
+        color: "Yellow",
+        tags: ["Mythical"],
+        eggGroups: ["Undiscovered"],
+        requiredItem: "Zeraorite"
     },
     meltan: {
         num: 808,
@@ -17757,7 +17988,23 @@ const Pokedex = {
         prevo: "Capsakid",
         evoType: "useItem",
         evoItem: "Fire Stone",
-        eggGroups: ["Grass"]
+        eggGroups: ["Grass"],
+        otherFormes: ["Scovillain-Mega"],
+        formeOrder: ["Scovillain", "Scovillain-Mega"]
+    },
+    scovillainmega: {
+        num: 952,
+        name: "Scovillain-Mega",
+        baseSpecies: "Scovillain",
+        forme: "Mega",
+        types: ["Grass", "Fire"],
+        baseStats: { hp: 65, atk: 138, def: 85, spa: 138, spd: 85, spe: 75 },
+        abilities: { 0: "Chlorophyll", 1: "Insomnia", H: "Moody" },
+        heightm: 1.2,
+        weightkg: 22,
+        color: "Green",
+        eggGroups: ["Grass"],
+        requiredItem: "Scovillainite"
     },
     rellor: {
         num: 953,
@@ -18001,7 +18248,22 @@ const Pokedex = {
         color: "Blue",
         prevo: "Glimmet",
         evoLevel: 35,
-        eggGroups: ["Mineral"]
+        eggGroups: ["Mineral"],
+        otherFormes: ["Glimmora-Mega"],
+        formeOrder: ["Glimmora", "Glimmora-Mega"]
+    },
+    glimmoramega: {
+        num: 970,
+        name: "Glimmora-Mega",
+        baseSpecies: "Glimmora",
+        forme: "Mega",
+        types: ["Rock", "Poison"],
+        baseStats: { hp: 83, atk: 90, def: 105, spa: 150, spd: 96, spe: 101 },
+        abilities: { 0: "Toxic Debris", H: "Corrosion" },
+        heightm: 2.8,
+        weightkg: 77,
+        eggGroups: ["Mineral"],
+        requiredItem: "Glimmoranite"
     },
     greavard: {
         num: 971,
@@ -18098,9 +18360,24 @@ const Pokedex = {
         heightm: 0.3,
         weightkg: 8,
         color: "Pink",
+        otherFormes: ["Tatsugiri-Mega"],
         cosmeticFormes: ["Tatsugiri-Droopy", "Tatsugiri-Stretchy"],
-        formeOrder: ["Tatsugiri", "Tatsugiri-Droopy", "Tatsugiri-Stretchy"],
+        formeOrder: ["Tatsugiri", "Tatsugiri-Droopy", "Tatsugiri-Stretchy", "Baxcalibur-Mega"],
         eggGroups: ["Water 2"]
+    },
+    tatsugirimega: {
+        num: 978,
+        name: "Tatsugiri-Mega",
+        baseSpecies: "Tatsugiri",
+        forme: "Mega",
+        types: ["Dragon", "Water"],
+        baseStats: { hp: 68, atk: 65, def: 90, spa: 135, spd: 125, spe: 92 },
+        abilities: { 0: "Commander", H: "Storm Drain" },
+        heightm: 0.6,
+        weightkg: 24,
+        color: "Pink",
+        eggGroups: ["Water 2"],
+        requiredItem: "Tatsugirinite"
     },
     annihilape: {
         num: 979,
@@ -18383,7 +18660,22 @@ const Pokedex = {
         color: "Gray",
         prevo: "Arctibax",
         evoLevel: 54,
-        eggGroups: ["Dragon", "Mineral"]
+        eggGroups: ["Dragon", "Mineral"],
+        otherFormes: ["Baxcalibur-Mega"],
+        formeOrder: ["Baxcalibur", "Baxcalibur-Mega"]
+    },
+    baxcaliburmega: {
+        num: 998,
+        name: "Baxcalibur-Mega",
+        baseSpecies: "Baxcalibur",
+        forme: "Mega",
+        types: ["Dragon", "Ice"],
+        baseStats: { hp: 115, atk: 175, def: 117, spa: 105, spd: 101, spe: 87 },
+        abilities: { 0: "Thermal Exchange", H: "Ice Body" },
+        heightm: 2.1,
+        weightkg: 315,
+        eggGroups: ["Dragon", "Mineral"],
+        requiredItem: "Baxcalibrite"
     },
     gimmighoul: {
         num: 999,

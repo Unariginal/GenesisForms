@@ -100,6 +100,26 @@
   "cobblemon.ui.pokedex.info.form.zygarde-mega": "Mega",
   "cobblemon.species.zygarde-mega.desc": "In response to people's emotions during an unprecedented crisis, Zygarde Mega Evolves and calms the situation with its unmatched power.",
 
+  "cobblemon.ui.pokedex.info.form.raichu-megax": "Mega X",
+  "cobblemon.species.raichu-megax.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+  "cobblemon.ui.pokedex.info.form.raichu-megay": "Mega Y",
+  "cobblemon.species.raichu-megay.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+
+  "cobblemon.ui.pokedex.info.form.lucario-megaz": "Mega Z",
+  "cobblemon.species.lucario-megaz.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+
+  "cobblemon.ui.pokedex.info.form.chimecho": "",
+  "cobblemon.ui.pokedex.info.form.chimecho-mega": "Mega",
+  "cobblemon.species.chimecho-mega.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+
+  "cobblemon.ui.pokedex.info.form.baxcalibur": "",
+  "cobblemon.ui.pokedex.info.form.baxcalibur-mega": "Mega",
+  "cobblemon.species.baxcalibur-mega.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+
+  "cobblemon.ui.pokedex.info.form.zeraora": "",
+  "cobblemon.ui.pokedex.info.form.zeraora-mega": "Mega",
+  "cobblemon.species.zeraora-mega.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+
   "cobblemon.move.nihillight": "Nihil Light",
   "cobblemon.move.nihillight.desc": "The user attacks by unleashing a powerful light that defies all laws of nature, striking even Fairy types and ignoring any stat changes affecting its targets."
 }

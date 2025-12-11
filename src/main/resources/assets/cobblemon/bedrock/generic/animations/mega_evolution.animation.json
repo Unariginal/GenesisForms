@@ -1,0 +1,42 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.mega_evolution.mega_evolution": {
+      "animation_length": 4.5,
+      "bones": {
+        "mega_evolution": {
+          "scale": {
+            "0.9167": {
+              "pre": [1, 1, 1],
+              "post": [1, 1, 1],
+              "lerp_mode": "catmullrom"
+            },
+            "1.5417": {
+              "post": [0.75, 0.75, 0.75],
+              "lerp_mode": "catmullrom"
+            },
+            "3.125": {
+              "post": [0.75, 0.75, 0.75],
+              "lerp_mode": "catmullrom"
+            },
+            "3.25": {
+              "post": [1, 1, 1],
+              "lerp_mode": "catmullrom"
+            }
+          }
+        }
+      },
+      "sound_effects": {
+        "0.0": {
+          "effect": "evolution.full"
+        }
+      },
+      "particle_effects": {
+        "0.0": {
+          "effect": "cobblemon:mega_evolution",
+          "locator": "middle"
+        }
+      }
+    }
+  }
+}

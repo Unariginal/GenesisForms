@@ -48,11 +48,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CobblemonEventHandler {
+    public static Map<UUID, Float> activeMegaAnimations = new HashMap<>();
+
     public static Unit battleStartEvent(BattleStartedEvent.Pre event) {
         PokemonBattle battle = event.getBattle();
         for (ServerPlayerEntity player : battle.getPlayers()) {
@@ -488,40 +489,46 @@ public class CobblemonEventHandler {
         EventsConfig.AnimationData megaAnimation = EventsConfig.gimmickEvents.megaEvolution.getAnimation(eventID);
 
         if (canMegaEvolve) {
-            EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
-            if (pokemon.getEntity() != null && megaAnimation != null) {
-                String finalFeatureValue = featureValue;
-                String finalFeatureName = featureName;
-                pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
-                    if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) return Unit.INSTANCE;
+            if (!activeMegaAnimations.containsKey(pokemon.getUuid())) {
+                EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
+                if (pokemon.getEntity() != null && megaAnimation != null) {
+                    String finalFeatureValue = featureValue;
+                    String finalFeatureName = featureName;
+                    activeMegaAnimations.put(pokemon.getUuid(), megaAnimation.formDelaySeconds * 20);
+                    pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
+                        if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID()))
+                            return Unit.INSTANCE;
 
-                    if (finalFeatureValue.equalsIgnoreCase("true") || finalFeatureValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(finalFeatureName, Boolean.getBoolean(finalFeatureValue)).apply(pokemon);
+                        if (finalFeatureValue.equalsIgnoreCase("true") || finalFeatureValue.equalsIgnoreCase("false")) {
+                            new FlagSpeciesFeature(finalFeatureName, Boolean.getBoolean(finalFeatureValue)).apply(pokemon);
+                        } else {
+                            new StringSpeciesFeature(finalFeatureName, finalFeatureValue).apply(pokemon);
+                        }
+
+                        if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
+                            GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
+                        }
+
+                        activeMegaAnimations.remove(pokemon.getUuid());
+                        return Unit.INSTANCE;
+                    });
+                } else {
+                    if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID()))
+                        return;
+
+                    if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
+                        new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
                     } else {
-                        new StringSpeciesFeature(finalFeatureName, finalFeatureValue).apply(pokemon);
+                        new StringSpeciesFeature(featureName, featureValue).apply(pokemon);
                     }
 
                     if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
                         GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
                     }
-
-                    return Unit.INSTANCE;
-                });
-            } else {
-                if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) return;
-
-                if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
-                    new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
-                } else {
-                    new StringSpeciesFeature(featureName, featureValue).apply(pokemon);
                 }
-
-                if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
-                    GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
-                }
+                if (GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(false);
+                pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
             }
-            if (GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(false);
-            pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
         }
     }
 
