@@ -2,6 +2,8 @@ package me.unariginal.genesisforms.utils;
 
 import com.cobblemon.mod.common.api.moves.BenchedMove;
 import com.cobblemon.mod.common.api.moves.Move;
+import com.cobblemon.mod.common.api.moves.MoveTemplate;
+import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.pokemon.*;
@@ -202,5 +204,42 @@ public class PokemonUtils {
         }
         pokemon.getBenchedMoves().clear();
         pokemon.getBenchedMoves().addAll(newBenchedMoves);
+    }
+
+    public static void swapPokemonMove(Pokemon pokemon, String oldMove, String newMove) {
+        MoveTemplate replacement = Moves.getByName(newMove);
+        if (replacement != null) {
+            List<Move> newMoves = new ArrayList<>();
+            int slot = 0;
+            int containsMoveSlot = -1;
+            for (Move move : pokemon.getMoveSet().getMoves()) {
+                if (!move.getTemplate().getName().equalsIgnoreCase(oldMove)) {
+                    newMoves.add(move);
+                } else {
+                    containsMoveSlot = slot;
+                }
+                slot++;
+            }
+            for (int i = 0; i < newMoves.size(); i++) {
+                pokemon.getMoveSet().setMove(i, newMoves.get(i));
+            }
+            if (containsMoveSlot != -1)
+                pokemon.getMoveSet().setMove(containsMoveSlot, replacement.create(replacement.getMaxPp()));
+
+            List<BenchedMove> newBenchedMoves = new ArrayList<>();
+            boolean containsMoveBenched = false;
+            for (BenchedMove move : pokemon.getBenchedMoves()) {
+                if (!move.getMoveTemplate().getName().equalsIgnoreCase(oldMove)) {
+                    newBenchedMoves.add(move);
+                } else {
+                    containsMoveBenched = true;
+                }
+            }
+            pokemon.getBenchedMoves().clear();
+            pokemon.getBenchedMoves().addAll(newBenchedMoves);
+            if (containsMoveBenched) {
+                pokemon.getBenchedMoves().add(new BenchedMove(replacement, 0));
+            }
+        }
     }
 }

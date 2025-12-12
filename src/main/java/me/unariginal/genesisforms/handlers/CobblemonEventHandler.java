@@ -18,6 +18,10 @@ import com.cobblemon.mod.common.api.events.pokemon.PokemonGainedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
 import com.cobblemon.mod.common.api.events.pokemon.TradeEvent;
 import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
+import com.cobblemon.mod.common.api.moves.BenchedMove;
+import com.cobblemon.mod.common.api.moves.Move;
+import com.cobblemon.mod.common.api.moves.MoveTemplate;
+import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
@@ -42,6 +46,7 @@ import me.unariginal.genesisforms.items.keyitems.accessories.DynamaxAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.MegaAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
+import me.unariginal.genesisforms.utils.PokemonUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -348,7 +353,6 @@ public class CobblemonEventHandler {
 
         // Change forms
         if (received.getItem() instanceof ZCrystal zCrystal) {
-            GenesisForms.INSTANCE.logError("[Genesis] This is a Z Crystal!");
             zCrystal.getFormChanges().forEach(formChange -> {
                 boolean speciesMatch = false;
                 for (String species : formChange.species) {
@@ -358,7 +362,6 @@ public class CobblemonEventHandler {
                     }
                 }
                 if (speciesMatch) {
-                    GenesisForms.INSTANCE.logError("[Genesis] Species match! Name: " + formChange.featureName + " Value: " + formChange.alternateValue);
                     if (formChange.alternateValue.equalsIgnoreCase("true") || formChange.alternateValue.equalsIgnoreCase("false")) {
                         new FlagSpeciesFeature(formChange.featureName, Boolean.getBoolean(formChange.alternateValue)).apply(pokemon);
                     } else {
@@ -371,9 +374,7 @@ public class CobblemonEventHandler {
         }
 
         if (received.getItem() instanceof HeldFormItem heldFormItem) {
-            GenesisForms.INSTANCE.logError("[Genesis] This is a Held Form Item!");
             if (heldFormItem.getSpeciesList().contains(pokemon.getSpecies())) {
-                GenesisForms.INSTANCE.logError("[Genesis] Species match! Name: " + heldFormItem.getFormData().featureName + " Value: " + heldFormItem.getFormData().alternateValue);
                 if (heldFormItem.getFormData().alternateValue.equalsIgnoreCase("true") || heldFormItem.getFormData().alternateValue.equalsIgnoreCase("false")) {
                     new FlagSpeciesFeature(heldFormItem.getFormData().featureName, Boolean.getBoolean(heldFormItem.getFormData().alternateValue)).apply(pokemon);
                 } else {
@@ -381,6 +382,11 @@ public class CobblemonEventHandler {
                 }
 
                 fixOgerponTeraType(pokemon, heldFormItem.getShowdownID());
+                if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
+                    PokemonUtils.swapPokemonMove(pokemon, "ironhead", "behemothbash");
+                } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
+                    PokemonUtils.swapPokemonMove(pokemon, "ironhead", "behemothblade");
+                }
 
                 pokemon.updateAspects();
                 pokemon.updateForm();
@@ -441,6 +447,13 @@ public class CobblemonEventHandler {
                 } else {
                     new StringSpeciesFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().defaultValue).apply(pokemon);
                 }
+
+                if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
+                    PokemonUtils.swapPokemonMove(pokemon, "behemothbash", "ironhead");
+                } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
+                    PokemonUtils.swapPokemonMove(pokemon, "behemothblade", "ironhead");
+                }
+
                 pokemon.updateAspects();
                 pokemon.updateForm();
             }
