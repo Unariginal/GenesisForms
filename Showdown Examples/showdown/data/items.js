@@ -469,8 +469,8 @@ const Items = {
         megaEvolves: "Zygarde-Complete",
         itemUser: ["Zygarde-Complete"],
         onTakeItem(item, source) {
-            if (item.megaEvolves === source.baseSpecies.baseSpecies)
-                return false;
+            if ((source.baseSpecies.baseSpecies === 'Zygarde' && source.baseAbility === 'powerconstruct') ||
+				source.baseSpecies.name === 'Zygarde-Mega') return false;
             return true;
         },
         num: 10026,
@@ -645,11 +645,11 @@ const Items = {
     meowsticite: {
         name: "Meowsticite",
         spritenum: 10038,
-        megaStone: "Meowstic-Mega",
-        megaEvolves: "Meowstic",
-        itemUser: ["Meowstic"],
+        megaStone: ["Meowstic-M-Mega", "Meowstic-F-Mega"],
+        megaEvolves: ["Meowstic", "Meowstic-F"],
+        itemUser: ["Meowstic", "Meowstic-F"],
         onTakeItem(item, source) {
-            if (item.megaEvolves === source.baseSpecies.baseSpecies)
+            if (item.megaEvolves.includes(source.baseSpecies.baseSpecies))
                 return false;
             return true;
         },
@@ -690,11 +690,11 @@ const Items = {
     magearnite: {
         name: "Magearnite",
         spritenum: 10041,
-        megaStone: "Magearna-Mega",
-        megaEvolves: "Magearna",
-        itemUser: ["Magearna"],
+        megaStone: ["Magearna-Mega", "Magearna-Original-Mega"],
+        megaEvolves: ["Magearna", "Magearna-Original"],
+        itemUser: ["Magearna", "Magearna-Original"],
         onTakeItem(item, source) {
-            if (item.megaEvolves === source.baseSpecies.baseSpecies)
+            if (item.megaEvolves.includes(source.baseSpecies.baseSpecies))
                 return false;
             return true;
         },
@@ -717,14 +717,14 @@ const Items = {
         gen: 9,
         isNonstandard: "Past"
     },
-    tatsugirite: {
-        name: "Tatsugirite",
+    tatsugirinite: {
+        name: "Tatsugirinite",
         spritenum: 10043,
-        megaStone: "Tatsugiri-Mega",
-        megaEvolves: "Tatsugiri",
-        itemUser: ["Tatsugiri"],
+        megaStone: ["Tatsugiri-Curly-Mega", "Tatsugiri-Droopy-Mega", "Tatsugiri-Stretchy-Mega"],
+        megaEvolves: ["Tatsugiri", "Tatsugiri-Droopy", "Tatsugiri-Stretchy"],
+        itemUser: ["Tatsugiri", "Tatsugiri-Droopy", "Tatsugiri-Stretchy"],
         onTakeItem(item, source) {
-            if (item.megaEvolves === source.baseSpecies.baseSpecies)
+            if (item.megaEvolves.includes(source.baseSpecies.baseSpecies))
                 return false;
             return true;
         },

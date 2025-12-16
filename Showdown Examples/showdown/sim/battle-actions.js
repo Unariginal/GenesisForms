@@ -1733,7 +1733,11 @@ class BattleActions {
             return item.megaStone;
         }
 
-        if (item.megaEvolves === species.baseSpecies && item.megaStone !== species.name) {
+        if (Array.isArray(item.megaStone)) {
+            const index = item.megaEvolves.indexOf(species.baseSpecies);
+            if (index < 0) return null;
+			return item.megaStone[index];
+        } else if (item.megaEvolves === species.baseSpecies && item.megaStone !== species.name) {
             return item.megaStone;
         }
         return null;
@@ -1766,8 +1770,9 @@ class BattleActions {
                     id: nihilLight.id,
                     move: nihilLight.name,
                     pp: pokemon.moveSlots[coreEnforcer].pp,
+                    maxpp: pokemon.moveSlots[coreEnforcer].maxpp,
                     disabled: false,
-                    used: false
+                    used: false,
                 };
             }
         }
