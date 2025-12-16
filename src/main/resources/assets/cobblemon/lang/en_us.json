@@ -101,24 +101,84 @@
   "cobblemon.species.zygarde-mega.desc": "In response to people's emotions during an unprecedented crisis, Zygarde Mega Evolves and calms the situation with its unmatched power.",
 
   "cobblemon.ui.pokedex.info.form.raichu-megax": "Mega X",
-  "cobblemon.species.raichu-megax.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+  "cobblemon.species.raichu-megax.desc": "It resembles an X as it flies through the air with 50 million volts of electricity sparking from its ears and forked tail.",
   "cobblemon.ui.pokedex.info.form.raichu-megay": "Mega Y",
-  "cobblemon.species.raichu-megay.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
-
-  "cobblemon.ui.pokedex.info.form.lucario-megaz": "Mega Z",
-  "cobblemon.species.lucario-megaz.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+  "cobblemon.species.raichu-megay.desc": "It fires bolts of electricity from the tip of its tail and from the spiky tufts of fur growing out of its temples. This electricity forms the letter Y.",
 
   "cobblemon.ui.pokedex.info.form.chimecho": "",
   "cobblemon.ui.pokedex.info.form.chimecho-mega": "Mega",
-  "cobblemon.species.chimecho-mega.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+  "cobblemon.species.chimecho-mega.desc": "It vibrates its entire body to attack in all directions using sound waves. Any who hear the vibrations get so confused, they forget who they are.",
 
   "cobblemon.ui.pokedex.info.form.baxcalibur": "",
   "cobblemon.ui.pokedex.info.form.baxcalibur-mega": "Mega",
-  "cobblemon.species.baxcalibur-mega.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+  "cobblemon.species.baxcalibur-mega.desc": "Baxcalibur's dorsal blade has grown even more massive thanks to Mega Evolution. This Pokémon fires beams from the hilt at its solar plexus.",
 
   "cobblemon.ui.pokedex.info.form.zeraora": "",
   "cobblemon.ui.pokedex.info.form.zeraora-mega": "Mega",
-  "cobblemon.species.zeraora-mega.desc": "Ｅｃｏｌｏｇｙ ｕｎｄｅｒ ｒｅｓｅａｒｃｈ．",
+  "cobblemon.species.zeraora-mega.desc": "It stores up 10 lightning strikes' worth of electricity. When it stops limiting itself, it's in the strongest class of electric Pokémon.",
+
+  "cobblemon.ui.pokedex.info.form.heatran": "",
+  "cobblemon.ui.pokedex.info.form.heatran-mega": "Mega",
+  "cobblemon.species.heatran-mega.desc": "It's said that if it goes all out, it can heat its body up to temperatures over 1.8 million degrees Fahrenheit. This heat keeps enemies at bay.",
+
+  "cobblemon.ui.pokedex.info.form.darkrai": "",
+  "cobblemon.ui.pokedex.info.form.darkrai-mega": "Mega",
+  "cobblemon.species.darkrai-mega.desc": "Its dark power blocks out the sun, plunging the surrounding area into darkness. There is no escaping its evil eye.",
+
+  "cobblemon.ui.pokedex.info.form.absol-megaz": "Mega Z",
+  "cobblemon.species.absol-megaz.desc": "Using fur that it has made into sharp, clawlike shapes, it cuts down foes with a single blow. This is an act of kindness to keep them from suffering.",
+
+  "cobblemon.ui.pokedex.info.form.staraptor": "",
+  "cobblemon.ui.pokedex.info.form.staraptor-mega": "Mega",
+  "cobblemon.species.staraptor-mega.desc": "Mega Staraptor is a top-class flier. It can easily soar through the sky while gripping a Steelix that weighs more than 880 lbs.",
+
+  "cobblemon.ui.pokedex.info.form.garchomp-megaz": "Mega Z",
+  "cobblemon.species.garchomp-megaz.desc": "Garchomp has gained a new Mega-Evolved form. It flies around foes at Mach speed and cuts them to shreds with its sinister wing claws.",
+
+  "cobblemon.ui.pokedex.info.form.lucario-megaz": "Mega Z",
+  "cobblemon.species.lucario-megaz.desc": "By completely cloaking itself in its aura, Mega Lucario Z can parry all manner of attacks, battling as if it were gracefully dancing.",
+
+  "cobblemon.ui.pokedex.info.form.golurk": "",
+  "cobblemon.ui.pokedex.info.form.golurk-mega": "Mega",
+  "cobblemon.species.golurk-mega.desc": "The energy within Golurk has been stimulated by Mega Evolution. The Pokémon could explode at any moment.",
+
+  "cobblemon.ui.pokedex.info.form.meowstic-fmega": "Mega",
+  "cobblemon.species.meowstic-f-mega.desc": "Mega Meowstic can use its psychic power to compress or expand anything. It overwhelms foes by contorting space itself.",
+
+  "cobblemon.ui.pokedex.info.form.meowstic-mmega": "Mega",
+  "cobblemon.species.meowstic-m-mega.desc": "Mega Meowstic can use its psychic power to compress or expand anything. It overwhelms foes by contorting space itself.",
+
+  "cobblemon.ui.pokedex.info.form.meowstic-mega": "Mega",
+  "cobblemon.species.meowstic-mega.desc": "Mega Meowstic can use its psychic power to compress or expand anything. It overwhelms foes by contorting space itself.",
+
+  "cobblemon.ui.pokedex.info.form.crabominable": "",
+  "cobblemon.ui.pokedex.info.form.crabominable-mega": "Mega",
+  "cobblemon.species.crabominable-mega.desc": "It can pulverize reinforced concrete with a light swing of one of its fists, each of which is covered in a thick layer of ice.",
+
+  "cobblemon.ui.pokedex.info.form.golisopod": "",
+  "cobblemon.ui.pokedex.info.form.golisopod-mega": "Mega",
+  "cobblemon.species.golisopod-mega.desc": "It uses four of its arms to fiercely assail its foes. Once they've been pushed to the brink of defeat, it finishes them off with the arms it kept hidden.",
+
+  "cobblemon.ui.pokedex.info.form.magearna-mega": "Mega",
+  "cobblemon.species.magearna-mega.desc": "This is Magearna once a previously hidden mode activates. The emotions Magearna had begun to feel now hide away as it fells foe after foe.",
+
+  "cobblemon.ui.pokedex.info.form.magearna-originalmega": "Original Color Mega",
+  "cobblemon.species.magearna-original-mega.desc": "A mechanism to remove Magerna's limitations has lain secretly with Magerna for 500 years. This mechanism is triggered by a Mega Stone.",
+
+  "cobblemon.ui.pokedex.info.form.scovillain": "",
+  "cobblemon.ui.pokedex.info.form.scovillain-mega": "Mega",
+  "cobblemon.species.scovillain-mega.desc": "Mega Evolution has dialed up this Pokémon's spiciness. It swings its \"necktie\" around to wallop its foes.",
+
+  "cobblemon.ui.pokedex.info.form.tatsugiri-curlymega": "Curly Mega",
+  "cobblemon.species.tatsugiri-curly-mega.desc": "Tatsugiri's brain has been invigorated by Mega Evolution, making it even wilier. It can create and command copies of itself.",
+  "cobblemon.ui.pokedex.info.form.tatsugiri-droopymega": "Droopy Mega",
+  "cobblemon.species.tatsugiri-droopy-mega.desc": "It solidifies the energy of Mega Evolution, building up an overflowing pile to launch as projectiles. These projectiles explode on contact.",
+  "cobblemon.ui.pokedex.info.form.tatsugiri-stretchymega": "Stretchy Mega",
+  "cobblemon.species.tatsugiri-stretchy-mega.desc": "Using the energy of Mega Evolution, it creates a dish to ride upon, allowing it to move with total freedom-even through the air.",
+
+  "cobblemon.ui.pokedex.info.form.glimmora": "",
+  "cobblemon.ui.pokedex.info.form.glimmora-mega": "Mega",
+  "cobblemon.species.glimmora-mega.desc": "Glimmora's petals—now larger and separated from its main body—rotate around it to provide defense while scattering poisonous fragments.",
 
   "cobblemon.move.nihillight": "Nihil Light",
   "cobblemon.move.nihillight.desc": "The user attacks by unleashing a powerful light that defies all laws of nature, striking even Fairy types and ignoring any stat changes affecting its targets."
