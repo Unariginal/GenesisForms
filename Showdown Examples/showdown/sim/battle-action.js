@@ -4,9 +4,11 @@
  */
 
 /**
+ * Version: 1.2.5
+ *
  * GenesisForms Note:
  * This file has been modified, this comment is here to prevent modification again, please remove this comment if you need Genesis to remodify the file
- * */
+ **/
 
 "use strict";
 var __defProp = Object.defineProperty;
@@ -28,12 +30,12 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var battle_actions_exports = {};
 __export(battle_actions_exports, {
-    BattleActions: () => BattleActions
+    BattleActions: () => BattleAction
 });
 module.exports = __toCommonJS(battle_actions_exports);
 var import_dex = require("./dex");
 const CHOOSABLE_TARGETS = /* @__PURE__ */ new Set(["normal", "any", "adjacentAlly", "adjacentAllyOrSelf", "adjacentFoe"]);
-class BattleActions {
+class BattleAction {
     constructor(battle) {
         this.MAX_MOVES = {
             Flying: "Max Airstream",

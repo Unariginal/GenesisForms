@@ -15,9 +15,11 @@ defined and configured, See ShowdownService.kt on the  main Cobblemon repo .
 // eslint-disable-next-line strict
 
 /**
+ * Version: 1.2.5
+ *
  * GenesisForms Note:
  * This file has been modified, this comment is here to prevent modification again, please remove this comment if you need Genesis to remodify the file
- * */
+ **/
 
 const BS = require('./sim/battle-stream');
 const Cobblemon = require('./sim/cobblemon/cobblemon').Cobblemon
@@ -46,6 +48,15 @@ function startBattle(graalShowdown, battleId, requestMessages) {
             graalShowdown.sendFromShowdown(battleId, output);
         }
     })();
+}
+
+function endBattle(battleId) {
+    const battleStream = battleMap.get(battleId);
+
+    if (battleStream != null) {
+        battleStream._writeEnd();
+        battleMap.delete(battleId);
+    }
 }
 
 function sendBattleMessage(battleId, messages) {

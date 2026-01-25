@@ -1,7 +1,9 @@
 /**
+ * Version: 1.2.5
+ *
  * GenesisForms Note:
  * This file has been modified, this comment is here to prevent modification again, please remove this comment if you need Genesis to remodify the file
- * */
+ **/
 
 "use strict";
 var __defProp = Object.defineProperty;
