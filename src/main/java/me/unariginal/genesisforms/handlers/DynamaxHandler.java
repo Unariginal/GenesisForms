@@ -18,7 +18,7 @@ public class DynamaxHandler {
                 new StringSpeciesFeature("dynamax_form", "gmax").apply(pokemon.getEffectedPokemon());
                 for (ActiveBattlePokemon activeBattlePokemon : battle.getActivePokemon()) {
                     if (activeBattlePokemon.getBattlePokemon() != null &&
-                            activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == pokemon.getEffectedPokemon().getOwnerPlayer() &&
+//                            activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == pokemon.getEffectedPokemon().getOwnerPlayer() &&
                             activeBattlePokemon.getBattlePokemon() == pokemon) {
                         battle.sendSidedUpdate(
                                 activeBattlePokemon.getActor(),
@@ -36,7 +36,9 @@ public class DynamaxHandler {
         DynamaxEventEnd.EVENT.register((battle, pokemon) -> {
             new StringSpeciesFeature("dynamax_form", "none").apply(pokemon.getEffectedPokemon());
             for (ActiveBattlePokemon activeBattlePokemon : battle.getActivePokemon()) {
-                if (activeBattlePokemon.getBattlePokemon() != null && activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == pokemon.getEffectedPokemon().getOwnerPlayer() && activeBattlePokemon.getBattlePokemon() == pokemon) {
+                if (activeBattlePokemon.getBattlePokemon() != null &&
+//                        activeBattlePokemon.getBattlePokemon().getEffectedPokemon().getOwnerPlayer() == pokemon.getEffectedPokemon().getOwnerPlayer() &&
+                        activeBattlePokemon.getBattlePokemon() == pokemon) {
                     battle.sendSidedUpdate(
                             activeBattlePokemon.getActor(),
                             new BattleTransformPokemonPacket(activeBattlePokemon.getPNX(), pokemon, true),

@@ -381,7 +381,6 @@ public class CobblemonEventHandler {
                     new StringSpeciesFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().alternateValue).apply(pokemon);
                 }
 
-                fixOgerponTeraType(pokemon, heldFormItem.getShowdownID());
                 if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
                     PokemonUtils.swapPokemonMove(pokemon, "ironhead", "behemothbash");
                 } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
@@ -393,18 +392,25 @@ public class CobblemonEventHandler {
             }
         }
 
+        fixOgerponTeraType(pokemon);
+
         return Unit.INSTANCE;
     }
 
-    public static void fixOgerponTeraType(Pokemon pokemon, String showdownID) {
+    public static void fixOgerponTeraType(Pokemon pokemon) {
         // TODO: Allow custom ogerpon item tera type changing
         if (GenesisForms.INSTANCE.getConfig().fixOgerponTeraType) {
             if (pokemon.getSpecies().getName().equalsIgnoreCase("ogerpon")) {
-                switch (showdownID) {
-                    case "hearthflamemask" -> pokemon.setTeraType(TeraTypes.getFIRE());
-                    case "wellspringmask" -> pokemon.setTeraType(TeraTypes.getWATER());
-                    case "cornerstonemask" -> pokemon.setTeraType(TeraTypes.getROCK());
-                    default -> pokemon.setTeraType(TeraTypes.getGRASS());
+                if (pokemon.heldItem().getItem() instanceof HeldFormItem heldFormItem) {
+                    String showdownID = heldFormItem.getShowdownID();
+                    switch (showdownID) {
+                        case "hearthflamemask" -> pokemon.setTeraType(TeraTypes.getFIRE());
+                        case "wellspringmask" -> pokemon.setTeraType(TeraTypes.getWATER());
+                        case "cornerstonemask" -> pokemon.setTeraType(TeraTypes.getROCK());
+                        default -> pokemon.setTeraType(TeraTypes.getGRASS());
+                    }
+                } else {
+                    pokemon.setTeraType(TeraTypes.getGRASS());
                 }
             }
         }
@@ -465,13 +471,13 @@ public class CobblemonEventHandler {
         BattlePokemon battlePokemon = event.getPokemon();
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
 
-        megaEvolveLogic(pokemon);
+        megaEvolveLogic(pokemon, true);
 
         PacketHandler.updatePackets(battle, battlePokemon, true);
         return Unit.INSTANCE;
     }
 
-    public static void megaEvolveLogic(Pokemon pokemon) {
+    public static void megaEvolveLogic(Pokemon pokemon, boolean fromBattle) {
         Item heldItem = pokemon.heldItem().getItem();
         boolean canMegaEvolve = false;
         String featureName = "mega_evolution";
@@ -503,13 +509,17 @@ public class CobblemonEventHandler {
 
         if (canMegaEvolve) {
             if (!activeMegaAnimations.containsKey(pokemon.getUuid())) {
+//                if (pokemon.getSpecies().getName().equalsIgnoreCase("zygarde")) {
+//                    swapMoves(pokemon, "coreenforcer", "nihillight");
+//                }
+
                 EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
                 if (pokemon.getEntity() != null && megaAnimation != null) {
                     String finalFeatureValue = featureValue;
                     String finalFeatureName = featureName;
                     activeMegaAnimations.put(pokemon.getUuid(), megaAnimation.formDelaySeconds * 20);
                     pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
-                        if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID()))
+                        if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) && !fromBattle)
                             return Unit.INSTANCE;
 
                         if (finalFeatureValue.equalsIgnoreCase("true") || finalFeatureValue.equalsIgnoreCase("false")) {
@@ -526,7 +536,7 @@ public class CobblemonEventHandler {
                         return Unit.INSTANCE;
                     });
                 } else {
-                    if (pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID()))
+                    if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) && !fromBattle)
                         return;
 
                     if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
@@ -545,6 +555,24 @@ public class CobblemonEventHandler {
         }
     }
 
+    public static void swapMoves(Pokemon pokemon, String move1, String move2) {
+        int moveIndex = -1;
+        for (int i = 0; i < 4; i++) {
+            Move move = pokemon.getMoveSet().get(i);
+            if (move != null && move.getName().equalsIgnoreCase(move1)) {
+                moveIndex = i;
+                break;
+            }
+        }
+
+        if (moveIndex != -1) {
+            MoveTemplate nihilTemplate = Moves.getByName(move2);
+            if (nihilTemplate != null) {
+                pokemon.getMoveSet().setMove(moveIndex, nihilTemplate.create(nihilTemplate.getMaxPp()));
+            }
+        }
+    }
+
     public static boolean revertMega(Pokemon pokemon, String featureName) {
         boolean wasMega = pokemon.getFeatures().removeIf(features -> features.getName().equalsIgnoreCase(featureName));
 
@@ -553,6 +581,10 @@ public class CobblemonEventHandler {
 
         pokemon.getPersistentData().remove("genesis_untradeable");
         if (pokemon.getOwnerUUID() != null) GenesisForms.INSTANCE.getPlayersWithMega().remove(pokemon.getOwnerUUID());
+
+//        if (pokemon.getSpecies().getName().equalsIgnoreCase("zygarde")) {
+//            swapMoves(pokemon, "nihillight", "coreenforcer");
+//        }
 
         pokemon.updateAspects();
         pokemon.updateForm();

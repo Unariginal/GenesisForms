@@ -25,7 +25,7 @@ public class StartInstructionMixin {
         boolean gmax = message.getRawMessage().contains("Gmax");
 
         if (dynamax) {
-            BattlePokemon pokemon =  message.battlePokemon(0, battle);
+            BattlePokemon pokemon = message.battlePokemon(0, battle);
             DynamaxStartEvent.EVENT.invoker().onDynamaxStart(battle, pokemon, gmax);
         }
     }

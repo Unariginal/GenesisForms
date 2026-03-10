@@ -51,7 +51,7 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
         boolean isMega = pokemon.getAspects().stream().anyMatch(aspect -> aspect.startsWith("mega"));
         if (!isMega) {
             if (!GenesisForms.INSTANCE.getPlayersWithMega().containsKey(serverPlayerEntity.getUuid())) {
-                CobblemonEventHandler.megaEvolveLogic(pokemon);
+                CobblemonEventHandler.megaEvolveLogic(pokemon, false);
             }
         } else {
             Item helditem = pokemon.heldItem().getItem();
@@ -70,6 +70,8 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
 
     @Override
     public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
+        if (pokemon.getEntity().isBattling()) return false;
+
         Item helditem = pokemon.heldItem().getItem();
         if (helditem instanceof Megastone megastone) {
             MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = megastone.getMegastoneData();
