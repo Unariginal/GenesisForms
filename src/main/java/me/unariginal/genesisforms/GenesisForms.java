@@ -7,8 +7,11 @@ import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.pc.PCStore;
+import com.cobblemon.mod.common.battles.ShowdownInterpreter;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.platform.events.PlatformEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
@@ -23,6 +26,7 @@ import me.unariginal.genesisforms.config.items.helditems.ZCrystalsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
 import me.unariginal.genesisforms.config.items.keyitems.PossessionItemsConfig;
+import me.unariginal.genesisforms.events.UltraBurstEvent;
 import me.unariginal.genesisforms.handlers.*;
 import me.unariginal.genesisforms.items.helditems.HeldBattleItem;
 import me.unariginal.genesisforms.polymer.*;
@@ -33,6 +37,8 @@ import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +50,7 @@ public class GenesisForms implements ModInitializer {
     public static final String MOD_ID = "genesisforms";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+    public static boolean DEBUG = false;
     public static GenesisForms INSTANCE;
 
     private MinecraftServer server;
@@ -63,6 +70,19 @@ public class GenesisForms implements ModInitializer {
         INSTANCE = this;
 
         new GenesisCommands();
+
+        ShowdownInterpreter.registerUpdateInstructionParser("-burst", (battle, instructionSet, message, messageIterator) -> pokemonBattle -> {
+            BattlePokemon battlePokemon = message.battlePokemon(0, battle);
+            if (battlePokemon == null) return;
+
+            pokemonBattle.dispatchWaiting(1f, () -> {
+                MutableText pokemonName = battlePokemon.getName();
+                battle.broadcastChatMessage(LocalizationUtilsKt.battleLang("ultra", pokemonName).formatted(Formatting.YELLOW));
+                battle.getMinorBattleActions().put(battlePokemon.getUuid(), message);
+                UltraBurstEvent.ULTRA_BURST.invoker().onUltraBurst(pokemonBattle, battlePokemon);
+                return Unit.INSTANCE;
+            });
+        });
 
         try {
             AccessoriesConfig.load();
@@ -142,6 +162,7 @@ public class GenesisForms implements ModInitializer {
         CobblemonEvents.MEGA_EVOLUTION.subscribe(CobblemonEventHandler::megaEvolveEvent);
         CobblemonEvents.TERASTALLIZATION.subscribe(CobblemonEventHandler::terastallizationEvent);
         CobblemonEvents.ZPOWER_USED.subscribe(CobblemonEventHandler::zPowerEvent);
+
         UltraBurstHandler.register();
         DynamaxHandler.register();
 
@@ -244,12 +265,12 @@ public class GenesisForms implements ModInitializer {
         });
     }
 
-    public void logError(String message) {
+    public static void logError(String message) {
         LOGGER.error(message);
     }
 
-    public void logInfo(String message) {
-        if (config.debug) {
+    public static void logInfo(String message) {
+        if (DEBUG) {
             LOGGER.info(message);
         }
     }

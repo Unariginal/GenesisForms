@@ -70,7 +70,7 @@ public class MegaAccessory extends BasePolymerItem implements PokemonSelectingIt
 
     @Override
     public boolean canUseOnPokemon(@NotNull ItemStack stack, @NotNull Pokemon pokemon) {
-        if (pokemon.getEntity().isBattling()) return false;
+        if (pokemon.getEntity() != null && pokemon.getEntity().isBattling()) return false;
 
         Item helditem = pokemon.heldItem().getItem();
         if (helditem instanceof Megastone megastone) {

@@ -10,8 +10,6 @@ import java.util.List;
 
 // TODO: Adjust to new config layout
 public class Config {
-    public boolean debug = false;
-
     public List<String> disabledItems = new ArrayList<>();
     public boolean enableMegaEvolution = true;
     public boolean useTradeableProperty = false;
@@ -69,8 +67,8 @@ public class Config {
             root = JsonParser.parseReader(new FileReader(configFile)).getAsJsonObject();
 
         if (root.has("debug"))
-            debug = root.get("debug").getAsBoolean();
-        newRoot.addProperty("debug", debug);
+            GenesisForms.DEBUG = root.get("debug").getAsBoolean();
+        newRoot.addProperty("debug", GenesisForms.DEBUG);
 
         JsonObject generalSettings = new JsonObject();
         JsonObject newGeneralSettings = new JsonObject();

@@ -29,6 +29,8 @@ import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.player.GeneralPlayerData;
 import com.cobblemon.mod.common.api.types.tera.TeraType;
 import com.cobblemon.mod.common.api.types.tera.TeraTypes;
+import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
+import com.cobblemon.mod.common.battles.BattleSide;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -455,9 +457,9 @@ public class CobblemonEventHandler {
                 }
 
                 if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
-                    PokemonUtils.swapPokemonMove(pokemon, "behemothbash", "ironhead");
-                } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
                     PokemonUtils.swapPokemonMove(pokemon, "behemothblade", "ironhead");
+                } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
+                    PokemonUtils.swapPokemonMove(pokemon, "behemothbash", "ironhead");
                 }
 
                 pokemon.updateAspects();
@@ -466,15 +468,15 @@ public class CobblemonEventHandler {
         }
     }
 
-    public static Unit megaEvolveEvent(MegaEvolutionEvent event) {
+    public static void megaEvolveEvent(MegaEvolutionEvent event) {
         PokemonBattle battle = event.getBattle();
         BattlePokemon battlePokemon = event.getPokemon();
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
 
         megaEvolveLogic(pokemon, true);
+        battlePokemon.sendUpdate();
 
         PacketHandler.updatePackets(battle, battlePokemon, true);
-        return Unit.INSTANCE;
     }
 
     public static void megaEvolveLogic(Pokemon pokemon, boolean fromBattle) {

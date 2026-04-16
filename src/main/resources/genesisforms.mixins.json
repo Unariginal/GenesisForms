@@ -7,11 +7,12 @@
     "EndInstructionMixin",
     "PartyHealedMixin",
     "ShowdownActionRequestMixin",
-    "ShowdownInterpreterMixin",
     "ShowdownSpeciesMixin",
     "ShowdownUnbundlerMixin",
     "StartInstructionMixin",
-    "StopBattleMixin"
+    "StopBattleMixin",
+    "BattleMessageDebugMixin",
+    "MoveActionResponseMixin"
   ],
   "injectors": {
     "defaultRequire": 1
