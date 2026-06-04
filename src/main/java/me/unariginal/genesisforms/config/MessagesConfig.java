@@ -11,6 +11,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class MessagesConfig {
     public String prefix = "<dark_gray>[<#35DEC6>Genesis<dark_gray>]";
     public String teraToastTitle = "Tera Type: %pokemon.tera_type%";
@@ -101,7 +103,6 @@ public class MessagesConfig {
         messagesFile.delete();
         messagesFile.createNewFile();
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         Writer writer = new FileWriter(messagesFile);
         gson.toJson(newRoot, writer);
         writer.close();

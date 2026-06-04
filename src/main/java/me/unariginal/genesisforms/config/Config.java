@@ -8,6 +8,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 // TODO: Adjust to new config layout
 public class Config {
     public List<String> disabledItems = new ArrayList<>();
@@ -221,7 +223,6 @@ public class Config {
         configFile.delete();
         configFile.createNewFile();
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         Writer writer = new FileWriter(configFile);
         gson.toJson(newRoot, writer);
         writer.close();

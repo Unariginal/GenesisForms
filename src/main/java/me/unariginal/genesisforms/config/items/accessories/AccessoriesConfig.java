@@ -14,6 +14,8 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class AccessoriesConfig {
     public static LinkedHashMap<String, AccessoryData> megaAccessories = new LinkedHashMap<>();
     public static LinkedHashMap<String, AccessoryData> teraAccessories = new LinkedHashMap<>();
@@ -29,11 +31,6 @@ public class AccessoriesConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         Type mapType = new TypeToken<LinkedHashMap<String, AccessoryData>>() {}.getType();
 
         String json = "{}";

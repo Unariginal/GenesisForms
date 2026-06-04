@@ -2,8 +2,13 @@
   "mega_evolution": {
     "animations": {
       "global": {
-        "identifier": "cobblemon:mega_evolution",
-        "form_delay_seconds": 4.9
+        "type": "snowstorm_entity",
+        "form_change_delay_seconds": 4.9,
+        "particle_resource": "cobblemon:mega_evolution",
+        "x_offset": 0,
+        "y_offset": 0,
+        "z_offset": 0,
+        "locators": ["root"]
       }
     },
     "glow": {},

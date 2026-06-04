@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class MegaEvolutionConfig {
     public static LinkedHashMap<String, MegaEvolutionData> megaEvolutionMap = new LinkedHashMap<>();
     public static List<String> itemlessMegas = new ArrayList<>();
@@ -84,12 +86,6 @@ public class MegaEvolutionConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .serializeNulls()
-                .create();
-
         String json = "{}";
 
         File megaEvolutionConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/mega_evolutions.json").toFile();

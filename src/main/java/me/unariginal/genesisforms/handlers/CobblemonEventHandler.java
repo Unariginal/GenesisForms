@@ -41,6 +41,7 @@ import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.BattleFormChangeConfig;
 import me.unariginal.genesisforms.config.EventsConfig;
 import me.unariginal.genesisforms.config.MegaEvolutionConfig;
+import me.unariginal.genesisforms.data.event.ParticleEvent;
 import me.unariginal.genesisforms.items.helditems.HeldFormItem;
 import me.unariginal.genesisforms.items.helditems.Megastone;
 import me.unariginal.genesisforms.items.helditems.ZCrystal;
@@ -507,7 +508,7 @@ public class CobblemonEventHandler {
             }
         }
 
-        EventsConfig.AnimationData megaAnimation = EventsConfig.gimmickEvents.megaEvolution.getAnimation(eventID);
+        ParticleEvent megaAnimation = EventsConfig.gimmickEvents.megaEvolution.getAnimation(eventID);
 
         if (canMegaEvolve) {
             if (!activeMegaAnimations.containsKey(pokemon.getUuid())) {
@@ -519,8 +520,8 @@ public class CobblemonEventHandler {
                 if (pokemon.getEntity() != null && megaAnimation != null) {
                     String finalFeatureValue = featureValue;
                     String finalFeatureName = featureName;
-                    activeMegaAnimations.put(pokemon.getUuid(), megaAnimation.formDelaySeconds * 20);
-                    pokemon.getEntity().after(megaAnimation.formDelaySeconds, () -> {
+                    activeMegaAnimations.put(pokemon.getUuid(), megaAnimation.formChangeDelaySeconds * 20F);
+                    pokemon.getEntity().after(megaAnimation.formChangeDelaySeconds, () -> {
                         if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) && !fromBattle)
                             return Unit.INSTANCE;
 

@@ -12,6 +12,8 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class ZCrystalsConfig {
     public static ZCrystalData zCrystalData;
 
@@ -62,11 +64,6 @@ public class ZCrystalsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File zCrystalConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/held_items/z_crystals.json").toFile();

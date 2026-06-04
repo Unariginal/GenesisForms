@@ -15,6 +15,8 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class HeldBattleItemsConfig {
     public static LinkedHashMap<String, HeldBattleItemData> heldBattleItemMap = new LinkedHashMap<>();
 
@@ -30,11 +32,6 @@ public class HeldBattleItemsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File heldBattleItemsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/held_items/held_battle_items.json").toFile();

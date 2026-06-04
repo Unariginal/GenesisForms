@@ -13,6 +13,8 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class TeraShardsConfig {
     public static LinkedHashMap<String, TeraShardData> teraShardMap = new LinkedHashMap<>();
 
@@ -32,11 +34,6 @@ public class TeraShardsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File teraShardConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/bag_items/tera_shards.json").toFile();

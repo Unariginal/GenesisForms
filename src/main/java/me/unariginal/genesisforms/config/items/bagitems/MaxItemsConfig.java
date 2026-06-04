@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class MaxItemsConfig {
     public static LinkedHashMap<String, MaxItemData> maxItemMap = new LinkedHashMap<>();
 
@@ -26,11 +28,6 @@ public class MaxItemsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File maxItemsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/bag_items/max_items.json").toFile();
