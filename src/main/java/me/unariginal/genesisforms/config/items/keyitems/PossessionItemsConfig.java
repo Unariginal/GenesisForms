@@ -15,6 +15,8 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class PossessionItemsConfig {
     public static LinkedHashMap<String, PossessionItemData> possessionItems = new LinkedHashMap<>();
 
@@ -37,11 +39,6 @@ public class PossessionItemsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File possessionItemsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/key_items/possession_items.json").toFile();

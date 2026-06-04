@@ -15,6 +15,8 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class FusionItemsConfig {
     public static LinkedHashMap<String, FusionItemData> fusionItemMap = new LinkedHashMap<>();
 
@@ -57,11 +59,6 @@ public class FusionItemsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File fusionsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/key_items/fusion_items.json").toFile();

@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class MiscItemsConfig {
     public static MiscItemData miscItemData;
 
@@ -63,12 +65,6 @@ public class MiscItemsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .serializeNulls()
-                .create();
-
         String json = "{}";
 
         File miscItemsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/misc_items.json").toFile();
@@ -88,12 +84,6 @@ public class MiscItemsConfig {
     }
 
     public static void save() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .serializeNulls()
-                .create();
-
         FileWriter writer = new FileWriter("config/GenesisForms/items/misc_items.json");
         gson.toJson(miscItemData, MiscItemData.class, writer);
         writer.close();

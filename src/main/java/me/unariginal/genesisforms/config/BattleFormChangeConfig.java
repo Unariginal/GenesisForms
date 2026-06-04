@@ -13,6 +13,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class BattleFormChangeConfig {
     public static Map<String, BattleFormInformation> battleForms = new HashMap<>();
 
@@ -45,11 +47,6 @@ public class BattleFormChangeConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         File rootFolder = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms").toFile();
         if (!rootFolder.exists()) rootFolder.mkdirs();
 

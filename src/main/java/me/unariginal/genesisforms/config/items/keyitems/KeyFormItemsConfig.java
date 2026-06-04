@@ -17,6 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+
 public class KeyFormItemsConfig {
     public static LinkedHashMap<String, KeyItemData> keyFormItemMap = new LinkedHashMap<>();
 
@@ -43,11 +45,6 @@ public class KeyFormItemsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File keyItemsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/items/key_items/key_form_items.json").toFile();

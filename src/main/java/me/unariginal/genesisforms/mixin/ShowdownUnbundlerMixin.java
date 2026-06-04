@@ -32,7 +32,7 @@ public class ShowdownUnbundlerMixin {
                 Files.createDirectories(dataDirectory);
 
                 replaceFile("/showdown_scripts/index.js", showdownDirectory.resolve("index.js"));
-                replaceFile("/showdown_scripts/battle-action.js", simDirectory.resolve("battle-actions.js"));
+                replaceFile("/showdown_scripts/battle-actions.js", simDirectory.resolve("battle-actions.js"));
                 replaceFile("/showdown_scripts/conditions.js", dataDirectory.resolve("conditions.js"));
                 replaceFile("/showdown_scripts/side.js", simDirectory.resolve("side.js"));
                 GenesisForms.LOGGER.info("[Genesis] Showdown files loaded!");

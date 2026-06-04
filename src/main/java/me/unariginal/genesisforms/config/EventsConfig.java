@@ -10,19 +10,23 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 import kotlin.Unit;
+import me.unariginal.genesisforms.data.event.ParticleEvent;
 import me.unariginal.genesisforms.handlers.GlowHandler;
 import me.unariginal.genesisforms.handlers.ScaleHandler;
 import me.unariginal.genesisforms.utils.ConfigUtils;
-import me.unariginal.genesisforms.utils.ParticleUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Optional;
+
+import static me.unariginal.genesisforms.utils.GsonUtils.gson;
 
 public class EventsConfig {
     public static GimmickEvents gimmickEvents;
@@ -44,12 +48,12 @@ public class EventsConfig {
     }
 
     public static class EventData {
-        public Map<String, AnimationData> animations;
+        public Map<String, ParticleEvent> animations;
         public Map<String, String> glow;
         public Map<String, FeatureData> features;
         public Map<String, ScaleData> scale;
 
-        public EventData(Map<String, AnimationData> animations, Map<String, String> glow, Map<String, FeatureData> features, Map<String, ScaleData> scale) {
+        public EventData(Map<String, ParticleEvent> animations, Map<String, String> glow, Map<String, FeatureData> features, Map<String, ScaleData> scale) {
             this.animations = animations;
             this.glow = glow;
             this.features = features;
@@ -57,16 +61,15 @@ public class EventsConfig {
         }
 
         public void runEvent(String id, Pokemon pokemon, PokemonEntity pokemonEntity) {
-            EventsConfig.AnimationData animationData = getAnimation(id);
+            ParticleEvent animationData = getAnimation(id);
             EventsConfig.FeatureData featureData = getFeature(id);
             EventsConfig.ScaleData scaleData = getScale(id);
             float delay = 0;
 
             if (pokemonEntity != null) {
                 if (animationData != null) {
-                    ParticleUtils.spawnParticle(animationData.identifier, pokemonEntity.getPos().add(0, pokemonEntity.getBoundingBox().getLengthY() / 2, 0), pokemonEntity.getWorld().getRegistryKey());
-//                    ParticleUtils.megaEvolutionAnimation(pokemonEntity, "mega_evolution");
-                    delay = animationData.formDelaySeconds;
+                    animationData.spawnParticle(pokemonEntity);
+                    delay = animationData.formChangeDelaySeconds;
                 }
             }
 
@@ -155,7 +158,7 @@ public class EventsConfig {
             GlowHandler.removeGlowing(id, pokemon, pokemonEntity);
         }
 
-        public AnimationData getAnimation(String animationName) {
+        public ParticleEvent getAnimation(String animationName) {
             if (animations.containsKey(animationName)) {
                 return animations.get(animationName);
             } else {
@@ -188,17 +191,6 @@ public class EventsConfig {
         }
     }
 
-    public static class AnimationData {
-        public String identifier;
-        @SerializedName(value = "form_delay_seconds", alternate = "formDelaySeconds")
-        public float formDelaySeconds;
-
-        public AnimationData(String identifier, float formDelaySeconds) {
-            this.identifier = identifier;
-            this.formDelaySeconds = formDelaySeconds;
-        }
-    }
-
     public static class FeatureData {
         @SerializedName(value = "feature_name", alternate = "featureName")
         public String featureName;
@@ -226,11 +218,6 @@ public class EventsConfig {
     }
 
     public static void load() throws IOException {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .create();
-
         String json = "{}";
 
         File eventsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/events.json").toFile();
