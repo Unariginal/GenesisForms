@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleStartedEvent;
@@ -18,19 +19,13 @@ import com.cobblemon.mod.common.api.events.pokemon.PokemonGainedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
 import com.cobblemon.mod.common.api.events.pokemon.TradeEvent;
 import com.cobblemon.mod.common.api.events.storage.ReleasePokemonEvent;
-import com.cobblemon.mod.common.api.moves.BenchedMove;
-import com.cobblemon.mod.common.api.moves.Move;
-import com.cobblemon.mod.common.api.moves.MoveTemplate;
-import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
-import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.api.storage.player.GeneralPlayerData;
 import com.cobblemon.mod.common.api.types.tera.TeraType;
 import com.cobblemon.mod.common.api.types.tera.TeraTypes;
-import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
-import com.cobblemon.mod.common.battles.BattleSide;
+import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -39,7 +34,6 @@ import dev.emi.trinkets.api.TrinketsApi;
 import kotlin.Unit;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.config.BattleFormChangeConfig;
-import me.unariginal.genesisforms.config.EventsConfig;
 import me.unariginal.genesisforms.config.MegaEvolutionConfig;
 import me.unariginal.genesisforms.data.event.ParticleEvent;
 import me.unariginal.genesisforms.items.helditems.HeldFormItem;
@@ -49,28 +43,32 @@ import me.unariginal.genesisforms.items.keyitems.accessories.DynamaxAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.MegaAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.items.keyitems.accessories.ZAccessory;
-import me.unariginal.genesisforms.utils.PokemonUtils;
-import net.fabricmc.loader.api.FabricLoader;
+import me.unariginal.genesisforms.utils.GlowUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static me.unariginal.genesisforms.config.ConfigManager.*;
+import static me.unariginal.genesisforms.utils.PokemonUtils.applyFeature;
+import static me.unariginal.genesisforms.utils.PokemonUtils.swapPokemonMove;
+
 public class CobblemonEventHandler {
-    public static Map<UUID, Float> activeMegaAnimations = new HashMap<>();
+    public static boolean trinketsLoaded = false;
+    // Written from the main thread (server tick, PokemonEntity.after callbacks) but polled from
+    // the battle thread (UntilDispatch predicates), so this needs real cross-thread visibility.
+    public static Map<UUID, Float> activeFormAnimations = new ConcurrentHashMap<>();
 
-    public static Unit battleStartEvent(BattleStartedEvent.Pre event) {
+    public static void battleStartEvent(BattleStartedEvent.Pre event) {
         PokemonBattle battle = event.getBattle();
-        for (ServerPlayerEntity player : battle.getPlayers()) {
-            PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-            for (Pokemon pokemon : party) {
-                if (pokemon == null) continue;
-                revertForm(pokemon, false);
-            }
+        revertPartyForms(battle);
 
+        for (ServerPlayerEntity player : battle.getPlayers()) {
             List<ItemStack> inventory = getValidKeyItemSlots(player);
 
             AtomicBoolean hasMega = new AtomicBoolean(false);
@@ -78,54 +76,34 @@ public class CobblemonEventHandler {
             AtomicBoolean hasZ = new AtomicBoolean(false);
             AtomicBoolean hasDmax = new AtomicBoolean(false);
             for (ItemStack itemStack : inventory) {
-                if (itemStack.getItem() instanceof MegaAccessory && GenesisForms.INSTANCE.getConfig().enableMegaEvolution) {
+                if (itemStack.getItem() instanceof MegaAccessory && CONFIG.megaSettings.enableMegaEvolution) {
                     hasMega.set(true);
-                } else if (itemStack.getItem() instanceof TeraAccessory && GenesisForms.INSTANCE.getConfig().enableTera) {
+                } else if (itemStack.getItem() instanceof TeraAccessory && CONFIG.teraSettings.enableTera) {
                     if (itemStack.getDamage() != itemStack.getMaxDamage()) {
                         hasTera.set(true);
                     }
-                } else if (itemStack.getItem() instanceof ZAccessory && GenesisForms.INSTANCE.getConfig().enableZCrystals) {
+                } else if (itemStack.getItem() instanceof ZAccessory && CONFIG.zPowerSettings.enableZCrystals) {
                     hasZ.set(true);
-                } else if (itemStack.getItem() instanceof DynamaxAccessory && GenesisForms.INSTANCE.getConfig().enableDynamax) {
+                } else if (itemStack.getItem() instanceof DynamaxAccessory && CONFIG.dynamaxSettings.enableDynamax) {
                     hasDmax.set(true);
                 }
             }
 
-            if (FabricLoader.getInstance().isModLoaded("trinkets")) {
+            if (trinketsLoaded) {
                 TrinketsApi.getTrinketComponent(player).ifPresent(trinketComponent -> {
-                    if (trinketComponent.isEquipped(item -> {
-                        if (item.getItem() instanceof MegaAccessory) {
-                            return true;
-                        }
-                        return false;
-                    }) && GenesisForms.INSTANCE.getConfig().enableMegaEvolution) {
+                    if (trinketComponent.isEquipped(item -> item.getItem() instanceof MegaAccessory) && CONFIG.megaSettings.enableMegaEvolution) {
                         hasMega.set(true);
                     }
 
-                    if (trinketComponent.isEquipped(item -> {
-                        if (item.getItem() instanceof TeraAccessory) {
-                            return true;
-                        }
-                        return false;
-                    }) && GenesisForms.INSTANCE.getConfig().enableTera) {
+                    if (trinketComponent.isEquipped(item -> item.getItem() instanceof TeraAccessory) && CONFIG.teraSettings.enableTera) {
                         hasTera.set(true);
                     }
 
-                    if (trinketComponent.isEquipped(item -> {
-                        if (item.getItem() instanceof ZAccessory) {
-                            return true;
-                        }
-                        return false;
-                    }) && GenesisForms.INSTANCE.getConfig().enableZCrystals) {
+                    if (trinketComponent.isEquipped(item -> item.getItem() instanceof ZAccessory) && CONFIG.zPowerSettings.enableZCrystals) {
                         hasZ.set(true);
                     }
 
-                    if (trinketComponent.isEquipped(item -> {
-                        if (item.getItem() instanceof DynamaxAccessory) {
-                            return true;
-                        }
-                        return false;
-                    }) && GenesisForms.INSTANCE.getConfig().enableDynamax) {
+                    if (trinketComponent.isEquipped(item -> item.getItem() instanceof DynamaxAccessory) && CONFIG.dynamaxSettings.enableDynamax) {
                         hasDmax.set(true);
                     }
                 });
@@ -144,35 +122,34 @@ public class CobblemonEventHandler {
             if (hasDmax.get() && !hasTera.get()) playerData.getKeyItems().add(MiscUtilsKt.cobblemonResource("dynamax_band"));
         }
 
-        return Unit.INSTANCE;
     }
 
     public static List<ItemStack> getValidKeyItemSlots(ServerPlayerEntity player) {
         List<ItemStack> inventory = new ArrayList<>();
 
         for (ItemStack itemStack : player.getInventory().main) {
-            if ((GenesisForms.INSTANCE.getConfig().useMainInventory &&
-                    (GenesisForms.INSTANCE.getConfig().useHotbarInventory ||
+            if ((CONFIG.generalSettings.keyItemSlots.main &&
+                    (CONFIG.generalSettings.keyItemSlots.hotbar ||
                             !PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack)))) ||
-                    GenesisForms.INSTANCE.getConfig().useHotbarInventory &&
+                    CONFIG.generalSettings.keyItemSlots.hotbar &&
                             PlayerInventory.isValidHotbarIndex(player.getInventory().indexOf(itemStack))) {
                 inventory.add(itemStack);
             }
         }
-        if (GenesisForms.INSTANCE.getConfig().useMainHandInventory && !inventory.contains(player.getMainHandStack())) {
+        if (CONFIG.generalSettings.keyItemSlots.mainhand && !inventory.contains(player.getMainHandStack())) {
             inventory.add(player.getMainHandStack());
         }
-        if (GenesisForms.INSTANCE.getConfig().useOffHandInventory && !inventory.contains(player.getOffHandStack())) {
+        if (CONFIG.generalSettings.keyItemSlots.offhand && !inventory.contains(player.getOffHandStack())) {
             inventory.add(player.getOffHandStack());
         }
-        if (GenesisForms.INSTANCE.getConfig().useArmorInventory) {
+        if (CONFIG.generalSettings.keyItemSlots.armor) {
             for (ItemStack itemStack : player.getArmorItems()) {
                 if (!inventory.contains(itemStack)) {
                     inventory.add(itemStack);
                 }
             }
         }
-        for (int slot : GenesisForms.INSTANCE.getConfig().specificSlots) {
+        for (int slot : CONFIG.generalSettings.keyItemSlots.specific) {
             ItemStack stack = player.getInventory().getStack(slot);
             if (!inventory.contains(stack)) {
                 inventory.add(stack);
@@ -182,88 +159,106 @@ public class CobblemonEventHandler {
         return inventory;
     }
 
-    public static Unit battleEndEvent(BattleVictoryEvent event) {
-        PokemonBattle battle = event.getBattle();
-        for (ServerPlayerEntity player : battle.getPlayers()) {
-            PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-            for (Pokemon pokemon : party) {
-                if (pokemon == null) continue;
-                revertForm(pokemon, false);
-            }
-        }
-        return Unit.INSTANCE;
+    public static void battleEndEvent(BattleVictoryEvent event) {
+        revertPartyForms(event.getBattle());
     }
 
-    public static Unit battleFledEvent(BattleFledEvent event) {
-        PokemonBattle battle = event.getBattle();
-        for (ServerPlayerEntity player : battle.getPlayers()) {
-            PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(player);
-            for (Pokemon pokemon : party) {
-                if (pokemon == null) continue;
-                revertForm(pokemon, false);
+    public static void revertPartyForms(PokemonBattle battle) {
+        for (BattleActor actor : battle.getActors()) {
+            for (BattlePokemon pokemon : actor.getPokemonList()) {
+                revertForm(pokemon.getEffectedPokemon(), false);
+                revertForm(pokemon.getOriginalPokemon(), false);
             }
         }
-        return Unit.INSTANCE;
     }
 
-    public static Unit battleFaintEvent(BattleFaintedEvent event) {
+    public static void battleFledEvent(BattleFledEvent event) {
+        revertPartyForms(event.getBattle());
+    }
+
+    public static void battleFaintEvent(BattleFaintedEvent event) {
         Pokemon pokemon = event.getKilled().getEffectedPokemon();
         if (pokemon.isPlayerOwned()) {
             revertForm(pokemon, true);
         }
-        return Unit.INSTANCE;
     }
 
-    public static Unit formChangeEvent(FormeChangeEvent event) {
+    public static void formChangeEvent(FormeChangeEvent event) {
         String formName = event.getFormeName();
         BattlePokemon battlePokemon = event.getPokemon();
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
         PokemonBattle battle = event.getBattle();
+        PokemonEntity pokemonEntity = pokemon.getEntity();
 
         if (pokemon.getSpecies().getName().equalsIgnoreCase("zygarde") && formName.equalsIgnoreCase("complete")) {
             if (pokemon.getAspects().contains("10-percent")) pokemon.getPersistentData().putString("percent_cells", "10");
             else pokemon.getPersistentData().putString("percent_cells", "50");
-            new StringSpeciesFeature("percent_cells", "complete").apply(pokemon);
+            battle.dispatchToFront(pokemonBattle -> {
+                float delay = 0;
+                if (EVENTS.formChanges != null && EVENTS.formChanges.battleForms != null) {
+                    String eventId = "zygarde_percent_cells";
+                    EVENTS.formChanges.battleForms.runEvent(eventId, pokemon, pokemonEntity);
+                    ParticleEvent particleEvent = EVENTS.formChanges.battleForms.getAnimation(eventId);
+                    if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+                }
+                if (pokemonEntity != null) {
+                    pokemonEntity.after(delay, () -> {
+                        new StringSpeciesFeature("percent_cells", "complete").apply(pokemon);
+                        return Unit.INSTANCE;
+                    });
+                } else new StringSpeciesFeature("percent_cells", "complete").apply(pokemon);
+                return new UntilDispatch(() -> true);
+            });
         }
 
-        for (BattleFormChangeConfig.BattleFormInformation battleFormInformation : BattleFormChangeConfig.battleForms.values()) {
+        for (BattleFormChangeConfig battleFormInformation : BATTLE_FORMS.values()) {
             if (battleFormInformation.species.equalsIgnoreCase(pokemon.getSpecies().showdownId())) {
                 if (battleFormInformation.forms.containsKey(formName)) {
-                    if (battleFormInformation.forms.get(formName).featureValue.equalsIgnoreCase("true") || battleFormInformation.forms.get(formName).featureValue.equalsIgnoreCase("false"))
-                        new FlagSpeciesFeature(battleFormInformation.forms.get(formName).featureName, Boolean.getBoolean(battleFormInformation.forms.get(formName).featureValue)).apply(pokemon);
-                    else
-                        new StringSpeciesFeature(battleFormInformation.forms.get(formName).featureName, battleFormInformation.forms.get(formName).featureValue).apply(pokemon);
+                    battle.dispatchToFront(pokemonBattle -> {
+                        float delay = 0;
+                        if (EVENTS.formChanges != null && EVENTS.formChanges.battleForms != null) {
+                            String eventId = battleFormInformation.species + "_" + formName;
+                            EVENTS.formChanges.battleForms.runEvent(eventId, pokemon, pokemonEntity);
+                            ParticleEvent particleEvent = EVENTS.formChanges.battleForms.getAnimation(eventId);
+                            if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+                        }
+                        if (pokemonEntity != null) {
+                            pokemonEntity.after(delay, () -> {
+                                applyFeature(battleFormInformation.forms.get(formName).featureName, battleFormInformation.forms.get(formName).featureValue, pokemon);
+                                return Unit.INSTANCE;
+                            });
+                        }
+                        applyFeature(battleFormInformation.forms.get(formName).featureName, battleFormInformation.forms.get(formName).featureValue, pokemon);
+                        return new UntilDispatch(() -> true);
+                    });
                     break;
                 }
             }
         }
 
         PacketHandler.updatePackets(battle, battlePokemon, false);
-
-        return Unit.INSTANCE;
     }
 
     public static void revertForm(Pokemon pokemon, boolean fromBattle) {
         // Reverting megas
+        PokemonEntity pokemonEntity = pokemon.getEntity();
         Item heldItem = pokemon.heldItem().getItem();
         if (heldItem instanceof Megastone megastone) {
             if (revertMega(pokemon, megastone.getMegastoneData().featureName)) {
-                EventsConfig.gimmickEvents.megaEvolution.revertEvent(megastone.getItemID(), pokemon, pokemon.getEntity());
+                if (EVENTS.megaEvolution != null)
+                    EVENTS.megaEvolution.revertEvent(megastone.getItemId(), pokemon, pokemon.getEntity());
             }
         } else {
-            for (String itemlessMega : MegaEvolutionConfig.itemlessMegas) {
-                MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = MegaEvolutionConfig.megaEvolutionMap.get(itemlessMega);
+            for (String itemlessMega : itemlessMegas) {
+                MegaEvolutionConfig megaEvolutionData = MEGA_EVOLUTIONS.get(itemlessMega);
                 if (megaEvolutionData != null) {
                     if (megaEvolutionData.canMegaEvolve(pokemon)) {
                         if (revertMega(pokemon, megaEvolutionData.featureName)) {
-                            EventsConfig.gimmickEvents.megaEvolution.revertEvent(itemlessMega, pokemon, pokemon.getEntity());
+                            if (EVENTS.megaEvolution != null)
+                                EVENTS.megaEvolution.revertEvent(itemlessMega, pokemon, pokemon.getEntity());
                         }
                     }
                 }
-            }
-
-            if (heldItem instanceof ZCrystal zcrystal) {
-                EventsConfig.gimmickEvents.zPower.revertEvent(zcrystal.getItemID(), pokemon, pokemon.getEntity());
             }
         }
 
@@ -303,13 +298,29 @@ public class CobblemonEventHandler {
 
         // Reverting battle forms. fromBattle is currently only true for fainting pokemon
         if (!fromBattle) {
-            for (BattleFormChangeConfig.BattleFormInformation battleFormInformation : BattleFormChangeConfig.battleForms.values()) {
+            for (BattleFormChangeConfig battleFormInformation : BATTLE_FORMS.values()) {
                 if (battleFormInformation.species.equalsIgnoreCase(pokemon.getSpecies().getName())) {
                     if (!pokemon.getSpecies().getName().equals("Greninja") || pokemon.getAspects().contains("ash")) {
-                        if (battleFormInformation.defaultForm.featureValue.equalsIgnoreCase("true") || battleFormInformation.defaultForm.featureValue.equalsIgnoreCase("false"))
-                            new FlagSpeciesFeature(battleFormInformation.defaultForm.featureName, Boolean.getBoolean(battleFormInformation.defaultForm.featureValue)).apply(pokemon);
-                        else
-                            new StringSpeciesFeature(battleFormInformation.defaultForm.featureName, battleFormInformation.defaultForm.featureValue).apply(pokemon);
+                        float delay = 0;
+                        if (EVENTS.formChanges != null && EVENTS.formChanges.battleForms != null) {
+                            String eventId = battleFormInformation.species + "_default_form";
+                            EVENTS.formChanges.battleForms.runEvent(eventId, pokemon, pokemonEntity);
+                            ParticleEvent particleEvent = EVENTS.formChanges.battleForms.getAnimation(eventId);
+                            if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+                        }
+
+                        if (pokemonEntity != null) {
+                            pokemonEntity.after(delay, () -> {
+                                applyFeature(battleFormInformation.defaultForm.featureName, battleFormInformation.defaultForm.featureValue, pokemon);
+                                pokemon.updateAspects();
+                                pokemon.updateForm();
+                                return Unit.INSTANCE;
+                            });
+                        } else {
+                            applyFeature(battleFormInformation.defaultForm.featureName, battleFormInformation.defaultForm.featureValue, pokemon);
+                            pokemon.updateAspects();
+                            pokemon.updateForm();
+                        }
                     }
                 }
             }
@@ -323,33 +334,34 @@ public class CobblemonEventHandler {
             String teraType = pokemon.getPersistentData().getString("tera_type");
             pokemon.getPersistentData().remove("tera_type");
 
-            EventsConfig.gimmickEvents.terastallization.revertEvent(teraType, pokemon, pokemon.getEntity());
+            if (EVENTS.terastallization != null)
+                EVENTS.terastallization.revertEvent(teraType, pokemon, pokemon.getEntity());
         }
 
         pokemon.updateAspects();
         pokemon.updateForm();
 
         if (wasComplete) {
-            AbilityTemplate powerconstruct = Abilities.INSTANCE.get("powerconstruct");
-            if (powerconstruct != null) pokemon.setAbility$common(powerconstruct.create(false, Priority.LOW));
+            AbilityTemplate powerconstruct = Abilities.get("powerconstruct");
+            if (powerconstruct != null) pokemon.updateAbility(powerconstruct.create(false, Priority.LOW));
         }
     }
 
-    public static Unit pokemonSentEvent(PokemonSentEvent.Post event) {
+    public static void pokemonSentEvent(PokemonSentEvent.Post event) {
         if (event.getPokemon().getPersistentData().contains("glow_id") && event.getPokemon().getPersistentData().contains("glow_color")) {
-            String glowID = event.getPokemon().getPersistentData().getString("glow_id");
+            String glowId = event.getPokemon().getPersistentData().getString("glow_id");
             String glowColor = event.getPokemon().getPersistentData().getString("glow_color");
-            GlowHandler.applyGlowing(glowID, glowColor, event.getPokemon(), event.getPokemonEntity());
+            GlowUtils.applyGlowing(glowId, glowColor, event.getPokemon(), event.getPokemonEntity());
         }
-        return Unit.INSTANCE;
     }
 
-    public static Unit heldItemChange(HeldItemEvent.Post event) {
+    public static void heldItemChange(HeldItemEvent.Post event) {
         ItemStack received = event.getReceived();
         ItemStack returned = event.getReturned();
         Pokemon pokemon = event.getPokemon();
+        PokemonEntity pokemonEntity = pokemon.getEntity();
 
-        if (received == returned) return Unit.INSTANCE;
+        if (received == returned) return;
 
         // Revert all forms of the pokemon relating to held items (mega, held form items, z crystals)
         revertFormByItem(pokemon, returned.getItem());
@@ -365,11 +377,26 @@ public class CobblemonEventHandler {
                     }
                 }
                 if (speciesMatch) {
-                    if (formChange.alternateValue.equalsIgnoreCase("true") || formChange.alternateValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(formChange.featureName, Boolean.getBoolean(formChange.alternateValue)).apply(pokemon);
-                    } else {
-                        new StringSpeciesFeature(formChange.featureName, formChange.alternateValue).apply(pokemon);
+                    float delay = 0;
+                    if (EVENTS.formChanges != null && EVENTS.formChanges.heldItems != null) {
+                        String eventId = pokemon.getSpecies().getName().toLowerCase() + "_" + formChange.alternateValue;
+                        EVENTS.formChanges.heldItems.runEvent(eventId, pokemon, pokemon.getEntity());
+                        ParticleEvent particleEvent = EVENTS.formChanges.heldItems.getAnimation(eventId);
+                        if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
                     }
+
+                    if (pokemonEntity != null) {
+                        activeFormAnimations.put(pokemon.getUuid(), delay * 20F);
+                        pokemonEntity.after(delay, () -> {
+                            if (pokemon.heldItem().getItem() == received.getItem()) {
+                                applyFeature(formChange.featureName, formChange.alternateValue, pokemon);
+                                pokemon.updateAspects();
+                                pokemon.updateForm();
+                            }
+                            return Unit.INSTANCE;
+                        });
+                    }
+                    applyFeature(formChange.featureName, formChange.alternateValue, pokemon);
                     pokemon.updateAspects();
                     pokemon.updateForm();
                 }
@@ -378,34 +405,47 @@ public class CobblemonEventHandler {
 
         if (received.getItem() instanceof HeldFormItem heldFormItem) {
             if (heldFormItem.getSpeciesList().contains(pokemon.getSpecies())) {
-                if (heldFormItem.getFormData().alternateValue.equalsIgnoreCase("true") || heldFormItem.getFormData().alternateValue.equalsIgnoreCase("false")) {
-                    new FlagSpeciesFeature(heldFormItem.getFormData().featureName, Boolean.getBoolean(heldFormItem.getFormData().alternateValue)).apply(pokemon);
+                float delay = 0;
+                if (EVENTS.formChanges != null && EVENTS.formChanges.heldItems != null) {
+                    String eventId = pokemon.getSpecies().getName().toLowerCase() + "_" + heldFormItem.getFormData().alternateValue;
+                    EVENTS.formChanges.heldItems.runEvent(eventId, pokemon, pokemon.getEntity());
+                    ParticleEvent particleEvent = EVENTS.formChanges.heldItems.getAnimation(eventId);
+                    if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+                }
+
+                if (pokemonEntity != null) {
+                    activeFormAnimations.put(pokemon.getUuid(), delay * 20F);
+                    pokemonEntity.after(delay, () -> {
+                        if (pokemon.heldItem().getItem() == received.getItem()) {
+                            applyFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().alternateValue, pokemon);
+                            pokemon.updateAspects();
+                            pokemon.updateForm();
+                        }
+                        return Unit.INSTANCE;
+                    });
                 } else {
-                    new StringSpeciesFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().alternateValue).apply(pokemon);
+                    applyFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().alternateValue, pokemon);
+                    pokemon.updateAspects();
+                    pokemon.updateForm();
                 }
 
                 if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
-                    PokemonUtils.swapPokemonMove(pokemon, "ironhead", "behemothbash");
+                    swapPokemonMove(pokemon, "ironhead", "behemothbash");
                 } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
-                    PokemonUtils.swapPokemonMove(pokemon, "ironhead", "behemothblade");
+                    swapPokemonMove(pokemon, "ironhead", "behemothblade");
                 }
-
-                pokemon.updateAspects();
-                pokemon.updateForm();
             }
         }
 
         fixOgerponTeraType(pokemon);
-
-        return Unit.INSTANCE;
     }
 
     public static void fixOgerponTeraType(Pokemon pokemon) {
         // TODO: Allow custom ogerpon item tera type changing
-        if (GenesisForms.INSTANCE.getConfig().fixOgerponTeraType) {
+        if (CONFIG.teraSettings.fixOgerponTeraType) {
             if (pokemon.getSpecies().getName().equalsIgnoreCase("ogerpon")) {
                 if (pokemon.heldItem().getItem() instanceof HeldFormItem heldFormItem) {
-                    String showdownID = heldFormItem.getShowdownID();
+                    String showdownID = heldFormItem.getShowdownId();
                     switch (showdownID) {
                         case "hearthflamemask" -> pokemon.setTeraType(TeraTypes.getFIRE());
                         case "wellspringmask" -> pokemon.setTeraType(TeraTypes.getWATER());
@@ -436,12 +476,13 @@ public class CobblemonEventHandler {
                     }
                 }
                 if (speciesMatch) {
-                    pokemon.getFeatures().removeIf(feature -> feature.getName().equalsIgnoreCase(formChange.featureName));
-                    if (formChange.defaultValue.equalsIgnoreCase("true") || formChange.defaultValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(formChange.featureName, Boolean.getBoolean(formChange.defaultValue)).apply(pokemon);
-                    } else {
-                        new StringSpeciesFeature(formChange.featureName, formChange.defaultValue).apply(pokemon);
+                    if (EVENTS.formChanges != null && EVENTS.formChanges.heldItems != null) {
+                        String eventId = formChange.featureName + "_" + formChange.defaultValue;
+                        EVENTS.formChanges.heldItems.revertEvent(eventId, pokemon, pokemon.getEntity());
                     }
+
+                    pokemon.getFeatures().removeIf(feature -> feature.getName().equalsIgnoreCase(formChange.featureName));
+                    applyFeature(formChange.featureName, formChange.defaultValue, pokemon);
                     pokemon.updateAspects();
                     pokemon.updateForm();
                 }
@@ -450,17 +491,17 @@ public class CobblemonEventHandler {
 
         if (item instanceof HeldFormItem heldFormItem) {
             if (heldFormItem.getSpeciesList().contains(pokemon.getSpecies())) {
-                pokemon.getFeatures().removeIf(feature -> feature.getName().equalsIgnoreCase(heldFormItem.getFormData().featureName));
-                if (heldFormItem.getFormData().defaultValue.equalsIgnoreCase("true") || heldFormItem.getFormData().defaultValue.equalsIgnoreCase("false")) {
-                    new FlagSpeciesFeature(heldFormItem.getFormData().featureName, Boolean.getBoolean(heldFormItem.getFormData().defaultValue)).apply(pokemon);
-                } else {
-                    new StringSpeciesFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().defaultValue).apply(pokemon);
+                if (EVENTS.formChanges != null && EVENTS.formChanges.heldItems != null) {
+                    String eventId = heldFormItem.getFormData().featureName + "_" + heldFormItem.getFormData().defaultValue;
+                    EVENTS.formChanges.heldItems.revertEvent(eventId, pokemon, pokemon.getEntity());
                 }
+                pokemon.getFeatures().removeIf(feature -> feature.getName().equalsIgnoreCase(heldFormItem.getFormData().featureName));
+                applyFeature(heldFormItem.getFormData().featureName, heldFormItem.getFormData().defaultValue, pokemon);
 
                 if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
-                    PokemonUtils.swapPokemonMove(pokemon, "behemothblade", "ironhead");
+                    swapPokemonMove(pokemon, "behemothblade", "ironhead");
                 } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
-                    PokemonUtils.swapPokemonMove(pokemon, "behemothbash", "ironhead");
+                    swapPokemonMove(pokemon, "behemothbash", "ironhead");
                 }
 
                 pokemon.updateAspects();
@@ -474,120 +515,111 @@ public class CobblemonEventHandler {
         BattlePokemon battlePokemon = event.getPokemon();
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
 
-        megaEvolveLogic(pokemon, true);
-        battlePokemon.sendUpdate();
-
-        PacketHandler.updatePackets(battle, battlePokemon, true);
+        megaEvolveLogic(pokemon, true, battle, battlePokemon);
     }
 
-    public static void megaEvolveLogic(Pokemon pokemon, boolean fromBattle) {
+    public static void megaEvolveLogic(Pokemon pokemon, boolean fromBattle, @Nullable PokemonBattle battle, @Nullable BattlePokemon battlePokemon) {
         Item heldItem = pokemon.heldItem().getItem();
+        PokemonEntity pokemonEntity = pokemon.getEntity();
         boolean canMegaEvolve = false;
         String featureName = "mega_evolution";
         String featureValue = "mega";
-        String eventID = "global";
+        String eventId = "global";
 
         if (heldItem instanceof Megastone megastone) {
             if (megastone.getMegastoneData().canMegaEvolve(pokemon)) {
                 canMegaEvolve = true;
                 featureName = megastone.getMegastoneData().featureName;
                 featureValue = megastone.getMegastoneData().featureValue;
-                eventID = megastone.getItemID();
+                eventId = megastone.getItemId();
             }
         } else {
-            for (String itemlessMega : MegaEvolutionConfig.itemlessMegas) {
-                MegaEvolutionConfig.MegaEvolutionData megaEvolutionData = MegaEvolutionConfig.megaEvolutionMap.get(itemlessMega);
+            for (String itemlessMega : itemlessMegas) {
+                MegaEvolutionConfig megaEvolutionData = MEGA_EVOLUTIONS.get(itemlessMega);
                 if (megaEvolutionData != null) {
                     if (megaEvolutionData.canMegaEvolve(pokemon)) {
                         canMegaEvolve = true;
                         featureName = megaEvolutionData.featureName;
                         featureValue = megaEvolutionData.featureValue;
-                        eventID = itemlessMega;
+                        eventId = itemlessMega;
                     }
                 }
             }
         }
 
-        ParticleEvent megaAnimation = EventsConfig.gimmickEvents.megaEvolution.getAnimation(eventID);
-
         if (canMegaEvolve) {
-            if (!activeMegaAnimations.containsKey(pokemon.getUuid())) {
-//                if (pokemon.getSpecies().getName().equalsIgnoreCase("zygarde")) {
-//                    swapMoves(pokemon, "coreenforcer", "nihillight");
-//                }
-
-                EventsConfig.gimmickEvents.megaEvolution.runEvent(eventID, pokemon, pokemon.getEntity());
-                if (pokemon.getEntity() != null && megaAnimation != null) {
-                    String finalFeatureValue = featureValue;
+            if (!activeFormAnimations.containsKey(pokemon.getUuid())) {
+                if (battle != null) {
+                    String finalEventId = eventId;
                     String finalFeatureName = featureName;
-                    activeMegaAnimations.put(pokemon.getUuid(), megaAnimation.formChangeDelaySeconds * 20F);
-                    pokemon.getEntity().after(megaAnimation.formChangeDelaySeconds, () -> {
-                        if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) && !fromBattle)
+                    String finalFeatureValue = featureValue;
+                    battle.dispatchToFront(pokemonBattle -> {
+                        megaEvolveWithAnimation(pokemon, pokemonEntity, fromBattle, finalEventId, finalFeatureName, finalFeatureValue, battle, battlePokemon);
+                        return new UntilDispatch(() -> !activeFormAnimations.containsKey(pokemon.getUuid())).andThen(() -> {
+                            if (battlePokemon != null) {
+                                battlePokemon.sendUpdate();
+                                PacketHandler.updatePackets(battle, battlePokemon, true);
+                            }
                             return Unit.INSTANCE;
-
-                        if (finalFeatureValue.equalsIgnoreCase("true") || finalFeatureValue.equalsIgnoreCase("false")) {
-                            new FlagSpeciesFeature(finalFeatureName, Boolean.getBoolean(finalFeatureValue)).apply(pokemon);
-                        } else {
-                            new StringSpeciesFeature(finalFeatureName, finalFeatureValue).apply(pokemon);
-                        }
-
-                        if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
-                            GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
-                        }
-
-                        activeMegaAnimations.remove(pokemon.getUuid());
-                        return Unit.INSTANCE;
+                        });
                     });
-                } else {
-                    if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.getPlayersWithMega().containsKey(pokemon.getOwnerUUID())) && !fromBattle)
-                        return;
-
-                    if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(featureName, Boolean.getBoolean(featureValue)).apply(pokemon);
-                    } else {
-                        new StringSpeciesFeature(featureName, featureValue).apply(pokemon);
-                    }
-
-                    if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
-                        GenesisForms.INSTANCE.getPlayersWithMega().put(pokemon.getOwnerUUID(), pokemon.getUuid());
-                    }
                 }
-                if (GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(false);
-                pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
+                else
+                    megaEvolveWithAnimation(pokemon, pokemonEntity, fromBattle, eventId, featureName, featureValue, null, null);
             }
         }
     }
 
-    public static void swapMoves(Pokemon pokemon, String move1, String move2) {
-        int moveIndex = -1;
-        for (int i = 0; i < 4; i++) {
-            Move move = pokemon.getMoveSet().get(i);
-            if (move != null && move.getName().equalsIgnoreCase(move1)) {
-                moveIndex = i;
-                break;
-            }
+    public static void megaEvolveWithAnimation(Pokemon pokemon, @Nullable PokemonEntity pokemonEntity, boolean fromBattle, String eventId, String featureName, String featureValue, @Nullable PokemonBattle battle, @Nullable BattlePokemon battlePokemon) {
+        float delay = 0;
+        if (EVENTS.megaEvolution != null) {
+            EVENTS.megaEvolution.runEvent(eventId, pokemon, pokemonEntity);
+            ParticleEvent particleEvent = EVENTS.megaEvolution.getAnimation(eventId);
+            if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
         }
 
-        if (moveIndex != -1) {
-            MoveTemplate nihilTemplate = Moves.getByName(move2);
-            if (nihilTemplate != null) {
-                pokemon.getMoveSet().setMove(moveIndex, nihilTemplate.create(nihilTemplate.getMaxPp()));
+        if (pokemonEntity != null) {
+            activeFormAnimations.put(pokemon.getUuid(), delay * 20F);
+            pokemonEntity.after(delay, () -> {
+                if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.playersWithMega.containsKey(pokemon.getOwnerUUID())) && !fromBattle)
+                    return Unit.INSTANCE;
+
+                applyFeature(featureName, featureValue, pokemon);
+
+                if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
+                    GenesisForms.INSTANCE.playersWithMega.put(pokemon.getOwnerUUID(), pokemon.getUuid());
+                }
+
+                activeFormAnimations.remove(pokemon.getUuid());
+                return Unit.INSTANCE;
+            });
+        } else {
+            if ((pokemon.getOwnerUUID() == null || GenesisForms.INSTANCE.playersWithMega.containsKey(pokemon.getOwnerUUID())) && !fromBattle)
+                return;
+
+            applyFeature(featureName, featureValue, pokemon);
+
+            if (pokemon.isPlayerOwned() && pokemon.getOwnerUUID() != null) {
+                GenesisForms.INSTANCE.playersWithMega.put(pokemon.getOwnerUUID(), pokemon.getUuid());
+            }
+
+            if (battlePokemon != null) {
+                battlePokemon.sendUpdate();
+                PacketHandler.updatePackets(battle, battlePokemon, true);
             }
         }
+        if (CONFIG.megaSettings.useTradeableProperty) pokemon.setTradeable(false);
+        pokemon.getPersistentData().putBoolean("genesis_untradeable", true);
     }
 
     public static boolean revertMega(Pokemon pokemon, String featureName) {
         boolean wasMega = pokemon.getFeatures().removeIf(features -> features.getName().equalsIgnoreCase(featureName));
 
         if (wasMega && !pokemon.getPersistentData().contains("genesis_untradeable") && !pokemon.getTradeable()) pokemon.setTradeable(true);
-        if (wasMega && GenesisForms.INSTANCE.getConfig().useTradeableProperty) pokemon.setTradeable(true);
+        if (wasMega && CONFIG.megaSettings.useTradeableProperty) pokemon.setTradeable(true);
 
         pokemon.getPersistentData().remove("genesis_untradeable");
-        if (pokemon.getOwnerUUID() != null) GenesisForms.INSTANCE.getPlayersWithMega().remove(pokemon.getOwnerUUID());
-
-//        if (pokemon.getSpecies().getName().equalsIgnoreCase("zygarde")) {
-//            swapMoves(pokemon, "nihillight", "coreenforcer");
-//        }
+        if (pokemon.getOwnerUUID() != null) GenesisForms.INSTANCE.playersWithMega.remove(pokemon.getOwnerUUID());
 
         pokemon.updateAspects();
         pokemon.updateForm();
@@ -595,32 +627,30 @@ public class CobblemonEventHandler {
         return wasMega;
     }
 
-    public static Unit pokemonReleasedEvent(ReleasePokemonEvent.Post event) {
+    public static void pokemonReleasedEvent(ReleasePokemonEvent.Post event) {
         ServerPlayerEntity player = event.getPlayer();
         Pokemon pokemon = event.getPokemon();
-        if (GenesisForms.INSTANCE.getPlayersWithMega().containsKey(player.getUuid())) {
-            if (pokemon.getUuid().equals(GenesisForms.INSTANCE.getPlayersWithMega().get(player.getUuid()))) {
-                GenesisForms.INSTANCE.getPlayersWithMega().remove(player.getUuid());
+        if (GenesisForms.INSTANCE.playersWithMega.containsKey(player.getUuid())) {
+            if (pokemon.getUuid().equals(GenesisForms.INSTANCE.playersWithMega.get(player.getUuid()))) {
+                GenesisForms.INSTANCE.playersWithMega.remove(player.getUuid());
             }
         }
-        return Unit.INSTANCE;
     }
 
-    public static Unit tradeEvent(TradeEvent.Pre event) {
+    public static void tradeEvent(TradeEvent.Pre event) {
         if (event.getTradeParticipant1Pokemon().getPersistentData().contains("genesis_untradeable")) {
             event.cancel();
-            return Unit.INSTANCE;
+            return;
         }
         if (event.getTradeParticipant2Pokemon().getPersistentData().contains("genesis_untradeable")) event.cancel();
-        return Unit.INSTANCE;
     }
 
-    public static Unit pokemonGainedEvent(PokemonGainedEvent event) {
-        if (event.getPokemon().getSpecies().getName().equalsIgnoreCase("Terapagos") && GenesisForms.INSTANCE.getConfig().fixTerapagosTeraType) {
+    public static void pokemonGainedEvent(PokemonGainedEvent event) {
+        if (event.getPokemon().getSpecies().getName().equalsIgnoreCase("Terapagos") && CONFIG.teraSettings.fixTerapagosTeraType) {
             event.getPokemon().setTeraType(TeraTypes.getSTELLAR());
         }
 
-        if (event.getPokemon().getSpecies().getName().equalsIgnoreCase("Ogerpon") && GenesisForms.INSTANCE.getConfig().fixOgerponTeraType) {
+        if (event.getPokemon().getSpecies().getName().equalsIgnoreCase("Ogerpon") && CONFIG.teraSettings.fixOgerponTeraType) {
             for (SpeciesFeature speciesFeature : event.getPokemon().getFeatures()) {
                 if (speciesFeature.getName().equalsIgnoreCase("ogre_mask") && speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
                     switch (stringSpeciesFeature.getValue()) {
@@ -633,10 +663,9 @@ public class CobblemonEventHandler {
                 }
             }
         }
-        return Unit.INSTANCE;
     }
 
-    public static Unit terastallizationEvent(TerastallizationEvent event) {
+    public static void terastallizationEvent(TerastallizationEvent event) {
         BattlePokemon battlePokemon = event.getPokemon();
         Pokemon pokemon = battlePokemon.getEffectedPokemon();
         PokemonEntity pokemonEntity = battlePokemon.getEntity();
@@ -651,32 +680,35 @@ public class CobblemonEventHandler {
             new FlagSpeciesFeature("embody_aspect", true).apply(pokemon);
         }
 
-        if (pokemonEntity != null) {
-            EventsConfig.gimmickEvents.terastallization.runEvent(teraType.showdownId(), pokemon, pokemonEntity);
+        if (pokemonEntity != null && EVENTS.terastallization != null) {
+            EVENTS.terastallization.runEvent(teraType.showdownId(), pokemon, pokemonEntity);
         }
 
         if (pokemon.isPlayerOwned() && pokemon.getOwnerPlayer() != null) {
             for (ItemStack stack : getValidKeyItemSlots(pokemon.getOwnerPlayer())) {
                 if (stack.getItem() instanceof TeraAccessory teraAccessory) {
-                    if (teraAccessory.requiresCharge && GenesisForms.INSTANCE.getConfig().requireOrbRecharge) {
+                    if (teraAccessory.requiresCharge && CONFIG.teraSettings.requireOrbRecharge) {
                         stack.setDamage(stack.getMaxDamage());
                     }
                 }
             }
         }
 
-        return Unit.INSTANCE;
     }
 
-    public static Unit zPowerEvent(ZMoveUsedEvent event) {
+    public static void zPowerEvent(ZMoveUsedEvent event) {
         Pokemon pokemon = event.getPokemon().getEffectedPokemon();
         PokemonEntity pokemonEntity = event.getPokemon().getEntity();
         Item heldItem = pokemon.heldItem().getItem();
 
-        if (heldItem instanceof ZCrystal zCrystal) {
-            EventsConfig.gimmickEvents.zPower.runEvent(zCrystal.getItemID(), pokemon, pokemonEntity);
+        if (heldItem instanceof ZCrystal zCrystal && EVENTS.zPower != null) {
+            ParticleEvent particleEvent = EVENTS.zPower.getAnimation(zCrystal.getItemId());
+            float delay = 0;
+            if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+            event.getBattle().dispatchWaitingToFront(delay, () -> {
+                if (EVENTS.zPower != null) EVENTS.zPower.runEvent(zCrystal.getItemId(), pokemon, pokemonEntity);
+                return Unit.INSTANCE;
+            });
         }
-
-        return Unit.INSTANCE;
     }
 }

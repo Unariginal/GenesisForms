@@ -6,10 +6,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 public class SnowstormParticleEvent extends ParticleEvent {
-    public SnowstormParticleEvent(int formChangeDelaySeconds, String particleResource, double xOffset, double yOffset, double zOffset) {
-        super(formChangeDelaySeconds, particleResource, xOffset, yOffset, zOffset);
-    }
-
     @Override
     public void spawnParticle(PokemonEntity pokemonEntity) {
         SpawnSnowstormParticlePacket snowstormParticlePacket = new SpawnSnowstormParticlePacket(

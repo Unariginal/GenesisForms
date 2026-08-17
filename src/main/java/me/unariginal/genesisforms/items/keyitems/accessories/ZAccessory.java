@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import java.util.List;
 
 public class ZAccessory extends BasePolymerItem {
-    public ZAccessory(Settings settings, Item polymerItem, PolymerModelData modelData, String itemID, List<String> lore) {
-        super(settings, polymerItem, modelData, itemID, lore);
+    public ZAccessory(Settings settings, Item polymerItem, PolymerModelData modelData, String itemId, List<String> lore) {
+        super(settings, polymerItem, modelData, itemId, lore);
     }
 }

@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleRegistry;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.factorytools.api.block.FactoryBlock;
 import eu.pb4.factorytools.api.virtualentity.BlockModel;
@@ -17,6 +18,7 @@ import eu.pb4.polymer.virtualentity.api.attachment.HolderAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import kotlin.Unit;
 import me.unariginal.genesisforms.data.FormSetting;
+import me.unariginal.genesisforms.data.event.ParticleEvent;
 import me.unariginal.genesisforms.polymer.KeyItemsGroup;
 import me.unariginal.genesisforms.utils.PokemonUtils;
 import net.minecraft.block.AbstractBlock;
@@ -26,7 +28,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -43,6 +44,9 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static me.unariginal.genesisforms.config.ConfigManager.EVENTS;
+import static me.unariginal.genesisforms.utils.PokemonUtils.applyFeature;
 
 public class PossessionBlock extends Block implements FactoryBlock {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
@@ -61,7 +65,7 @@ public class PossessionBlock extends Block implements FactoryBlock {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!player.isSneaking() && player instanceof ServerPlayerEntity serverPlayer) {
-            PokemonBattle playerBattle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(serverPlayer);
+            PokemonBattle playerBattle = BattleRegistry.getBattleByParticipatingPlayer(serverPlayer);
             if (playerBattle == null) {
                 PlayerPartyStore party = Cobblemon.INSTANCE.getStorage().getParty(serverPlayer);
                 List<Pokemon> nonNullParty = new ArrayList<>();
@@ -71,6 +75,7 @@ public class PossessionBlock extends Block implements FactoryBlock {
                     }
                 }
                 PartySelectCallbacks.INSTANCE.createFromPokemon(serverPlayer, nonNullParty, pokemon -> pokemon.getSpecies().getName().equalsIgnoreCase("rotom"), pokemon -> {
+                    PokemonEntity pokemonEntity = pokemon.getEntity();
                     if (pokemon.getFeatures().stream().noneMatch(speciesFeature -> {
                         if (speciesFeature.getName().equalsIgnoreCase(formSetting.featureName)) {
                             if (speciesFeature instanceof StringSpeciesFeature stringSpeciesFeature) {
@@ -81,10 +86,27 @@ public class PossessionBlock extends Block implements FactoryBlock {
                         }
                         return false;
                     })) {
-                        if (formSetting.defaultValue.equalsIgnoreCase("true") || formSetting.defaultValue.equalsIgnoreCase("false")) {
-                            new FlagSpeciesFeature(formSetting.featureName, Boolean.getBoolean(formSetting.defaultValue)).apply(pokemon);
+                        float delay = 0;
+                        if (EVENTS.formChanges != null && EVENTS.formChanges.possessions != null) {
+                            String eventId = pokemon.getSpecies().getName().toLowerCase() + "_" + formSetting.defaultValue;
+                            EVENTS.formChanges.possessions.runEvent(eventId, pokemon, pokemonEntity);
+                            ParticleEvent particleEvent = EVENTS.formChanges.possessions.getAnimation(eventId);
+                            if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+                        }
+
+                        if (pokemonEntity != null) {
+                            pokemonEntity.after(delay, () -> {
+                                applyFeature(formSetting.featureName, formSetting.defaultValue, pokemon);
+                                PokemonUtils.fixRotomMoves(pokemon);
+                                pokemon.updateAspects();
+                                pokemon.updateForm();
+                                return Unit.INSTANCE;
+                            });
                         } else {
-                            new StringSpeciesFeature(formSetting.featureName, formSetting.defaultValue).apply(pokemon);
+                            applyFeature(formSetting.featureName, formSetting.defaultValue, pokemon);
+                            PokemonUtils.fixRotomMoves(pokemon);
+                            pokemon.updateAspects();
+                            pokemon.updateForm();
                         }
                     } else {
                         // This is rotom light bulb (default) form
@@ -98,12 +120,10 @@ public class PossessionBlock extends Block implements FactoryBlock {
                     pokemon.updateAspects();
                     pokemon.updateForm();
 
-                    NbtCompound data = pokemon.getPersistentData();
                     ItemStack returnItem = ItemStack.EMPTY;
-                    if (data.contains("possession_item")) {
-                        String possessionItem = data.getString("possession_item");
-                        data.remove("possession_item");
-                        pokemon.setPersistentData$common(data);
+                    if (pokemon.getPersistentData().contains("possession_item")) {
+                        String possessionItem = pokemon.getPersistentData().getString("possession_item");
+                        pokemon.getPersistentData().remove("possession_item");
 
                         if (KeyItemsGroup.possessionItems.containsKey(possessionItem)) {
                             returnItem = KeyItemsGroup.possessionItems.get(possessionItem).getDefaultStack();

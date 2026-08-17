@@ -10,11 +10,13 @@ import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
-import me.unariginal.genesisforms.GenesisForms;
+import kotlin.Unit;
 import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
+import me.unariginal.genesisforms.data.event.ParticleEvent;
 import me.unariginal.genesisforms.items.ConsumablePolymerItem;
 import me.unariginal.genesisforms.utils.PokemonUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,6 +31,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static me.unariginal.genesisforms.config.ConfigManager.CONFIG;
+import static me.unariginal.genesisforms.config.ConfigManager.EVENTS;
+import static me.unariginal.genesisforms.utils.PokemonUtils.applyFeature;
 
 public class FusionItem extends ConsumablePolymerItem implements PokemonSelectingItem {
     private final List<FusionItemsConfig.FusionData> fusions;
@@ -62,7 +68,8 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
     @Override
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
         if (!this.canUseOnPokemon(itemStack, pokemon)) return TypedActionResult.fail(itemStack);
-        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(itemID) || !GenesisForms.INSTANCE.getConfig().enableFusions) return TypedActionResult.fail(itemStack);
+        if (CONFIG.generalSettings.disabledItems.contains(itemId) || !CONFIG.fusionSettings.enableFusions) return TypedActionResult.fail(itemStack);
+        PokemonEntity pokemonEntity = pokemon.getEntity();
 
         PlayerPartyStore partyStore = Cobblemon.INSTANCE.getStorage().getParty(serverPlayerEntity);
 
@@ -88,11 +95,10 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
         }
 
         if (isFused) {
-            NbtCompound persistenData = pokemon.getPersistentData();
             PokemonProperties properties;
             boolean oldData = false;
-            if (persistenData.contains("fusion_data") && persistenData.getCompound("fusion_data").contains("fuel_properties")) {
-                NbtCompound fusionData = persistenData.getCompound("fusion_data");
+            if (pokemon.getPersistentData().contains("fusion_data") && pokemon.getPersistentData().getCompound("fusion_data").contains("fuel_properties")) {
+                NbtCompound fusionData = pokemon.getPersistentData().getCompound("fusion_data");
                 NbtCompound fuelProperties = fusionData.getCompound("fuel_properties");
                 properties = PokemonUtils.loadFromNBT(fuelProperties);
             } else {
@@ -108,8 +114,8 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
 
             Pokemon returnedPokemon = properties.create();
 
-            if (!oldData && persistenData.getCompound("fusion_data").contains("fuel_features")) {
-                NbtCompound fusionData = persistenData.getCompound("fusion_data");
+            if (!oldData && pokemon.getPersistentData().getCompound("fusion_data").contains("fuel_features")) {
+                NbtCompound fusionData = pokemon.getPersistentData().getCompound("fusion_data");
                 NbtCompound fuelFeatures = fusionData.getCompound("fuel_features");
                 for (String featureName : fuelFeatures.getKeys()) {
                     NbtElement featureValue = fuelFeatures.get(featureName);
@@ -128,15 +134,15 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
             }
 
             if (!oldData) {
-                persistenData.remove("fusion_data");
-                pokemon.setPersistentData$common(persistenData);
+                pokemon.getPersistentData().remove("fusion_data");
             }
 
             if (oldData) {
                 IntSpeciesFeature dynamaxLevelFeature = returnedPokemon.getFeature("dynamax_level");
-                assert dynamaxLevelFeature != null;
-                dynamaxLevelFeature.setValue(returnedPokemon.getDmaxLevel());
-                returnedPokemon.markFeatureDirty(dynamaxLevelFeature);
+                if (dynamaxLevelFeature != null) {
+                    dynamaxLevelFeature.setValue(returnedPokemon.getDmaxLevel());
+                    returnedPokemon.markFeatureDirty(dynamaxLevelFeature);
+                }
             }
             partyStore.add(returnedPokemon);
 
@@ -156,12 +162,6 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
                 if (partyPokemon != null) {
                     for (FusionItemsConfig.FuelPokemonData fuelPokemon : fusion.fuelPokemon) {
                         if (partyPokemon.getSpecies().getName().equalsIgnoreCase(fuelPokemon.species)) {
-                            if (fuelPokemon.resultFeatureValue.equalsIgnoreCase("true") || fuelPokemon.resultFeatureValue.equalsIgnoreCase("false"))
-                                new FlagSpeciesFeature(fuelPokemon.resultFeatureName, Boolean.getBoolean(fuelPokemon.resultFeatureValue)).apply(pokemon);
-                            else
-                                new StringSpeciesFeature(fuelPokemon.resultFeatureName, fuelPokemon.resultFeatureValue).apply(pokemon);
-                            NbtCompound persistentData = pokemon.getPersistentData();
-
                             NbtCompound fusionData = new NbtCompound();
                             fusionData.put("fuel_properties", PokemonUtils.saveToNBT(partyPokemon.createPokemonProperties(PokemonPropertyExtractor.ALL)));
 
@@ -170,13 +170,30 @@ public class FusionItem extends ConsumablePolymerItem implements PokemonSelectin
                                 speciesFeatures = speciesFeature.saveToNBT(speciesFeatures);
                             }
                             fusionData.put("fuel_features", speciesFeatures);
-                            persistentData.put("fusion_data", fusionData);
-
-                            pokemon.setPersistentData$common(persistentData);
+                            pokemon.getPersistentData().put("fusion_data", fusionData);
 
                             partyStore.remove(partyPokemon);
-                            pokemon.updateAspects();
-                            pokemon.updateForm();
+
+                            float delay = 0;
+                            if (EVENTS.formChanges != null && EVENTS.formChanges.fusions != null) {
+                                String eventId = fusion.corePokemon + "_" + fuelPokemon.species;
+                                EVENTS.formChanges.fusions.runEvent(eventId, pokemon, pokemonEntity);
+                                ParticleEvent particleEvent = EVENTS.formChanges.fusions.getAnimation(eventId);
+                                if (particleEvent != null) delay = particleEvent.formChangeDelaySeconds;
+                            }
+
+                            if (pokemonEntity != null) {
+                                pokemonEntity.after(delay, () -> {
+                                    applyFeature(fuelPokemon.resultFeatureName, fuelPokemon.resultFeatureValue, pokemon);
+                                    pokemon.updateAspects();
+                                    pokemon.updateForm();
+                                    return Unit.INSTANCE;
+                                });
+                            } else {
+                                applyFeature(fuelPokemon.resultFeatureName, fuelPokemon.resultFeatureValue, pokemon);
+                                pokemon.updateAspects();
+                                pokemon.updateForm();
+                            }
 
                             if (consumable) itemStack.decrementUnlessCreative(1, serverPlayerEntity);
 

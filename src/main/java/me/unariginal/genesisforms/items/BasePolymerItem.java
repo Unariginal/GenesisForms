@@ -14,13 +14,13 @@ import java.util.List;
 
 public class BasePolymerItem extends SimplePolymerItem {
     private final PolymerModelData modelData;
-    protected final String itemID;
+    protected final String itemId;
     private final List<String> lore;
 
-    public BasePolymerItem(Settings settings, Item polymerItem, PolymerModelData modelData, String itemID, List<String> lore) {
+    public BasePolymerItem(Settings settings, Item polymerItem, PolymerModelData modelData, String itemId, List<String> lore) {
         super(settings, polymerItem);
         this.modelData = modelData;
-        this.itemID = itemID;
+        this.itemId = itemId;
         this.lore = lore;
     }
 
@@ -37,7 +37,7 @@ public class BasePolymerItem extends SimplePolymerItem {
         }
     }
 
-    public String getItemID() {
-        return itemID;
+    public String getItemId() {
+        return itemId;
     }
 }

@@ -7,7 +7,6 @@ import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
-import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.items.ConsumablePolymerItem;
 import me.unariginal.genesisforms.utils.TextUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static me.unariginal.genesisforms.config.ConfigManager.CONFIG;
+import static me.unariginal.genesisforms.config.ConfigManager.MESSAGES;
 
 public class DynamaxCandy extends ConsumablePolymerItem implements PokemonSelectingItem {
     public DynamaxCandy(Settings settings, Item polymerItem, PolymerModelData modelData, List<String> lore, boolean consumable) {
@@ -48,20 +50,21 @@ public class DynamaxCandy extends ConsumablePolymerItem implements PokemonSelect
     @Override
     public @Nullable TypedActionResult<ItemStack> applyToPokemon(@NotNull ServerPlayerEntity serverPlayerEntity, @NotNull ItemStack itemStack, @NotNull Pokemon pokemon) {
         if (!this.canUseOnPokemon(itemStack, pokemon)) return TypedActionResult.fail(itemStack);
-        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains(itemID)) return TypedActionResult.fail(itemStack);
-        if (!GenesisForms.INSTANCE.getConfig().enableDynamax) return TypedActionResult.fail(itemStack);
+        if (CONFIG.generalSettings.disabledItems.contains(itemId)) return TypedActionResult.fail(itemStack);
+        if (!CONFIG.dynamaxSettings.enableDynamax) return TypedActionResult.fail(itemStack);
 
         int currentDmaxLevel = pokemon.getDmaxLevel();
         pokemon.setDmaxLevel(currentDmaxLevel + 1);
 
         IntSpeciesFeature dynamaxLevelFeature = pokemon.getFeature("dynamax_level");
-        assert dynamaxLevelFeature != null;
-        dynamaxLevelFeature.setValue(pokemon.getDmaxLevel());
-        pokemon.markFeatureDirty(dynamaxLevelFeature);
+        if (dynamaxLevelFeature != null) {
+            dynamaxLevelFeature.setValue(pokemon.getDmaxLevel());
+            pokemon.markFeatureDirty(dynamaxLevelFeature);
+        }
 
         if (consumable) itemStack.decrementUnlessCreative(1, serverPlayerEntity);
 
-        serverPlayerEntity.sendMessage(TextUtils.deserialize(TextUtils.parse(GenesisForms.INSTANCE.getMessagesConfig().getMessage("dynamax_level_changed"), pokemon)), true);
+        serverPlayerEntity.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.dynamaxLevelChanged, pokemon)), true);
 
         return TypedActionResult.success(itemStack);
     }

@@ -7,14 +7,14 @@ import net.minecraft.item.Item;
 import java.util.List;
 
 public class HeldBattleItem extends BasePolymerItem {
-    private final String showdownID;
+    private final String showdownId;
 
-    public HeldBattleItem(Settings settings, Item polymerItem, PolymerModelData modelData, String itemID, List<String> lore, String showdownID) {
-        super(settings, polymerItem, modelData, itemID, lore);
-        this.showdownID = showdownID;
+    public HeldBattleItem(Settings settings, Item polymerItem, PolymerModelData modelData, String itemId, List<String> lore, String showdownId) {
+        super(settings, polymerItem, modelData, itemId, lore);
+        this.showdownId = showdownId;
     }
 
-    public String getShowdownID() {
-        return showdownID;
+    public String getShowdownId() {
+        return showdownId;
     }
 }

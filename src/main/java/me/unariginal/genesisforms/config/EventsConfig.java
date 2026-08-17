@@ -1,66 +1,56 @@
 package me.unariginal.genesisforms.config;
 
-import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
-import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import com.google.gson.annotations.SerializedName;
 import kotlin.Unit;
 import me.unariginal.genesisforms.data.event.ParticleEvent;
-import me.unariginal.genesisforms.handlers.GlowHandler;
+import me.unariginal.genesisforms.utils.GlowUtils;
 import me.unariginal.genesisforms.handlers.ScaleHandler;
-import me.unariginal.genesisforms.utils.ConfigUtils;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Optional;
 
-import static me.unariginal.genesisforms.utils.GsonUtils.gson;
+import static me.unariginal.genesisforms.utils.PokemonUtils.applyFeature;
 
 public class EventsConfig {
-    public static GimmickEvents gimmickEvents;
+    @Nullable
+    public EventData megaEvolution;
+    @Nullable
+    public EventData terastallization;
+    @Nullable
+    public EventData zPower;
+    @Nullable
+    public EventData dynamax;
+    @Nullable
+    public FormChanges formChanges;
 
-    public static class GimmickEvents {
-        @SerializedName(value = "mega_evolution", alternate = "megaEvolution")
-        public EventData megaEvolution;
-        public EventData terastallization;
-        @SerializedName(value = "z_power", alternate = "zPower")
-        public EventData zPower;
-        public EventData dynamax;
-
-        public GimmickEvents(EventData megaEvolution, EventData terastallization, EventData zPower, EventData dynamax) {
-            this.megaEvolution = megaEvolution;
-            this.terastallization = terastallization;
-            this.zPower = zPower;
-            this.dynamax = dynamax;
-        }
+    public static class FormChanges {
+        @Nullable
+        public EventData keyItems;
+        @Nullable
+        public EventData heldItems;
+        @Nullable
+        public EventData fusions;
+        @Nullable
+        public EventData possessions;
+        @Nullable
+        public EventData battleForms;
     }
 
     public static class EventData {
+        @Nullable
         public Map<String, ParticleEvent> animations;
+        @Nullable
         public Map<String, String> glow;
+        @Nullable
         public Map<String, FeatureData> features;
+        @Nullable
         public Map<String, ScaleData> scale;
 
-        public EventData(Map<String, ParticleEvent> animations, Map<String, String> glow, Map<String, FeatureData> features, Map<String, ScaleData> scale) {
-            this.animations = animations;
-            this.glow = glow;
-            this.features = features;
-            this.scale = scale;
-        }
-
-        public void runEvent(String id, Pokemon pokemon, PokemonEntity pokemonEntity) {
+        public void runEvent(@NotNull String id, @NotNull Pokemon pokemon, @Nullable PokemonEntity pokemonEntity) {
             ParticleEvent animationData = getAnimation(id);
             EventsConfig.FeatureData featureData = getFeature(id);
             EventsConfig.ScaleData scaleData = getScale(id);
@@ -76,19 +66,11 @@ public class EventsConfig {
             if (featureData != null) {
                 if (pokemonEntity != null) {
                     pokemonEntity.after(delay, () -> {
-                        if (featureData.featureValue.equalsIgnoreCase("true") || featureData.featureValue.equalsIgnoreCase("false")) {
-                            new FlagSpeciesFeature(featureData.featureName, Boolean.getBoolean(featureData.featureValue)).apply(pokemon);
-                        } else {
-                            new StringSpeciesFeature(featureData.featureName, featureData.featureValue).apply(pokemon);
-                        }
+                        applyFeature(featureData.featureName, featureData.featureValue, pokemon);
                         return Unit.INSTANCE;
                     });
                 } else {
-                    if (featureData.featureValue.equalsIgnoreCase("true") || featureData.featureValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(featureData.featureName, Boolean.getBoolean(featureData.featureValue)).apply(pokemon);
-                    } else {
-                        new StringSpeciesFeature(featureData.featureName, featureData.featureValue).apply(pokemon);
-                    }
+                    applyFeature(featureData.featureName, featureData.featureValue, pokemon);
                 }
             }
 
@@ -105,34 +87,23 @@ public class EventsConfig {
                 }
             }
 
-            String glowColor = null;
-            if (glow.containsKey(id)) {
-                glowColor = glow.get(id);
-            } else if (glow.containsKey("global")) {
-                glowColor = glow.get("global");
-            }
+            String glowColor = getGlow(id);
 
             if (glowColor != null) {
                 pokemon.getPersistentData().putString("glow_id", id);
                 pokemon.getPersistentData().putString("glow_color", glowColor);
-                if (pokemonEntity != null) {
-                    GlowHandler.applyGlowing(id, glowColor, pokemon, pokemonEntity);
-                }
+                GlowUtils.applyGlowing(id, glowColor, pokemon, pokemonEntity);
             }
         }
 
-        public void revertEvent(String id, Pokemon pokemon, PokemonEntity pokemonEntity) {
+        public void revertEvent(@NotNull String id, @NotNull Pokemon pokemon, @Nullable PokemonEntity pokemonEntity) {
             EventsConfig.FeatureData featureData = getFeature(id);
             EventsConfig.ScaleData scaleData = getScale(id);
 
             if (featureData != null) {
                 pokemon.getFeatures().removeIf(speciesFeature -> speciesFeature.getName().equalsIgnoreCase(featureData.featureName));
                 if (!(featureData.defaultValue == null || featureData.defaultValue.equalsIgnoreCase("null"))) {
-                    if (featureData.defaultValue.equalsIgnoreCase("true") || featureData.defaultValue.equalsIgnoreCase("false")) {
-                        new FlagSpeciesFeature(featureData.featureName, Boolean.getBoolean(featureData.defaultValue)).apply(pokemon);
-                    } else {
-                        new StringSpeciesFeature(featureData.featureName, featureData.defaultValue).apply(pokemon);
-                    }
+                    applyFeature(featureData.featureName, featureData.defaultValue, pokemon);
                 }
             }
 
@@ -155,10 +126,12 @@ public class EventsConfig {
                 pokemon.getPersistentData().remove("glow_color");
             }
 
-            GlowHandler.removeGlowing(id, pokemon, pokemonEntity);
+            GlowUtils.removeGlowing(id, pokemon, pokemonEntity);
         }
 
+        @Nullable
         public ParticleEvent getAnimation(String animationName) {
+            if (animations == null) return null;
             if (animations.containsKey(animationName)) {
                 return animations.get(animationName);
             } else {
@@ -166,7 +139,9 @@ public class EventsConfig {
             }
         }
 
+        @Nullable
         public String getGlow(String glowName) {
+            if (glow == null) return null;
             if (glow.containsKey(glowName)) {
                 return glow.get(glowName);
             } else {
@@ -174,7 +149,9 @@ public class EventsConfig {
             }
         }
 
+        @Nullable
         public FeatureData getFeature(String featureName) {
+            if (features == null) return null;
             if (features.containsKey(featureName)) {
                 return features.get(featureName);
             } else {
@@ -182,7 +159,9 @@ public class EventsConfig {
             }
         }
 
+        @Nullable
         public ScaleData getScale(String scaleName) {
+            if (scale == null) return null;
             if (scale.containsKey(scaleName)) {
                 return scale.get(scaleName);
             } else {
@@ -192,43 +171,13 @@ public class EventsConfig {
     }
 
     public static class FeatureData {
-        @SerializedName(value = "feature_name", alternate = "featureName")
         public String featureName;
-        @SerializedName(value = "feature_value", alternate = "featureValue")
         public String featureValue;
-        @SerializedName(value = "default_value", alternate = "defaultValue")
         public String defaultValue;
-
-        public FeatureData(String featureName, String featureValue, String defaultValue) {
-            this.featureName = featureName;
-            this.featureValue = featureValue;
-            this.defaultValue = defaultValue;
-        }
     }
 
     public static class ScaleData {
         public float scale;
-        @SerializedName(value = "scaling_ticks", alternate = "scalingTicks")
         public long scalingTicks;
-
-        public ScaleData(float scale, long scalingTicks) {
-            this.scale = scale;
-            this.scalingTicks = scalingTicks;
-        }
-    }
-
-    public static void load() throws IOException {
-        String json = "{}";
-
-        File eventsConfigFile = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/events.json").toFile();
-        if (!eventsConfigFile.exists()) {
-            File configFilePath = FabricLoader.getInstance().getConfigDir().resolve("GenesisForms/").toFile();
-            configFilePath.mkdirs();
-            ConfigUtils.create(eventsConfigFile, "/genesis_configs/events.json");
-        }
-        if (eventsConfigFile.exists()) json = JsonParser.parseReader(new FileReader(eventsConfigFile)).toString();
-
-        Type eventsDataType = new TypeToken<GimmickEvents>() {}.getType();
-        gimmickEvents = gson.fromJson(json, eventsDataType);
     }
 }

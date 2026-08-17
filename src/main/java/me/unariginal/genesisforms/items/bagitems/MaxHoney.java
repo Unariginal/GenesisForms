@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static me.unariginal.genesisforms.config.ConfigManager.CONFIG;
+
 public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
     private final BagItem bagItem = new BagItem() {
         @Override
@@ -65,11 +67,11 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("max_honey")) return TypedActionResult.success(user.getStackInHand(hand));
-        ServerPlayerEntity player = GenesisForms.INSTANCE.getServer().getPlayerManager().getPlayer(user.getUuid());
+        if (CONFIG.generalSettings.disabledItems.contains("max_honey")) return TypedActionResult.success(user.getStackInHand(hand));
+        ServerPlayerEntity player = GenesisForms.INSTANCE.server.getPlayerManager().getPlayer(user.getUuid());
         ItemStack stack = user.getStackInHand(hand);
         if (player != null) {
-            PokemonBattle battle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
+            PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
             if (battle != null) {
                 BattleActor actor = battle.getActor(player);
                 if (actor != null) {
@@ -92,7 +94,7 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
                                 return Unit.INSTANCE;
                             });
                         } catch (NoSuchMethodError e) {
-                            GenesisForms.INSTANCE.logError("[Genesis] Suppressing NoSuchMethodError (You're running the 1.6.1 version on the 1.7 snapshot! " + e.getMessage());
+                            GenesisForms.logError("Suppressing NoSuchMethodError (You're running the 1.6.1 version on the 1.7 snapshot! " + e.getMessage());
                         }
                     }
                 }
@@ -104,7 +106,7 @@ public class MaxHoney extends ConsumablePolymerItem implements HealingSource {
                     }
                 }
                 PartySelectCallbacks.INSTANCE.createFromPokemon(player, nonNullParty, Pokemon::isFainted, pokemon -> {
-                    PokemonBattle playerBattle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
+                    PokemonBattle playerBattle = BattleRegistry.getBattleByParticipatingPlayer(player);
                     if (pokemon.isFainted() && playerBattle == null) {
                         AtomicInteger amount = new AtomicInteger(pokemon.getMaxHealth());
                         CobblemonEvents.POKEMON_HEALED.postThen(new PokemonHealedEvent(pokemon, amount.get(), this), event -> Unit.INSTANCE, event ->

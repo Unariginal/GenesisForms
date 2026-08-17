@@ -6,40 +6,40 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public class TextUtils {
-    private final static GenesisForms gf = GenesisForms.INSTANCE;
+import static me.unariginal.genesisforms.config.ConfigManager.MESSAGES;
 
+public class TextUtils {
     public static Text deserialize(String text) {
-        return GenesisForms.INSTANCE.getAudiences().toNative(MiniMessage.miniMessage().deserialize("<!i>" + text));
+        return GenesisForms.INSTANCE.audiences.toNative(MiniMessage.miniMessage().deserialize("<!i>" + text));
     }
 
     public static String parse(String text) {
-        return text.replaceAll("%prefix%", gf.getMessagesConfig().prefix);
+        return text.replace("%prefix%", MESSAGES.prefix);
     }
 
     public static String parse(String text, ServerPlayerEntity player) {
         text = parse(text);
         text = text
-                .replaceAll("%player%", player.getNameForScoreboard()
-                .replaceAll("%player.uuid%", player.getUuid().toString()));
+                .replace("%player%", player.getNameForScoreboard())
+                .replace("%player.uuid%", player.getUuid().toString());
         return text;
     }
 
     public static String parse(String text, ServerPlayerEntity player, String itemName, int count) {
         text = parse(text, player);
         text = text
-                .replaceAll("%item%", Text.translatable("item.genesisforms." + itemName).getString())
-                .replaceAll("%count%", String.valueOf(count));
+                .replace("%item%", Text.translatable("item.genesisforms." + itemName).getString())
+                .replace("%count%", String.valueOf(count));
         return text;
     }
 
     public static String parse(String text, Pokemon pokemon) {
         text = parse(text);
         text = text
-                .replaceAll("%pokemon%", pokemon.getDisplayName(false).getString())
-                .replaceAll("%pokemon.uuid%", pokemon.getUuid().toString())
-                .replaceAll("%pokemon.tera_type%", pokemon.getTeraType().getDisplayName().getString())
-                .replaceAll("%pokemon.dmax_level%", String.valueOf(pokemon.getDmaxLevel()));
+                .replace("%pokemon%", pokemon.getDisplayName(false).getString())
+                .replace("%pokemon.uuid%", pokemon.getUuid().toString())
+                .replace("%pokemon.tera_type%", pokemon.getTeraType().getDisplayName().getString())
+                .replace("%pokemon.dmax_level%", String.valueOf(pokemon.getDmaxLevel()));
         return text;
     }
 }

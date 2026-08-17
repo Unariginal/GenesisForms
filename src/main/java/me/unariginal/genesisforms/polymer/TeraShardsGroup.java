@@ -19,6 +19,8 @@ import net.minecraft.util.Rarity;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static me.unariginal.genesisforms.config.ConfigManager.TERA_SHARDS;
+
 public class TeraShardsGroup {
     private static final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.EPIC);
     private static final Item baseVanillaItem = Items.EMERALD;
@@ -26,7 +28,7 @@ public class TeraShardsGroup {
     public static LinkedHashMap<String, TeraShard> teraShards = new LinkedHashMap<>();
 
     public static void registerItemGroup() {
-        for (Map.Entry<String, TeraShardsConfig.TeraShardData> teraShardDataEntry : TeraShardsConfig.teraShardMap.entrySet()) {
+        for (Map.Entry<String, TeraShardsConfig> teraShardDataEntry : TERA_SHARDS.entrySet()) {
             teraShards.put(teraShardDataEntry.getKey(), registerTeraShardItem(teraShardDataEntry.getKey(), teraShardDataEntry.getValue()));
         }
 
@@ -43,13 +45,13 @@ public class TeraShardsGroup {
         PolymerItemGroupUtils.registerPolymerItemGroup(GenesisForms.id("tera_shards"), ITEM_GROUP);
     }
 
-    public static TeraShard registerTeraShardItem(String itemID, TeraShardsConfig.TeraShardData teraShardData) {
+    public static TeraShard registerTeraShardItem(String itemID, TeraShardsConfig teraShardData) {
         TeraType teraType = TeraTypes.get(teraShardData.teraType.toLowerCase());
         if (teraType == null) teraType = TeraTypes.getNORMAL();
 
         return Registry.register(Registries.ITEM, GenesisForms.id(itemID),
                 new TeraShard(
-                        itemSettings,
+                        itemSettings.maxCount(teraShardData.maxStackSize),
                         baseVanillaItem,
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + itemID)),
                         itemID,

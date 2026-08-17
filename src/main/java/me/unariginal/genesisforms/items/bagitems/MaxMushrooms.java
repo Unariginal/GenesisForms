@@ -33,6 +33,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static me.unariginal.genesisforms.config.ConfigManager.CONFIG;
+
 public class MaxMushrooms extends BasePolymerBlockItem implements SimpleBagItemLike {
     private final boolean consumable;
 
@@ -80,11 +82,11 @@ public class MaxMushrooms extends BasePolymerBlockItem implements SimpleBagItemL
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (GenesisForms.INSTANCE.getConfig().disabledItems.contains("max_mushrooms")) return TypedActionResult.success(user.getStackInHand(hand));
-        ServerPlayerEntity player = GenesisForms.INSTANCE.getServer().getPlayerManager().getPlayer(user.getUuid());
+        if (CONFIG.generalSettings.disabledItems.contains("max_mushrooms")) return TypedActionResult.success(user.getStackInHand(hand));
+        ServerPlayerEntity player = GenesisForms.INSTANCE.server.getPlayerManager().getPlayer(user.getUuid());
         ItemStack stack = user.getStackInHand(hand);
         if (player != null) {
-            PokemonBattle battle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player);
+            PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
             if (battle != null) {
                 BattleActor actor = battle.getActor(player);
                 if (actor != null) {
@@ -112,7 +114,7 @@ public class MaxMushrooms extends BasePolymerBlockItem implements SimpleBagItemL
                                 }
                             }
                         } catch (NoSuchMethodError e) {
-                            GenesisForms.INSTANCE.logError("[Genesis] Suppressing NoSuchMethodError! " + e.getMessage());
+                            GenesisForms.logError("Suppressing NoSuchMethodError! " + e.getMessage());
                         }
                     }
                 }

@@ -15,8 +15,12 @@ import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Rarity;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import static me.unariginal.genesisforms.config.ConfigManager.MEGA_EVOLUTIONS;
 
 public class MegastonesGroup {
     private static final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.EPIC);
@@ -25,9 +29,9 @@ public class MegastonesGroup {
     public static LinkedHashMap<String, Megastone> megastones = new LinkedHashMap<>();
 
     public static void registerItemGroup() {
-        for (Map.Entry<String, MegaEvolutionConfig.MegaEvolutionData> megastoneData : MegaEvolutionConfig.megaEvolutionMap.entrySet()) {
-            if (megastoneData.getValue().hasItem)
-                megastones.put(megastoneData.getKey(), registerMegastoneItem(megastoneData.getValue().itemInformation.itemID, megastoneData.getValue()));
+        for (Map.Entry<String, MegaEvolutionConfig> megastoneData : MEGA_EVOLUTIONS.entrySet()) {
+            if (megastoneData.getValue().hasItem && megastoneData.getValue().itemInformation != null)
+                megastones.put(megastoneData.getKey(), registerMegastoneItem(megastoneData.getValue().itemInformation.itemId, megastoneData.getValue()));
         }
 
         final ItemGroup ITEM_GROUP = FabricItemGroup.builder()
@@ -43,18 +47,21 @@ public class MegastonesGroup {
         PolymerItemGroupUtils.registerPolymerItemGroup(GenesisForms.id("mega_stones"), ITEM_GROUP);
 
         for (Map.Entry<String, Megastone> megastoneEntry : megastones.entrySet()) {
-            CobblemonHeldItemManager.INSTANCE.registerRemap(megastoneEntry.getValue(), megastoneEntry.getValue().getShowdownID());
+            if (megastoneEntry.getValue().getShowdownID() != null)
+                CobblemonHeldItemManager.INSTANCE.registerRemap(megastoneEntry.getValue(), megastoneEntry.getValue().getShowdownID());
         }
     }
 
-    public static Megastone registerMegastoneItem(String itemID, MegaEvolutionConfig.MegaEvolutionData megastoneData) {
+    public static Megastone registerMegastoneItem(String itemID, MegaEvolutionConfig megastoneData) {
+        List<String> lore = new ArrayList<>();
+        if (megastoneData.itemInformation != null) lore = megastoneData.itemInformation.lore;
         return Registry.register(Registries.ITEM, GenesisForms.id(itemID),
                 new Megastone(
                         itemSettings,
                         baseVanillaItem,
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + itemID)),
                         itemID,
-                        megastoneData.itemInformation.lore,
+                        lore,
                         megastoneData
                 )
         );
