@@ -9,11 +9,6 @@ import java.util.List;
 public class SnowstormEntityParticleEvent extends ParticleEvent {
     public List<String> locators;
 
-    public SnowstormEntityParticleEvent(int formChangeDelaySeconds, String particleResource, double xOffset, double yOffset, double zOffset, List<String> locators) {
-        super(formChangeDelaySeconds, particleResource, xOffset, yOffset, zOffset);
-        this.locators = locators;
-    }
-
     @Override
     public void spawnParticle(PokemonEntity pokemonEntity) {
         SpawnSnowstormEntityParticlePacket snowstormEntityParticlePacket = new SpawnSnowstormEntityParticlePacket(

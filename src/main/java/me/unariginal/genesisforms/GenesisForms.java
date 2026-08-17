@@ -1,7 +1,6 @@
 package me.unariginal.genesisforms;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
@@ -16,16 +15,6 @@ import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import kotlin.Unit;
 import me.unariginal.genesisforms.commands.GenesisCommands;
 import me.unariginal.genesisforms.config.*;
-import me.unariginal.genesisforms.config.items.MiscItemsConfig;
-import me.unariginal.genesisforms.config.items.accessories.AccessoriesConfig;
-import me.unariginal.genesisforms.config.items.bagitems.MaxItemsConfig;
-import me.unariginal.genesisforms.config.items.bagitems.TeraShardsConfig;
-import me.unariginal.genesisforms.config.items.helditems.HeldBattleItemsConfig;
-import me.unariginal.genesisforms.config.items.helditems.HeldFormItemsConfig;
-import me.unariginal.genesisforms.config.items.helditems.ZCrystalsConfig;
-import me.unariginal.genesisforms.config.items.keyitems.FusionItemsConfig;
-import me.unariginal.genesisforms.config.items.keyitems.KeyFormItemsConfig;
-import me.unariginal.genesisforms.config.items.keyitems.PossessionItemsConfig;
 import me.unariginal.genesisforms.events.UltraBurstEvent;
 import me.unariginal.genesisforms.handlers.*;
 import me.unariginal.genesisforms.items.helditems.HeldBattleItem;
@@ -33,6 +22,7 @@ import me.unariginal.genesisforms.polymer.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
@@ -43,23 +33,20 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.*;
+
+import static me.unariginal.genesisforms.config.ConfigManager.CONFIG;
 
 public class GenesisForms implements ModInitializer {
     public static final String MOD_ID = "genesisforms";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static boolean DEBUG = false;
     public static GenesisForms INSTANCE;
 
-    private MinecraftServer server;
-    private FabricServerAudiences audiences;
+    public MinecraftServer server;
+    public FabricServerAudiences audiences;
 
-    private Config config = new Config();
-    private MessagesConfig messagesConfig = new MessagesConfig();
-
-    private final Map<UUID, UUID> playersWithMega = new HashMap<>();
+    public final Map<UUID, UUID> playersWithMega = new HashMap<>();
 
     public static Identifier id(String path) {
         return Identifier.of(MOD_ID, path);
@@ -70,6 +57,7 @@ public class GenesisForms implements ModInitializer {
         INSTANCE = this;
 
         new GenesisCommands();
+        ConfigManager.load();
 
         ShowdownInterpreter.registerUpdateInstructionParser("-burst", (battle, instructionSet, message, messageIterator) -> pokemonBattle -> {
             BattlePokemon battlePokemon = message.battlePokemon(0, battle);
@@ -84,22 +72,6 @@ public class GenesisForms implements ModInitializer {
             });
         });
 
-        try {
-            AccessoriesConfig.load();
-            KeyFormItemsConfig.load();
-            HeldFormItemsConfig.load();
-            HeldBattleItemsConfig.load();
-            MegaEvolutionConfig.load();
-            ZCrystalsConfig.load();
-            TeraShardsConfig.load();
-            FusionItemsConfig.load();
-            PossessionItemsConfig.load();
-            MaxItemsConfig.load();
-            MiscItemsConfig.load();
-        } catch (IOException e) {
-            logError("[GenesisForms] " + e.getMessage());
-        }
-
         PolymerResourcePackUtils.markAsRequired();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
 
@@ -108,6 +80,8 @@ public class GenesisForms implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             this.server = server;
             this.audiences = FabricServerAudiences.of(server);
+            CobblemonEventHandler.trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
+
             reload();
 
             registerEvents();
@@ -116,14 +90,15 @@ public class GenesisForms implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             try {
                 List<UUID> toRemove = new ArrayList<>();
-                for (UUID uuid : CobblemonEventHandler.activeMegaAnimations.keySet()) {
-                    CobblemonEventHandler.activeMegaAnimations.put(uuid, CobblemonEventHandler.activeMegaAnimations.get(uuid) - 1);
-                    if (CobblemonEventHandler.activeMegaAnimations.get(uuid) <= 0) {
+                List<UUID> activeKeySet = new ArrayList<>(CobblemonEventHandler.activeFormAnimations.keySet());
+                for (UUID uuid : activeKeySet) {
+                    CobblemonEventHandler.activeFormAnimations.put(uuid, CobblemonEventHandler.activeFormAnimations.get(uuid) - 1);
+                    if (CobblemonEventHandler.activeFormAnimations.get(uuid) <= 0) {
                         toRemove.add(uuid);
                     }
                 }
                 for (UUID uuid : toRemove) {
-                    CobblemonEventHandler.activeMegaAnimations.remove(uuid);
+                    CobblemonEventHandler.activeFormAnimations.remove(uuid);
                 }
             } catch (ConcurrentModificationException e) {
                 // I'm sure this will probably happen because I'm modifying the key set in two locations at the same time :)
@@ -133,14 +108,7 @@ public class GenesisForms implements ModInitializer {
     }
 
     public void reload() {
-        this.config = new Config();
-        this.messagesConfig = new MessagesConfig();
-        try {
-            EventsConfig.load();
-            BattleFormChangeConfig.load();
-        } catch (IOException e) {
-            logError(e.getMessage());
-        }
+        ConfigManager.load();
     }
 
     private void registerItems() {
@@ -180,7 +148,7 @@ public class GenesisForms implements ModInitializer {
             Item helditem = pokemon.heldItem().getItem();
             if (event.getSource().isBattle()) {
                 if (helditem instanceof HeldBattleItem heldBattleItem) {
-                    if (heldBattleItem.getShowdownID().equalsIgnoreCase("machobrace")) {
+                    if (heldBattleItem.getShowdownId().equalsIgnoreCase("machobrace")) {
                         event.setAmount(event.getAmount() * 2);
                     }
                 }
@@ -190,9 +158,7 @@ public class GenesisForms implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(server -> ScaleHandler.updateScales());
 
         // Remove the player from the map even if they do have a mega, so we can properly detect their mega pokemon even if the server doesn't restart in between log-ins
-        PlatformEvents.SERVER_PLAYER_LOGOUT.subscribe(event -> {
-            playersWithMega.remove(event.getPlayer().getUuid());
-        });
+        PlatformEvents.SERVER_PLAYER_LOGOUT.subscribe(event -> playersWithMega.remove(event.getPlayer().getUuid()));
 
         // I hope I learn how to do things more efficiently
         PlatformEvents.SERVER_PLAYER_LOGIN.subscribe(event -> {
@@ -200,10 +166,9 @@ public class GenesisForms implements ModInitializer {
             PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(player);
             PCStore pcStore = Cobblemon.INSTANCE.getStorage().getPC(player);
 
-
             List<Pokemon> megaPokemonInParty = playerPartyStore.toGappyList().stream().filter(pokemon -> {
                 if (pokemon == null) return false;
-                MegaEvolutionConfig.MegaEvolutionData megastoneData = MegaEvolutionConfig.getMegaEvolution(pokemon);
+                MegaEvolutionConfig megastoneData = MegaEvolutionConfig.getMegaEvolution(pokemon);
                 if (megastoneData == null) return false;
                 if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
                     if (speciesFeature.getName().equalsIgnoreCase(megastoneData.featureName)) {
@@ -235,7 +200,7 @@ public class GenesisForms implements ModInitializer {
             pcStore.getBoxes().forEach(pcBox -> pcBox.getNonEmptySlots().values().forEach(pokemon -> {
                 if (pokemon != null) {
                     if (!megaPokemonInPC.contains(pokemon)) {
-                        MegaEvolutionConfig.MegaEvolutionData megastoneData = MegaEvolutionConfig.getMegaEvolution(pokemon);
+                        MegaEvolutionConfig megastoneData = MegaEvolutionConfig.getMegaEvolution(pokemon);
                         if (megastoneData != null) {
                             if (pokemon.getFeatures().stream().anyMatch(speciesFeature -> {
                                 if (speciesFeature.getName().equalsIgnoreCase(megastoneData.featureName)) {
@@ -266,32 +231,12 @@ public class GenesisForms implements ModInitializer {
     }
 
     public static void logError(String message) {
-        LOGGER.error(message);
+        LOGGER.error("[GenesisForms] {}", message);
     }
 
     public static void logInfo(String message) {
-        if (DEBUG) {
-            LOGGER.info(message);
+        if (CONFIG.debug) {
+            LOGGER.info("[GenesisForms] {}", message);
         }
-    }
-
-    public MinecraftServer getServer() {
-        return server;
-    }
-
-    public FabricServerAudiences getAudiences() {
-        return audiences;
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public MessagesConfig getMessagesConfig() {
-        return messagesConfig;
-    }
-
-    public Map<UUID, UUID> getPlayersWithMega() {
-        return playersWithMega;
     }
 }

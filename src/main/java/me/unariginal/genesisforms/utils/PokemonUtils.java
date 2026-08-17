@@ -5,6 +5,8 @@ import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
 import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.DataKeys;
@@ -240,6 +242,14 @@ public class PokemonUtils {
             if (containsMoveBenched) {
                 pokemon.getBenchedMoves().add(new BenchedMove(replacement, 0));
             }
+        }
+    }
+
+    public static void applyFeature(String featureName, String featureValue, Pokemon pokemon) {
+        if (featureValue.equalsIgnoreCase("true") || featureValue.equalsIgnoreCase("false")) {
+            new FlagSpeciesFeature(featureName, Boolean.parseBoolean(featureValue)).apply(pokemon);
+        } else {
+            new StringSpeciesFeature(featureName, featureValue).apply(pokemon);
         }
     }
 }

@@ -22,6 +22,9 @@ import net.minecraft.util.Rarity;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static me.unariginal.genesisforms.config.ConfigManager.HELD_BATTLE_ITEMS;
+import static me.unariginal.genesisforms.config.ConfigManager.HELD_FORM_ITEMS;
+
 public class HeldItemsGroup {
     private static final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.EPIC);
     private static final Item baseVanillaItem = Items.EMERALD;
@@ -32,12 +35,12 @@ public class HeldItemsGroup {
     public static LinkedHashMap<String, HeldBattleItem> heldBattleItems = new LinkedHashMap<>();
 
     public static void registerItemGroup() {
-        for (Map.Entry<String, HeldFormItemsConfig.HeldFormItemData> heldFormItemDataEntry : HeldFormItemsConfig.heldFormItemMap.entrySet()) {
+        for (Map.Entry<String, HeldFormItemsConfig> heldFormItemDataEntry : HELD_FORM_ITEMS.entrySet()) {
             heldFormItems.put(heldFormItemDataEntry.getKey(), registerHeldFormItem(heldFormItemDataEntry.getKey(), heldFormItemDataEntry.getValue()));
             allHeldItems.put(heldFormItemDataEntry.getKey(), heldFormItems.get(heldFormItemDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, HeldBattleItemsConfig.HeldBattleItemData> heldbattleItemDataEntry : HeldBattleItemsConfig.heldBattleItemMap.entrySet()) {
+        for (Map.Entry<String, HeldBattleItemsConfig> heldbattleItemDataEntry : HELD_BATTLE_ITEMS.entrySet()) {
             heldBattleItems.put(heldbattleItemDataEntry.getKey(), registerHeldBattleItem(heldbattleItemDataEntry.getKey(), heldbattleItemDataEntry.getValue()));
             allHeldItems.put(heldbattleItemDataEntry.getKey(), heldBattleItems.get(heldbattleItemDataEntry.getKey()).getDefaultStack());
         }
@@ -59,15 +62,15 @@ public class HeldItemsGroup {
         PolymerItemGroupUtils.registerPolymerItemGroup(GenesisForms.id("held_items"), ITEM_GROUP);
 
         for (Map.Entry<String, HeldFormItem> heldFormItemEntry : heldFormItems.entrySet()) {
-            CobblemonHeldItemManager.INSTANCE.registerRemap(heldFormItemEntry.getValue(), heldFormItemEntry.getValue().getShowdownID());
+            CobblemonHeldItemManager.INSTANCE.registerRemap(heldFormItemEntry.getValue(), heldFormItemEntry.getValue().getShowdownId());
         }
 
         for (Map.Entry<String, HeldBattleItem> heldBattleItemEntry : heldBattleItems.entrySet()) {
-            CobblemonHeldItemManager.INSTANCE.registerRemap(heldBattleItemEntry.getValue(), heldBattleItemEntry.getValue().getShowdownID());
+            CobblemonHeldItemManager.INSTANCE.registerRemap(heldBattleItemEntry.getValue(), heldBattleItemEntry.getValue().getShowdownId());
         }
     }
 
-    public static HeldFormItem registerHeldFormItem(String itemID, HeldFormItemsConfig.HeldFormItemData heldFormItemData) {
+    public static HeldFormItem registerHeldFormItem(String itemID, HeldFormItemsConfig heldFormItemData) {
         return Registry.register(Registries.ITEM, GenesisForms.id(itemID),
                 new HeldFormItem(
                         itemSettings,
@@ -75,7 +78,7 @@ public class HeldItemsGroup {
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + itemID)),
                         itemID,
                         heldFormItemData.lore,
-                        heldFormItemData.showdownID,
+                        heldFormItemData.showdownId,
                         new FormSetting(
                                 heldFormItemData.species,
                                 heldFormItemData.featureName,
@@ -86,7 +89,7 @@ public class HeldItemsGroup {
         );
     }
 
-    public static HeldBattleItem registerHeldBattleItem(String itemID, HeldBattleItemsConfig.HeldBattleItemData heldBattleItemData) {
+    public static HeldBattleItem registerHeldBattleItem(String itemID, HeldBattleItemsConfig heldBattleItemData) {
         return Registry.register(Registries.ITEM, GenesisForms.id(itemID),
                 new HeldBattleItem(
                         itemSettings,
@@ -94,7 +97,7 @@ public class HeldItemsGroup {
                         PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/" + itemID)),
                         itemID,
                         heldBattleItemData.lore,
-                        heldBattleItemData.showdownID
+                        heldBattleItemData.showdownId
                 )
         );
     }

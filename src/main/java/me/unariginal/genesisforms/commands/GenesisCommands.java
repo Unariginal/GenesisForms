@@ -12,16 +12,18 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.unariginal.genesisforms.GenesisForms;
 import me.unariginal.genesisforms.handlers.CobblemonEventHandler;
 import me.unariginal.genesisforms.items.helditems.Megastone;
+import me.unariginal.genesisforms.items.helditems.ZCrystal;
 import me.unariginal.genesisforms.items.keyitems.accessories.TeraAccessory;
 import me.unariginal.genesisforms.polymer.*;
 import me.unariginal.genesisforms.utils.TextUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.*;
+import static me.unariginal.genesisforms.config.ConfigManager.MESSAGES;
 
 public class GenesisCommands {
     private final GenesisForms gf = GenesisForms.INSTANCE;
@@ -43,11 +45,13 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            Megastone megastone = MegastonesGroup.megastones.get(StringArgumentType.getString(ctx, "mega-stone"));
+                                                                            String itemId = StringArgumentType.getString(ctx, "mega-stone");
+                                                                            Megastone megastone = MegastonesGroup.megastones.get(itemId);
+                                                                            if (megastone == null) return 0;
                                                                             ItemStack toGive = megastone.getDefaultStack();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, megastone.getItemID(), 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, megastone.getItemID(), 1)));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandReceived, player, megastone.getItemId(), 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandFeedback, player, megastone.getItemId(), 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -67,10 +71,13 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = ZCrystalsGroup.zCrystals.get(StringArgumentType.getString(ctx, "z-crystal")).getDefaultStack();
+                                                                            String itemId = StringArgumentType.getString(ctx, "z-crystal");
+                                                                            ZCrystal zCrystal = ZCrystalsGroup.zCrystals.get(itemId);
+                                                                            if (zCrystal == null) return 0;
+                                                                            ItemStack toGive = zCrystal.getDefaultStack();
                                                                             player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, StringArgumentType.getString(ctx, "z-crystal"), 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, StringArgumentType.getString(ctx, "z-crystal"), 1)));
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandReceived, player, itemId, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandFeedback, player, itemId, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -91,10 +98,11 @@ public class GenesisCommands {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
                                                                             String itemId = StringArgumentType.getString(ctx, "held-item");
-                                                                            ItemStack toGive = HeldItemsGroup.allHeldItems.get(itemId).copy();
-                                                                            player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, itemId, 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, itemId, 1)));
+                                                                            ItemStack toGive = HeldItemsGroup.allHeldItems.get(itemId);
+                                                                            if (toGive == null) return 0;
+                                                                            player.giveItemStack(toGive.copy());
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandReceived, player, itemId, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandFeedback, player, itemId, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -114,10 +122,12 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = KeyItemsGroup.allKeyItems.get(StringArgumentType.getString(ctx, "key-item")).copy();
-                                                                            player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, StringArgumentType.getString(ctx, "key-item"), 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, StringArgumentType.getString(ctx, "key-item"), 1)));
+                                                                            String itemId = StringArgumentType.getString(ctx, "key-item");
+                                                                            ItemStack toGive = KeyItemsGroup.allKeyItems.get(itemId);
+                                                                            if (toGive == null) return 0;
+                                                                            player.giveItemStack(toGive.copy());
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandReceived, player, itemId, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandFeedback, player, itemId, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -137,10 +147,12 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = BagItemsGroup.bagItems.get(StringArgumentType.getString(ctx, "bag-item")).getDefaultStack();
-                                                                            player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, StringArgumentType.getString(ctx, "bag-item"), 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, StringArgumentType.getString(ctx, "bag-item"), 1)));
+                                                                            String itemId = StringArgumentType.getString(ctx, "bag-item");
+                                                                            Item toGive = BagItemsGroup.bagItems.get(itemId);
+                                                                            if (toGive == null) return 0;
+                                                                            player.giveItemStack(toGive.getDefaultStack());
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandReceived, player, itemId, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandFeedback, player, itemId, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -160,10 +172,12 @@ public class GenesisCommands {
                                                                         .executes(ctx -> {
                                                                             ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "player");
                                                                             if (player == null) return 0;
-                                                                            ItemStack toGive = TeraShardsGroup.teraShards.get(StringArgumentType.getString(ctx, "tera-shard")).getDefaultStack();
-                                                                            player.giveItemStack(toGive);
-                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_received"), player, StringArgumentType.getString(ctx, "tera-shard"), 1)));
-                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("give_command_feedback"), player, StringArgumentType.getString(ctx, "tera-shard"), 1)));
+                                                                            String itemId = StringArgumentType.getString(ctx, "tera-shard");
+                                                                            Item toGive = TeraShardsGroup.teraShards.get(itemId);
+                                                                            if (toGive == null) return 0;
+                                                                            player.giveItemStack(toGive.getDefaultStack());
+                                                                            player.sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandReceived, player, itemId, 1)));
+                                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.giveCommandFeedback, player, itemId, 1)));
                                                                             return 1;
                                                                         })
                                                         )
@@ -189,7 +203,7 @@ public class GenesisCommands {
                                                                 }
                                                             }
 
-                                                            gf.getPlayersWithMega().remove(player.getUuid());
+                                                            gf.playersWithMega.remove(player.getUuid());
 
                                                             GeneralPlayerData playerData = Cobblemon.playerDataManager.getGenericData(player);
                                                             playerData.getKeyItems().removeIf(identifier ->
@@ -198,7 +212,7 @@ public class GenesisCommands {
                                                                             identifier.equals(MiscUtilsKt.cobblemonResource("z_ring")) ||
                                                                             identifier.equals(MiscUtilsKt.cobblemonResource("dynamax_band")));
 
-                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reset_data_command"), player)));
+                                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.resetDataCommand, player)));
 
                                                             return 1;
                                                         })
@@ -253,7 +267,7 @@ public class GenesisCommands {
                                         .requires(Permissions.require("genesisforms.reload", 4))
                                         .executes(ctx -> {
                                             gf.reload();
-                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(gf.getMessagesConfig().getMessage("reload_command"))));
+                                            ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.reloadCommand)));
                                             return 1;
                                         })
                         )
