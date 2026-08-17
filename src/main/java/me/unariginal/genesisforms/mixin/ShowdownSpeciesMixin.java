@@ -23,9 +23,9 @@ public class ShowdownSpeciesMixin {
     private Map<String, String> abilities;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void populateAbilities(Species species, FormData formData, CallbackInfo ci) {
-        if (formData == null) return;
-        Iterator<PotentialAbility> abilityIterator = formData.getAbilities().iterator();
+    private void populateAbilities(Species species, FormData form, CallbackInfo ci) {
+        if (form == null) return;
+        Iterator<PotentialAbility> abilityIterator = form.getAbilities().iterator();
         abilities = Map.of("0", abilityIterator.hasNext() ? abilityIterator.next().getTemplate().getName() : "No Ability");
     }
 }

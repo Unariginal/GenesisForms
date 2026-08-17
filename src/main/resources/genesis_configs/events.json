@@ -58,5 +58,37 @@
         "scaling_ticks": 60
       }
     }
+  },
+  "form_changes": {
+    "key_items": {
+      "animations": {},
+      "glow": {},
+      "features": {},
+      "scale": {}
+    },
+    "held_items": {
+      "animations": {},
+      "glow": {},
+      "features": {},
+      "scale": {}
+    },
+    "fusions": {
+      "animations": {},
+      "glow": {},
+      "features": {},
+      "scale": {}
+    },
+    "possessions": {
+      "animations": {},
+      "glow": {},
+      "features": {},
+      "scale": {}
+    },
+    "battle_forms": {
+      "animations": {},
+      "glow": {},
+      "features": {},
+      "scale": {}
+    }
   }
 }

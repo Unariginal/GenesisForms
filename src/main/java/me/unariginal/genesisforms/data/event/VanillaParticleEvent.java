@@ -19,43 +19,24 @@ public class VanillaParticleEvent extends ParticleEvent {
     public double deltaZ;
     public double speed;
 
-    public VanillaParticleEvent(
-            int formChangeDelaySeconds,
-            String particleResource,
-            double xOffset,
-            double yOffset,
-            double zOffset,
-            int count,
-            double deltaX,
-            double deltaY,
-            double deltaZ,
-            double speed
-    ) {
-        super(formChangeDelaySeconds, particleResource, xOffset, yOffset, zOffset);
-        this.count = count;
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
-        this.deltaZ = deltaZ;
-        this.speed = speed;
-    }
-
     @Override
     public void spawnParticle(PokemonEntity pokemonEntity) {
         Optional<ParticleType<?>> particleType = Registries.PARTICLE_TYPE.getOrEmpty(Identifier.of(particleResource));
         if (particleType.isPresent() && particleType.get() instanceof SimpleParticleType simpleParticleType) {
             RegistryKey<World> worldRegistryKey = pokemonEntity.getWorld().getRegistryKey();
-            ServerWorld world = GenesisForms.INSTANCE.getServer().getWorld(worldRegistryKey);
-            world.spawnParticles(
-                    simpleParticleType,
-                    pokemonEntity.getX() + xOffset,
-                    pokemonEntity.getY() + yOffset,
-                    pokemonEntity.getZ() + zOffset,
-                    count,
-                    deltaX,
-                    deltaY,
-                    deltaZ,
-                    speed
-            );
+            ServerWorld world = GenesisForms.INSTANCE.server.getWorld(worldRegistryKey);
+            if (world != null)
+                world.spawnParticles(
+                        simpleParticleType,
+                        pokemonEntity.getX() + xOffset,
+                        pokemonEntity.getY() + yOffset,
+                        pokemonEntity.getZ() + zOffset,
+                        count,
+                        deltaX,
+                        deltaY,
+                        deltaZ,
+                        speed
+                );
         }
     }
 }

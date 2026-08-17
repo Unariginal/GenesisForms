@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static me.unariginal.genesisforms.config.ConfigManager.Z_CRYSTALS;
+
 public class ZCrystalsGroup {
     private static final Item.Settings itemSettings = new Item.Settings().rarity(Rarity.EPIC);
     private static final Item baseVanillaItem = Items.EMERALD;
@@ -26,11 +28,11 @@ public class ZCrystalsGroup {
     public static LinkedHashMap<String, ZCrystal> zCrystals = new LinkedHashMap<>();
 
     public static void registerItemGroup() {
-        for (Map.Entry<String, ZCrystalsConfig.TypedZCrystalData> typedZCrystalDataEntry : ZCrystalsConfig.zCrystalData.typedZCrystalMap.entrySet()) {
+        for (Map.Entry<String, ZCrystalsConfig.TypedZCrystalData> typedZCrystalDataEntry : Z_CRYSTALS.typed.entrySet()) {
             zCrystals.put(typedZCrystalDataEntry.getKey(), registerTypedZCrystalItem(typedZCrystalDataEntry.getKey(), typedZCrystalDataEntry.getValue()));
         }
 
-        for (Map.Entry<String, ZCrystalsConfig.SpeciesZCrystalData> speciesZCrystalDataEntry : ZCrystalsConfig.zCrystalData.speciesZCrystalMap.entrySet()) {
+        for (Map.Entry<String, ZCrystalsConfig.SpeciesZCrystalData> speciesZCrystalDataEntry : Z_CRYSTALS.species.entrySet()) {
             zCrystals.put(speciesZCrystalDataEntry.getKey(), registerSpeciesZCrystalItem(speciesZCrystalDataEntry.getKey(), speciesZCrystalDataEntry.getValue()));
         }
 
@@ -47,7 +49,7 @@ public class ZCrystalsGroup {
         PolymerItemGroupUtils.registerPolymerItemGroup(GenesisForms.id("z_crystals"), ITEM_GROUP);
 
         for (Map.Entry<String, ZCrystal> zCrystalEntry : zCrystals.entrySet()) {
-            CobblemonHeldItemManager.INSTANCE.registerRemap(zCrystalEntry.getValue(), zCrystalEntry.getValue().getShowdownID());
+            CobblemonHeldItemManager.INSTANCE.registerRemap(zCrystalEntry.getValue(), zCrystalEntry.getValue().getShowdownId());
         }
     }
 
@@ -60,7 +62,7 @@ public class ZCrystalsGroup {
                         itemID,
                         zCrystalData.lore,
                         zCrystalData.formChanges,
-                        zCrystalData.showdownID
+                        zCrystalData.showdownId
                 )
         );
     }
@@ -74,7 +76,7 @@ public class ZCrystalsGroup {
                         itemID,
                         zCrystalData.lore,
                         List.of(),
-                        zCrystalData.showdownID
+                        zCrystalData.showdownId
                 )
         );
     }

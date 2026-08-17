@@ -9,19 +9,19 @@ import java.util.List;
 
 public class ZCrystal extends BasePolymerItem {
     private final List<FormSetting> formChanges;
-    private final String showdownID;
+    private final String showdownId;
 
-    public ZCrystal(Settings settings, Item polymerItem, PolymerModelData modelData, String itemID, List<String> lore, List<FormSetting> formChanges, String showdownID) {
-        super(settings, polymerItem, modelData, itemID, lore);
+    public ZCrystal(Settings settings, Item polymerItem, PolymerModelData modelData, String itemId, List<String> lore, List<FormSetting> formChanges, String showdownId) {
+        super(settings, polymerItem, modelData, itemId, lore);
         this.formChanges = formChanges;
-        this.showdownID = showdownID;
+        this.showdownId = showdownId;
     }
 
     public List<FormSetting> getFormChanges() {
         return formChanges;
     }
 
-    public String getShowdownID() {
-        return showdownID;
+    public String getShowdownId() {
+        return showdownId;
     }
 }

@@ -12,18 +12,18 @@ import java.util.List;
 
 public class HeldFormItem extends BasePolymerItem {
     private final FormSetting formData;
-    private final String showdownID;
+    private final String showdownId;
 
-    public HeldFormItem(Settings settings, Item polymerItem, PolymerModelData modelData, String itemID, List<String> lore, String showdownID, FormSetting formData) {
-        super(settings, polymerItem, modelData, itemID, lore);
+    public HeldFormItem(Settings settings, Item polymerItem, PolymerModelData modelData, String itemId, List<String> lore, String showdownId, FormSetting formData) {
+        super(settings, polymerItem, modelData, itemId, lore);
         this.formData = formData;
-        this.showdownID = showdownID;
+        this.showdownId = showdownId;
     }
 
     public List<Species> getSpeciesList() {
         List<Species> speciesList = new ArrayList<>();
         for (String speciesName : formData.species) {
-            Species species = PokemonSpecies.INSTANCE.getByName(speciesName);
+            Species species = PokemonSpecies.getByName(speciesName);
             if (species != null) speciesList.add(species);
         }
         return speciesList;
@@ -33,7 +33,7 @@ public class HeldFormItem extends BasePolymerItem {
         return formData;
     }
 
-    public String getShowdownID() {
-        return showdownID;
+    public String getShowdownId() {
+        return showdownId;
     }
 }

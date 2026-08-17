@@ -1,0 +1,37 @@
+{
+  "debug": false,
+  "general_settings": {
+    "key_item_slots": {
+      "hotbar": true,
+      "main": true,
+      "mainhand": true,
+      "offhand": true,
+      "armor": false,
+      "specific": []
+    },
+    "disabled_items": []
+  },
+  "mega_settings": {
+    "enable_mega_evolution": true,
+    "allow_mega_outside_battles": true,
+    "use_tradeable_property": false
+  },
+  "z_power_settings": {
+    "enable_z_crystals": true
+  },
+  "tera_settings": {
+    "enable_tera": true,
+    "tera_shards_required": 50,
+    "consume_tera_shards": true,
+    "require_orb_recharge": true,
+    "fix_ogerpon_tera_type": true,
+    "fix_terapagos_tera_type": true
+  },
+  "fusion_settings": {
+    "enable_fusions": true
+  },
+  "dynamax_settings": {
+    "enable_dynamax": true,
+    "enable_gigantamax": true
+  }
+}

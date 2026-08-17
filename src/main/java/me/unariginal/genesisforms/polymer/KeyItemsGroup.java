@@ -38,6 +38,8 @@ import net.minecraft.util.Rarity;
 
 import java.util.*;
 
+import static me.unariginal.genesisforms.config.ConfigManager.*;
+
 public class KeyItemsGroup {
     private static final Item baseVanillaItem = Items.DIAMOND;
 
@@ -62,27 +64,27 @@ public class KeyItemsGroup {
     public static BasePolymerBlockItem MEGA_CRYSTAL_ITEM = null;
 
     public static void registerItemGroup() {
-        for (Map.Entry<String, AccessoriesConfig.AccessoryData> accessoryDataEntry : AccessoriesConfig.megaAccessories.entrySet()) {
+        for (Map.Entry<String, AccessoriesConfig> accessoryDataEntry : MEGA_ACCESSORIES.entrySet()) {
             megaAccessories.put(accessoryDataEntry.getKey(), registerMegaAccessory(accessoryDataEntry.getKey(), baseVanillaItem, accessoryDataEntry.getValue().lore));
             allKeyItems.put(accessoryDataEntry.getKey(), megaAccessories.get(accessoryDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, AccessoriesConfig.AccessoryData> accessoryDataEntry : AccessoriesConfig.teraAccessories.entrySet()) {
+        for (Map.Entry<String, AccessoriesConfig> accessoryDataEntry : TERA_ACCESSORIES.entrySet()) {
             teraAccessories.put(accessoryDataEntry.getKey(), registerTeraAccessory(accessoryDataEntry.getKey(), baseVanillaItem, accessoryDataEntry.getValue().lore));
             allKeyItems.put(accessoryDataEntry.getKey(), teraAccessories.get(accessoryDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, AccessoriesConfig.AccessoryData> accessoryDataEntry : AccessoriesConfig.zAccessories.entrySet()) {
+        for (Map.Entry<String, AccessoriesConfig> accessoryDataEntry : Z_ACCESSORIES.entrySet()) {
             zAccessories.put(accessoryDataEntry.getKey(), registerZAccessory(accessoryDataEntry.getKey(), baseVanillaItem, accessoryDataEntry.getValue().lore));
             allKeyItems.put(accessoryDataEntry.getKey(), zAccessories.get(accessoryDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, AccessoriesConfig.AccessoryData> accessoryDataEntry : AccessoriesConfig.dmaxAccessories.entrySet()) {
+        for (Map.Entry<String, AccessoriesConfig> accessoryDataEntry : DYNAMAX_ACCESSORIES.entrySet()) {
             dynamaxAccessories.put(accessoryDataEntry.getKey(), registerDynamaxAccessory(accessoryDataEntry.getKey(), baseVanillaItem, accessoryDataEntry.getValue().lore));
             allKeyItems.put(accessoryDataEntry.getKey(), dynamaxAccessories.get(accessoryDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, KeyFormItemsConfig.KeyItemData> keyItemDataEntry : KeyFormItemsConfig.keyFormItemMap.entrySet()) {
+        for (Map.Entry<String, KeyFormItemsConfig> keyItemDataEntry : KEY_FORM_ITEMS.entrySet()) {
             formCycleItems.put(keyItemDataEntry.getKey(), registerFormCycleItem(keyItemDataEntry.getKey(), baseVanillaItem, keyItemDataEntry.getValue().lore, keyItemDataEntry.getValue().consumable, keyItemDataEntry.getValue().maxStackSize,
                     new CycledFormSetting(
                             keyItemDataEntry.getValue().species,
@@ -93,18 +95,18 @@ public class KeyItemsGroup {
             allKeyItems.put(keyItemDataEntry.getKey(), formCycleItems.get(keyItemDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, FusionItemsConfig.FusionItemData> fusionDataEntry : FusionItemsConfig.fusionItemMap.entrySet()) {
+        for (Map.Entry<String, FusionItemsConfig> fusionDataEntry : FUSION_ITEMS.entrySet()) {
             fusionItems.put(fusionDataEntry.getKey(), registerFusionItem(fusionDataEntry.getKey(), baseVanillaItem, fusionDataEntry.getValue().lore, fusionDataEntry.getValue().consumable, fusionDataEntry.getValue().fusions));
             allKeyItems.put(fusionDataEntry.getKey(), fusionItems.get(fusionDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, PossessionItemsConfig.PossessionItemData> possessionItemDataEntry : PossessionItemsConfig.possessionItems.entrySet()) {
+        for (Map.Entry<String, PossessionItemsConfig> possessionItemDataEntry : POSSESSION_ITEMS.entrySet()) {
             possessionBlocks.put(possessionItemDataEntry.getKey(), registerPossessionBlock(possessionItemDataEntry.getKey(), possessionItemDataEntry.getValue()));
             possessionItems.put(possessionItemDataEntry.getKey(), registerPossessionItem(possessionItemDataEntry.getKey(), Items.IRON_INGOT, possessionItemDataEntry.getValue().lore, possessionItemDataEntry.getValue()));
             allKeyItems.put(possessionItemDataEntry.getKey(), possessionItems.get(possessionItemDataEntry.getKey()).getDefaultStack());
         }
 
-        for (Map.Entry<String, MiscItemsConfig.MiscItem> miscItemDataEntry : MiscItemsConfig.miscItemData.featureless.entrySet()) {
+        for (Map.Entry<String, MiscItemsConfig.MiscItem> miscItemDataEntry : MISC_ITEMS.featureless.entrySet()) {
             featurelessItems.put(miscItemDataEntry.getKey(), registerItem(miscItemDataEntry.getKey(), baseVanillaItem, miscItemDataEntry.getValue().maxCount, miscItemDataEntry.getValue().lore));
             allKeyItems.put(miscItemDataEntry.getKey(), featurelessItems.get(miscItemDataEntry.getKey()).getDefaultStack());
         }
@@ -113,7 +115,7 @@ public class KeyItemsGroup {
         MEGA_CRYSTAL_ITEM = Registry.register(Registries.ITEM, GenesisForms.id("mega_crystal"), new BasePolymerBlockItem(MEGA_CRYSTAL_BLOCK, new Item.Settings().maxCount(64).rarity(Rarity.UNCOMMON), PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("block/mega_crystal")), "mega_crystal", List.of()));
         allKeyItems.put("mega_crystal", MEGA_CRYSTAL_ITEM.getDefaultStack());
 
-        if (MiscItemsConfig.miscItemData.zygardeCube != null) {
+        if (MISC_ITEMS.zygardeCube != null) {
             zygardeCube = Registry.register(
                     Registries.ITEM,
                     GenesisForms.id("zygarde_cube"),
@@ -122,15 +124,20 @@ public class KeyItemsGroup {
                             baseVanillaItem,
                             PolymerResourcePackUtils.requestModel(baseVanillaItem, GenesisForms.id("item/zygarde_cube")),
                             "zygarde_cube",
-                            MiscItemsConfig.miscItemData.zygardeCube.lore
+                            MISC_ITEMS.zygardeCube.lore
                     )
             );
 
             allKeyItems.put("zygarde_cube", zygardeCube.getDefaultStack());
         }
 
+        Item icon = Items.EMERALD;
+        if (!megaAccessories.isEmpty() && megaAccessories.firstEntry() != null) {
+            icon = megaAccessories.firstEntry().getValue();
+        }
+
         final ItemGroup KEY_ITEMS = FabricItemGroup.builder()
-                .icon(megaAccessories.firstEntry().getValue()::getDefaultStack)
+                .icon(icon::getDefaultStack)
                 .displayName(Text.literal("Key Items"))
                 .entries((displayContext, entries) -> {
                     for (MegaAccessory accessory : megaAccessories.values()) {
@@ -262,7 +269,7 @@ public class KeyItemsGroup {
         );
     }
 
-    public static PossessionBlock registerPossessionBlock(String id, PossessionItemsConfig.PossessionItemData possessionItemData) {
+    public static PossessionBlock registerPossessionBlock(String id, PossessionItemsConfig possessionItemData) {
         return Registry.register(
                 Registries.BLOCK,
                 GenesisForms.id(id),
@@ -274,7 +281,7 @@ public class KeyItemsGroup {
         );
     }
 
-    public static PossessionItem registerPossessionItem(String id, Item baseItem, List<String> lore, PossessionItemsConfig.PossessionItemData possessionItemData) {
+    public static PossessionItem registerPossessionItem(String id, Item baseItem, List<String> lore, PossessionItemsConfig possessionItemData) {
         return Registry.register(
                 Registries.ITEM,
                 GenesisForms.id(id),
