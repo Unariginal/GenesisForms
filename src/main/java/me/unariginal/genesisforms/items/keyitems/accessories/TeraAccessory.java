@@ -38,9 +38,9 @@ public class TeraAccessory extends BasePolymerItem {
                 Toast toast = new Toast(
                         TextUtils.deserialize(TextUtils.parse(MESSAGES.teraToastSettings.toastTitle, pokemonEntity.getPokemon())),
                         TextUtils.deserialize(TextUtils.parse(MESSAGES.teraToastSettings.toastDescription, pokemonEntity.getPokemon())),
-                        MESSAGES.teraToastSettings.useShardIcon ?
+                        List.of(MESSAGES.teraToastSettings.useShardIcon ?
                                 Registries.ITEM.get(Identifier.of("genesisforms:" + pokemonEntity.getPokemon().getTeraType().showdownId() + "_tera_shard")).getDefaultStack()
-                                : ItemStack.EMPTY,
+                                : ItemStack.EMPTY),
                         Identifier.ofVanilla("toast/advancement"),
                         1F,
                         -1675545

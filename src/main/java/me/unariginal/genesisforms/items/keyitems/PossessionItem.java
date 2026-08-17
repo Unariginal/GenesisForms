@@ -56,7 +56,7 @@ public class PossessionItem extends BasePolymerBlockItem implements PokemonSelec
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if (user instanceof ServerPlayerEntity player) {
-            return this.use(player, player.getStackInHand(hand));
+            return this.use(player, player.getStackInHand(hand), false);
         }
         return TypedActionResult.success(user.getStackInHand(hand));
     }
