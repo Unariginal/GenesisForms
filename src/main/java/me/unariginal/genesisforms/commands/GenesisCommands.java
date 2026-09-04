@@ -20,8 +20,13 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.ServerScoreboard;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static me.unariginal.genesisforms.config.ConfigManager.MESSAGES;
 
@@ -268,6 +273,19 @@ public class GenesisCommands {
                                         .executes(ctx -> {
                                             gf.reload();
                                             ctx.getSource().sendMessage(TextUtils.deserialize(TextUtils.parse(MESSAGES.messages.reloadCommand)));
+                                            return 1;
+                                        })
+                        )
+                        .then(
+                                CommandManager.literal("clearGlowTeams")
+                                        .requires(Permissions.require("genesisforms.clearglowteams", 4))
+                                        .executes(ctx -> {
+                                            ServerScoreboard scoreboard = GenesisForms.INSTANCE.server.getScoreboard();
+                                            List<Team> glowTeams = new ArrayList<>();
+                                            scoreboard.getTeams().forEach(team -> {
+                                                if (team.getName().startsWith("glow_")) glowTeams.add(team);
+                                            });
+                                            glowTeams.forEach(scoreboard::removeTeam);
                                             return 1;
                                         })
                         )
