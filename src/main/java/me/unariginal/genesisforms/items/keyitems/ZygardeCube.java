@@ -70,7 +70,7 @@ public class ZygardeCube extends BasePolymerItem implements PokemonSelectingItem
             }
         } else {
             if (user instanceof ServerPlayerEntity player) {
-                return this.use(player, player.getStackInHand(hand));
+                return this.use(player, player.getStackInHand(hand), false);
             }
             return TypedActionResult.success(user.getStackInHand(hand));
         }
