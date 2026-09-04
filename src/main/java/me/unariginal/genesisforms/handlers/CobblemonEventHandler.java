@@ -430,9 +430,9 @@ public class CobblemonEventHandler {
                 }
 
                 if (pokemon.getSpecies().getName().equalsIgnoreCase("zacian")) {
-                    swapPokemonMove(pokemon, "ironhead", "behemothbash");
-                } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
                     swapPokemonMove(pokemon, "ironhead", "behemothblade");
+                } else if (pokemon.getSpecies().getName().equalsIgnoreCase("zamazenta")) {
+                    swapPokemonMove(pokemon, "ironhead", "behemothbash");
                 }
             }
         }

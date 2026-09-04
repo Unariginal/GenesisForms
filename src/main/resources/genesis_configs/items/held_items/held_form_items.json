@@ -295,7 +295,7 @@
     ]
   },
   "steel_memory": {
-    "showdown_id": "bugmemory",
+    "showdown_id": "steelmemory",
     "species": ["silvally"],
     "feature_name": "rks_memory",
     "default_value": "normal",
@@ -306,7 +306,7 @@
     ]
   },
   "water_memory": {
-    "showdown_id": "bugmemory",
+    "showdown_id": "watermemory",
     "species": ["silvally"],
     "feature_name": "rks_memory",
     "default_value": "normal",

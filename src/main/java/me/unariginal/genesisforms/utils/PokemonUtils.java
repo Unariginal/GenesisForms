@@ -7,7 +7,6 @@ import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
-import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.DataKeys;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,84 +22,6 @@ public class PokemonUtils {
         ServerPlayerEntity ownerPlayer = pokemon.getOwnerPlayer();
         if (ownerPlayer == null) return false;
         return ownerPlayer.getUuid().equals(player.getUuid());
-    }
-
-    public static NbtCompound saveToNBT(PokemonProperties properties) {
-        NbtCompound nbt = new NbtCompound();
-        nbt.putString(DataKeys.POKEMON_PROPERTIES_ORIGINAL_TEXT, properties.getOriginalString());
-        if (properties.getLevel() != null) {
-            nbt.putInt(DataKeys.POKEMON_LEVEL, properties.getLevel());
-        }
-        if (properties.getShiny() != null) {
-            nbt.putBoolean(DataKeys.POKEMON_SHINY, properties.getShiny());
-        }
-        if (properties.getGender() != null) {
-            nbt.putString(DataKeys.POKEMON_GENDER, properties.getGender().name());
-        }
-        if (properties.getSpecies() != null) {
-            nbt.putString(DataKeys.POKEMON_SPECIES_TEXT, properties.getSpecies());
-        }
-        if (properties.getForm() != null) {
-            nbt.putString(DataKeys.POKEMON_FORM_ID, properties.getForm());
-        }
-        if (properties.getFriendship() != null) {
-            nbt.putInt(DataKeys.POKEMON_FRIENDSHIP, properties.getFriendship());
-        }
-        if (properties.getPokeball() != null) {
-            nbt.putString(DataKeys.POKEMON_CAUGHT_BALL, properties.getPokeball());
-        }
-        if (properties.getNature() != null) {
-            nbt.putString(DataKeys.POKEMON_NATURE, properties.getNature());
-        }
-        if (properties.getAbility() != null) {
-            nbt.putString(DataKeys.POKEMON_ABILITY, properties.getAbility());
-        }
-        if (properties.getStatus() != null) {
-            nbt.putString(DataKeys.POKEMON_STATUS_NAME, properties.getStatus());
-        }
-        if (properties.getIvs() != null) {
-            nbt.put(DataKeys.POKEMON_IVS, IVs.getCODEC().encodeStart(NbtOps.INSTANCE, properties.getIvs()).result().get());
-        }
-        if (properties.getEvs() != null) {
-            nbt.put(DataKeys.POKEMON_EVS, EVs.getCODEC().encodeStart(NbtOps.INSTANCE, properties.getEvs()).result().get());
-        }
-        if (properties.getType() != null) {
-            nbt.putString(DataKeys.ELEMENTAL_TYPE, properties.getType());
-        }
-        if (properties.getTeraType() != null) {
-            nbt.putString(DataKeys.POKEMON_TERA_TYPE, properties.getTeraType());
-        }
-        if (properties.getDmaxLevel() != null) {
-            nbt.putInt(DataKeys.POKEMON_DMAX_LEVEL, properties.getDmaxLevel());
-        }
-        if (properties.getGmaxFactor() != null) {
-            nbt.putBoolean(DataKeys.POKEMON_GMAX_FACTOR, properties.getGmaxFactor());
-        }
-        if (properties.getTradeable() != null) {
-            nbt.putBoolean(DataKeys.POKEMON_TRADEABLE, properties.getTradeable());
-        }
-        if (properties.getOriginalTrainerType() != null) {
-            nbt.putInt(DataKeys.POKEMON_ORIGINAL_TRAINER_TYPE, properties.getOriginalTrainerType().ordinal());
-        }
-        if (properties.getOriginalTrainer() != null) {
-            nbt.putString(DataKeys.POKEMON_ORIGINAL_TRAINER, properties.getOriginalTrainer());
-        }
-        if (properties.getMoves() != null) {
-            String moves = "";
-            for (String move : properties.getMoves()) {
-                moves = moves.concat(move + ",");
-            }
-            nbt.putString(DataKeys.POKEMON_PROPERTIES_MOVES, moves);
-        }
-        if (properties.getHeldItem() != null) {
-            nbt.putString(DataKeys.POKEMON_PROPERTIES_HELDITEM, properties.getHeldItem());
-        }
-        NbtList custom = new NbtList();
-        for (CustomPokemonProperty pokemonProperty : properties.getCustomProperties()) {
-            custom.add(NbtString.of(pokemonProperty.asString()));
-        }
-        nbt.put(DataKeys.POKEMON_PROPERTIES_CUSTOM, custom);
-        return nbt;
     }
 
     public static PokemonProperties loadFromNBT(NbtCompound nbt) {
