@@ -49,7 +49,7 @@ public class ShowdownUnbundlerMixin {
                 GenesisForms.LOGGER.error("[Genesis] Resource {} not found!", resourcePath);
                 return;
             }
-            if (Files.readAllLines(targetPath).stream().anyMatch(line -> line.contains("Version: 1.2.5"))) {
+            if (Files.readAllLines(targetPath).stream().anyMatch(line -> line.contains("Version: 1.2.7"))) {
                 GenesisForms.LOGGER.info("[Genesis] Resource {} has already been modified, skipping.", resourcePath);
                 return;
             }
