@@ -25,6 +25,7 @@ const Cobblemon = require('./sim/cobblemon/cobblemon').Cobblemon
 const Dex = require('./sim/dex').Dex;
 
 const battleMap = new Map();
+const moves = require("./data/moves");
 const toID = Dex.toID;
 
 function startBattle(graalShowdown, battleId, requestMessages) {
